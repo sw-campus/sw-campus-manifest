@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
+  namespace: monitoring
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      # Prometheus 데이터소스
+      - name: Prometheus
+        uid: prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus:9090
+        isDefault: true
+        editable: true
+        jsonData:
+          httpMethod: POST
+          timeInterval: 15s
+          queryTimeout: 60s
+          exemplarTraceIdDestinations:
+            - name: trace_id
+              datasourceUid: tempo
+      
+      # Loki 데이터소스
+      - name: Loki
+        uid: loki
+        type: loki
+        access: proxy
+        url: http://loki:3100
+        editable: true
+        jsonData:
+          maxLines: 1000
+          derivedFields:
+            - datasourceUid: tempo
+              matcherRegex: "trace_id=(\\w+)"
+              name: TraceID
+              url: '$${__value.raw}'
+      
+      # Tempo 데이터소스 (트레이스)
+      - name: Tempo
+        uid: tempo
+        type: tempo
+        access: proxy
+        url: http://tempo:3200
+        editable: true
+        jsonData:
+          httpMethod: GET
+          tracesToLogs:
+            datasourceUid: loki
+            tags: ['service.name', 'service.namespace', 'k8s.pod.name', 'k8s.namespace.name', 'http.method', 'http.status_code']
+            mappedTags: 
+              - { key: 'service.name', value: 'service' }
+              - { key: 'k8s.pod.name', value: 'pod' }
+              - { key: 'k8s.namespace.name', value: 'namespace' }
+            mapTagNamesEnabled: true
+            spanStartTimeShift: '1h'
+            spanEndTimeShift: '1h'
+            filterByTraceID: true
+            filterBySpanID: true
+            customQuery: true
+            query: '{service_name="$${__span.tags.service.name}"} |= "$${__span.traceId}"'
+          tracesToMetrics:
+            datasourceUid: prometheus
+            tags: 
+              - { key: 'service.name', value: 'service' }
+              - { key: 'k8s.deployment.name', value: 'deployment' }
+              - { key: 'k8s.namespace.name', value: 'namespace' }
+            queries:
+              - name: 'Request Rate'
+                query: 'sum(rate(tempo_spanmetrics_calls_total{$$__tags}[5m]))'
+              - name: 'Error Rate'
+                query: 'sum(rate(tempo_spanmetrics_calls_total{$$__tags,status_code="error"}[5m]))'
+              - name: 'P50 Latency'
+                query: 'histogram_quantile(0.50, sum(rate(tempo_spanmetrics_latency_bucket{$$__tags}[5m])) by (le))'
+              - name: 'P95 Latency'
+                query: 'histogram_quantile(0.95, sum(rate(tempo_spanmetrics_latency_bucket{$$__tags}[5m])) by (le))'
+              - name: 'P99 Latency'
+                query: 'histogram_quantile(0.99, sum(rate(tempo_spanmetrics_latency_bucket{$$__tags}[5m])) by (le))'
+          nodeGraph:
+            enabled: true
+          search:
+            hide: false
+          serviceMap:
+            datasourceUid: prometheus
+          spanStartTimeShift: '1h'
+          spanEndTimeShift: '1h'
+

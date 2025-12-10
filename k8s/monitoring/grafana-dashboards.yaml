@@ -1,0 +1,110 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  namespace: monitoring
+  labels:
+    grafana_dashboard: "1"
+data:
+  monitoring-overview.json: |
+    {
+      "dashboard": {
+        "title": "통합 모니터링 대시보드",
+        "tags": ["monitoring"],
+        "timezone": "browser",
+        "schemaVersion": 27,
+        "version": 1,
+        "refresh": "30s",
+        "panels": [
+          {
+            "id": 1,
+            "title": "HTTP 요청 수 (Prometheus)",
+            "type": "graph",
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 0},
+            "targets": [
+              {
+                "expr": "sum(rate(http_server_request_duration_count[5m])) by (service_name, http_method)",
+                "refId": "A",
+                "datasource": {"type": "prometheus", "uid": "prometheus"}
+              }
+            ]
+          },
+          {
+            "id": 2,
+            "title": "로그 조회 (Loki)",
+            "type": "logs",
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
+            "targets": [
+              {
+                "expr": "{service_name=~\".+\"}",
+                "refId": "A",
+                "datasource": {"type": "loki", "uid": "loki"}
+              }
+            ],
+            "options": {
+              "dedupStrategy": "none",
+              "enableLogDetails": true,
+              "prettifyLogMessage": false,
+              "showCommonLabels": false,
+              "showLabels": false,
+              "showTime": true,
+              "sortOrder": "Descending"
+            }
+          },
+          {
+            "id": 3,
+            "title": "트레이스 조회 (Tempo)",
+            "type": "traces",
+            "gridPos": {"h": 8, "w": 24, "x": 0, "y": 8},
+            "targets": [
+              {
+                "queryType": "traceql",
+                "refId": "A",
+                "datasource": {"type": "tempo", "uid": "tempo"},
+                "query": "{ service_name = \"sw-campus-server\" }"
+              }
+            ]
+          },
+          {
+            "id": 4,
+            "title": "에러율 (Prometheus)",
+            "type": "graph",
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 16},
+            "targets": [
+              {
+                "expr": "sum(rate(http_server_request_duration_count{http_status_code=~\"5..\"}[5m])) by (service_name)",
+                "refId": "A",
+                "datasource": {"type": "prometheus", "uid": "prometheus"}
+              }
+            ]
+          },
+          {
+            "id": 5,
+            "title": "에러 로그 (Loki)",
+            "type": "logs",
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
+            "targets": [
+              {
+                "expr": "{service_name=~\".+\"} |= \"ERROR\"",
+                "refId": "A",
+                "datasource": {"type": "loki", "uid": "loki"}
+              }
+            ],
+            "options": {
+              "dedupStrategy": "none",
+              "enableLogDetails": true,
+              "prettifyLogMessage": false,
+              "showCommonLabels": false,
+              "showLabels": false,
+              "showTime": true,
+              "sortOrder": "Descending"
+            }
+          }
+        ],
+        "time": {
+          "from": "now-1h",
+          "to": "now"
+        }
+      }
+    }
+

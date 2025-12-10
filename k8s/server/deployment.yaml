@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sw-campus-server
+  namespace: default
+  labels:
+    app: sw-campus-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sw-campus-server
+  template:
+    metadata:
+      labels:
+        app: sw-campus-server
+    spec:
+      containers:
+      - name: server
+        image: ghcr.io/sw-campus/sw-campus-server:latest
+        imagePullPolicy: Always  # 최신 이미지 가져오기
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: sw-campus-server-config
+        - secretRef:
+            name: sw-campus-server-secret
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+          requests:
+            cpu: 500m
+            memory: 512Mi
+        livenessProbe:
+          httpGet:
+            path: /actuator/health/liveness
+            port: 8080
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /actuator/health/readiness
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+

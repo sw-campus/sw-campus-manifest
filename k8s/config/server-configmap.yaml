@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sw-campus-server-config
+  namespace: default
+data:
+  SPRING_PROFILES_ACTIVE: "prod"
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-service:5432/sw-campus"
+  SPRING_DATASOURCE_USERNAME: "postgres"
+  # SPRING_DATASOURCE_PASSWORD는 Secret으로 관리해야 합니다
+  # SPRING_DATASOURCE_PASSWORD: "your-password"
+
