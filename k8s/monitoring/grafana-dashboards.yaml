@@ -31,12 +31,12 @@ data:
           },
           {
             "id": 2,
-            "title": "로그 조회 (Loki)",
+            "title": "로그 조회 (Loki) - 모든 네임스페이스",
             "type": "logs",
             "gridPos": {"h": 8, "w": 12, "x": 12, "y": 0},
             "targets": [
               {
-                "expr": "{service_name=~\".+\"}",
+                "expr": "{namespace=~\".+\"}",
                 "refId": "A",
                 "datasource": {"type": "loki", "uid": "loki"}
               }
@@ -80,12 +80,78 @@ data:
           },
           {
             "id": 5,
-            "title": "에러 로그 (Loki)",
+            "title": "에러 로그 (Loki) - 모든 네임스페이스",
             "type": "logs",
             "gridPos": {"h": 8, "w": 12, "x": 12, "y": 16},
             "targets": [
               {
-                "expr": "{service_name=~\".+\"} |= \"ERROR\"",
+                "expr": "{namespace=~\".+\"} |= \"ERROR\" | |= \"error\" | |= \"Error\" | |= \"ERROR\" | |= \"Failed\" | |= \"failed\"",
+                "refId": "A",
+                "datasource": {"type": "loki", "uid": "loki"}
+              }
+            ],
+            "options": {
+              "dedupStrategy": "none",
+              "enableLogDetails": true,
+              "prettifyLogMessage": false,
+              "showCommonLabels": false,
+              "showLabels": false,
+              "showTime": true,
+              "sortOrder": "Descending"
+            }
+          },
+          {
+            "id": 6,
+            "title": "ArgoCD 로그",
+            "type": "logs",
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 24},
+            "targets": [
+              {
+                "expr": "{namespace=\"argocd\"}",
+                "refId": "A",
+                "datasource": {"type": "loki", "uid": "loki"}
+              }
+            ],
+            "options": {
+              "dedupStrategy": "none",
+              "enableLogDetails": true,
+              "prettifyLogMessage": false,
+              "showCommonLabels": false,
+              "showLabels": false,
+              "showTime": true,
+              "sortOrder": "Descending"
+            }
+          },
+          {
+            "id": 7,
+            "title": "ArgoCD 에러 로그",
+            "type": "logs",
+            "gridPos": {"h": 8, "w": 12, "x": 12, "y": 24},
+            "targets": [
+              {
+                "expr": "{namespace=\"argocd\"} |= \"ERROR\" | |= \"error\" | |= \"Error\" | |= \"ERROR\" | |= \"Failed\" | |= \"failed\" | |= \"SyncError\"",
+                "refId": "A",
+                "datasource": {"type": "loki", "uid": "loki"}
+              }
+            ],
+            "options": {
+              "dedupStrategy": "none",
+              "enableLogDetails": true,
+              "prettifyLogMessage": false,
+              "showCommonLabels": false,
+              "showLabels": false,
+              "showTime": true,
+              "sortOrder": "Descending"
+            }
+          },
+          {
+            "id": 8,
+            "title": "서비스 로그 (sw-campus)",
+            "type": "logs",
+            "gridPos": {"h": 8, "w": 12, "x": 0, "y": 32},
+            "targets": [
+              {
+                "expr": "{namespace=\"default\", app=~\"sw-campus-.*\"}",
                 "refId": "A",
                 "datasource": {"type": "loki", "uid": "loki"}
               }
@@ -107,4 +173,5 @@ data:
         }
       }
     }
+
 
