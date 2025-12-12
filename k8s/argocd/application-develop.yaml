@@ -12,6 +12,8 @@ spec:
     repoURL: https://github.com/sw-campus/sw-campus-manifest  # Manifest 레포 URL
     targetRevision: develop  # develop 브랜치 감시
     path: k8s  # k8s 디렉토리 경로
+    directory:
+      recurse: true  # 하위 디렉토리 재귀적으로 스캔
     
   destination:
     server: https://kubernetes.default.svc  # 리눅스 서버 쿠버네티스
