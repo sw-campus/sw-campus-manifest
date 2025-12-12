@@ -17,7 +17,6 @@ spec:
     spec:
       imagePullSecrets:
         - name: ghcr-secret       # 🔥 private registry 인증 추가
-
       containers:
       - name: client
         image: ghcr.io/sw-campus/sw-campus-client:latest
