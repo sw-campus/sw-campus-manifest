@@ -8,5 +8,6 @@ resources:
   - server/service.yaml
   - config/client-configmap.yaml
   - config/server-configmap.yaml
+  - monitoring/promtail-deployment.yaml
   # - database/postgres-external-service.yaml  # PostgreSQL 호스트명 설정 필요
 
