@@ -16,7 +16,7 @@ spec:
         app: sw-campus-client
     spec:
       imagePullSecrets:
-        - name: ghcr-secret       # 🔥 private registry 인증 추가
+      - name: ghcr-secret
       containers:
       - name: client
         image: ghcr.io/sw-campus/sw-campus-client:latest
@@ -33,8 +33,8 @@ spec:
             cpu: 500m
             memory: 512Mi
           requests:
-            cpu: 200m
-            memory: 256Mi
+            cpu: 100m
+            memory: 128Mi
         livenessProbe:
           httpGet:
             path: /
