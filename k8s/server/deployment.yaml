@@ -16,41 +16,43 @@ spec:
         app: sw-campus-server
     spec:
       imagePullSecrets:
-      - name: ghcr-secret
+        - name: ghcr-secret
       containers:
-      - name: server
-        image: ghcr.io/sw-campus/sw-campus-server:latest
-        imagePullPolicy: Always  # 최신 이미지 가져오기
-        ports:
-        - containerPort: 8080
-          name: http
-          protocol: TCP
-        envFrom:
-        - configMapRef:
-            name: sw-campus-server-config
-        - secretRef:
-            name: sw-campus-server-secret
-        resources:
-          limits:
-            cpu: 1000m
-            memory: 1Gi
-          requests:
-            cpu: 500m
-            memory: 512Mi
-        livenessProbe:
-          httpGet:
-            path: /actuator/health/liveness
-            port: 8080
-          initialDelaySeconds: 60
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /actuator/health/readiness
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 3
+        - name: server
+          image: ghcr.io/sw-campus/sw-campus-server:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
 
+          # 🔥 프로파일 지정 필수
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "staging"
+
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+            requests:
+              cpu: 500m
+              memory: 512Mi
+
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
