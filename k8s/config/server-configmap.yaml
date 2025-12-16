@@ -5,8 +5,29 @@ metadata:
   namespace: default
 data:
   SPRING_PROFILES_ACTIVE: "prod"
-  SPRING_DATASOURCE_URL: "jdbc:postgresql://postgres-service:5432/sw-campus"
+  # EC2 Private IP는 Terraform apply 후 업데이트 필요
+  # terraform output db_private_ip 명령어로 확인 후 수정
+  SPRING_DATASOURCE_URL: "jdbc:postgresql://CHANGE_ME:5432/swcampus?currentSchema=swcampus"
   SPRING_DATASOURCE_USERNAME: "postgres"
-  # SPRING_DATASOURCE_PASSWORD는 Secret으로 관리해야 합니다
-  # SPRING_DATASOURCE_PASSWORD: "your-password"
+  # SPRING_DATASOURCE_PASSWORD는 Secret으로 관리 (config/server-secret.yaml 참고)
+  
+  # Redis
+  REDIS_HOST: "CHANGE_ME"
+  REDIS_PORT: "6379"
+  
+  # Mail
+  MAIL_HOST: "CHANGE_ME"
+  MAIL_PORT: "587"
+  
+  # AWS
+  AWS_REGION: "ap-northeast-2"
+  S3_PUBLIC_BUCKET_NAME: "CHANGE_ME"
+  S3_PRIVATE_BUCKET_NAME: "CHANGE_ME"
+  
+  # OAuth Redirect URIs
+  GOOGLE_REDIRECT_URI: "CHANGE_ME"
+  GITHUB_REDIRECT_URI: "CHANGE_ME"
+  
+  # OCR Server
+  OCR_SERVER_URL: "CHANGE_ME"
 
