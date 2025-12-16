@@ -28,8 +28,6 @@ spec:
         envFrom:
         - configMapRef:
             name: sw-campus-server-config
-        - secretRef:
-            name: sw-campus-server-secret
         resources:
           limits:
             cpu: 1000m
