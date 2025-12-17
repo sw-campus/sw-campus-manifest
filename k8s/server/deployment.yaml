@@ -21,7 +21,5 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: staging
-            - name: SPRING_CONFIG_LOCATION
-              value: classpath:/config/
           ports:
             - containerPort: 8080
