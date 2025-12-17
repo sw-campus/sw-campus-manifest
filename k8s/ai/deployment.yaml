@@ -15,7 +15,8 @@ spec:
     spec:
       containers:
         - name: ai
-          image: ghcr.io/ORG/ocr-server:latest
+          image: ghcr.io/sw-campus/ocr-server:latest
+          imagePullPolicy: Always
           ports:
             - containerPort: 8000
           livenessProbe:
