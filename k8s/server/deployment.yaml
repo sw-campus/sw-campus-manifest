@@ -53,6 +53,31 @@ spec:
                 secretKeyRef:
                   name: sw-campus-server-secret
                   key: JWT_SECRET
+
+            - name: AWS_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sw-campus-server-secret
+                  key: AWS_ACCESS_KEY
+
+            - name: AWS_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: sw-campus-server-secret
+                  key: AWS_SECRET_KEY
+
+            - name: AWS_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: sw-campus-server-secret
+                  key: AWS_REGION
+
+            - name: AWS_S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: sw-campus-server-secret
+                  key: AWS_S3_BUCKET
+
           ports:
             - containerPort: 8080
           volumeMounts:
