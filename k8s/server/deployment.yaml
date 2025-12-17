@@ -47,6 +47,12 @@ spec:
                 secretKeyRef:
                   name: sw-campus-server-secret
                   key: MAIL_PASSWORD
+
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: sw-campus-server-secret
+                  key: JWT_SECRET
           ports:
             - containerPort: 8080
           volumeMounts:
