@@ -21,5 +21,20 @@ spec:
           env:
             - name: SPRING_PROFILES_ACTIVE
               value: staging
+            - name: SPRING_CONFIG_LOCATION
+              value: classpath:/,file:/config/
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sw-campus-server-secret
+                  key: SPRING_DATASOURCE_PASSWORD
           ports:
             - containerPort: 8080
+          volumeMounts:
+            - name: config-volume
+              mountPath: /config
+              readOnly: true
+      volumes:
+        - name: config-volume
+          configMap:
+            name: sw-campus-server-config
