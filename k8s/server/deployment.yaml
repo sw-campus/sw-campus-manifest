@@ -19,6 +19,11 @@ spec:
           image: ghcr.io/sw-campus/sw-campus-server:latest
           imagePullPolicy: Always
           env:
+            - name: SPRING_DATASOURCE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: sw-campus-server-secret
+                  key: DB_URL
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
