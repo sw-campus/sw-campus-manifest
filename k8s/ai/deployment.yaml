@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sw-campus-ai
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sw-campus-ai
+  template:
+    metadata:
+      labels:
+        app: sw-campus-ai
+    spec:
+      containers:
+        - name: ai
+          image: ghcr.io/ORG/ocr-server:latest
+          ports:
+            - containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30
