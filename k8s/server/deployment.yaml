@@ -34,6 +34,16 @@ spec:
                 secretKeyRef:
                   name: sw-campus-server-secret
                   key: DB_PASSWORD
+            - name: MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: sw-campus-mail-secret
+                  key: MAIL_USERNAME
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sw-campus-mail-secret
+                  key: MAIL_PASSWORD
           ports:
             - containerPort: 8080
           volumeMounts:
