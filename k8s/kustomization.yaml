@@ -6,6 +6,8 @@ resources:
   - client/service.yaml
   - server/deployment.yaml
   - server/service.yaml
+  - ai/deployment.yaml
+  - ai/service.yaml
   - config/client-configmap.yaml
   - config/server-configmap.yaml
   - monitoring/promtail-deployment.yaml
