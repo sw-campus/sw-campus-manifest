@@ -78,6 +78,37 @@ spec:
                   name: sw-campus-server-secret
                   key: AWS_S3_BUCKET
 
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: sw-campus-server-secret
+                  key: GOOGLE_CLIENT_ID
+
+            - name: GOOGLE_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: sw-campus-server-secret
+                  key: GOOGLE_CLIENT_SECRET
+
+            - name: GITHUB_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: sw-campus-server-secret
+                  key: GITHUB_CLIENT_ID
+
+            - name: GITHUB_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: sw-campus-server-secret
+                  key: GITHUB_CLIENT_SECRET
+
+            - name: GOOGLE_REDIRECT_URI
+              valueFrom:
+                secretKeyRef:
+                  name: sw-campus-server-secret
+                  key: REDIRECT_URI
+
+
           ports:
             - containerPort: 8080
           volumeMounts:
