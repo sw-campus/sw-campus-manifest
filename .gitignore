@@ -1,0 +1,35 @@
+# ======================
+# Terraform (never commit)
+# ======================
+terraform/
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+.terraform.lock.hcl
+
+# ======================
+# Shell / Local scripts
+# ======================
+*.log
+*.tmp
+*.bak
+
+# ======================
+# OS
+# ======================
+.DS_Store
+Thumbs.db
+
+# ======================
+# IDE
+# ======================
+.vscode/
+.idea/
+*.iml
+
+# ======================
+# Kubernetes local artifacts
+# ======================
+*.out
+*.pid
