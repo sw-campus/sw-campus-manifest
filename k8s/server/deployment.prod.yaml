@@ -4,7 +4,7 @@ metadata:
   name: sw-campus-server
   namespace: default
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: sw-campus-server
@@ -18,7 +18,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: server
-          image: ghcr.io/sw-campus/sw-campus-server:latest
+          image: ghcr.io/sw-campus/sw-campus-server:<SHA>
           imagePullPolicy: Always
           env:
             - name: SPRING_DATASOURCE_URL
