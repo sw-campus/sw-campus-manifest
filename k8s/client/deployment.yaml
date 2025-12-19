@@ -19,7 +19,7 @@ spec:
       - name: ghcr-secret
       containers:
       - name: client
-        image: ghcr.io/sw-campus/sw-campus-client:latest
+        image: ghcr.io/sw-campus/sw-campus-client:dev-6b15b099b70ab43d67d89a147af7332138c7f219
         imagePullPolicy: Always  # 최신 이미지 가져오기
         ports:
         - containerPort: 3000
