@@ -17,7 +17,7 @@ spec:
         - name: ghcr-secret
       containers:
         - name: ai
-          image: ghcr.io/sw-campus/sw-campus-ai:latest
+          image: ghcr.io/sw-campus/sw-campus-ai:115a2cf70aa63a4b4340478ce46215f1e88199ae
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
