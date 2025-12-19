@@ -24,6 +24,7 @@ spec:
                 secretKeyRef:
                   name: sw-campus-server-secret
                   key: DB_URL
+
             - name: SPRING_DATASOURCE_USERNAME
               valueFrom:
                 secretKeyRef:
