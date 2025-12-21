@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: sw-campus/sw-campus-server
-          path: ../sw-campus-server
+          path: repos/sw-campus-server
           ref: develop
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: sw-campus/sw-campus-client
-          path: ../sw-campus-client
+          path: repos/sw-campus-client
           ref: develop
           token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -41,16 +41,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: sw-campus/sw-campus-ai
-          path: ../sw-campus-ai
+          path: repos/sw-campus-ai
           ref: develop
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Get commit SHA
         id: get-sha
         run: |
-          SERVER_SHA=$(git -C ../sw-campus-server rev-parse --short develop)
-          CLIENT_SHA=$(git -C ../sw-campus-client rev-parse --short develop)
-          AI_SHA=$(git -C ../sw-campus-ai rev-parse --short develop)
+          SERVER_SHA=$(git -C repos/sw-campus-server rev-parse --short develop)
+          CLIENT_SHA=$(git -C repos/sw-campus-client rev-parse --short develop)
+          AI_SHA=$(git -C repos/sw-campus-ai rev-parse --short develop)
           
           echo "SERVER_SHA=$SERVER_SHA" >> $GITHUB_OUTPUT
           echo "CLIENT_SHA=$CLIENT_SHA" >> $GITHUB_OUTPUT
