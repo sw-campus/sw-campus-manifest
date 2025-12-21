@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/sw-campus/sw-campus-manifest  # Manifest 레포 URL
     targetRevision: develop  # develop 브랜치 감시
-    path: k8s/env/develop  # k8s 디렉토리 경로
+    path: k8s  # k8s 디렉토리 경로
     kustomize: {}
     
   destination:
