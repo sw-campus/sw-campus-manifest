@@ -7,8 +7,8 @@ resources:
   - server-configmap.yaml
 
   # observability configs
-  - loki-config.yaml
-  - promtail-config.yaml
-  - prometheus-config.yaml
-  - tempo-config.yaml
-  - otel-collector-config.yaml
+#  - loki-config.yaml
+#  - promtail-config.yaml
+#  - prometheus-config.yaml
+#  - tempo-config.yaml
+#  - otel-collector-config.yaml
