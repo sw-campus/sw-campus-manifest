@@ -16,7 +16,7 @@ spec:
     
   destination:
     server: https://kubernetes.default.svc  # 리눅스 서버 쿠버네티스
-    namespace: default
+    namespace: development
     
   syncPolicy:
     automated:
@@ -24,10 +24,4 @@ spec:
       selfHeal: true  # 수동 변경사항 자동 복구
     syncOptions:
       - CreateNamespace=true  # 네임스페이스 자동 생성
-    retry:
-      limit: 5
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m
 
