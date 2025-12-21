@@ -6,4 +6,3 @@ resources:
 
 patchesStrategicMerge:
   - deployment-patch.yaml
-
