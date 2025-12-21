@@ -12,11 +12,10 @@ spec:
     repoURL: https://github.com/sw-campus/sw-campus-manifest  # Manifest 레포 URL
     targetRevision: develop  # develop 브랜치 감시
     path: k8s/env/develop  # k8s 디렉토리 경로
-    kustomize: {}
     
   destination:
     server: https://kubernetes.default.svc  # 리눅스 서버 쿠버네티스
-    namespace: default
+    namespace: develop
     
   syncPolicy:
     automated:
