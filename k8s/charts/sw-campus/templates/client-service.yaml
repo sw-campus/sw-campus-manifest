@@ -1,0 +1,21 @@
+{{- if .Values.client.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: sw-campus-client
+  labels:
+    app: sw-campus-client
+spec:
+  type: {{ .Values.client.service.type }}
+  ports:
+    - port: {{ .Values.client.service.port }}
+      targetPort: {{ .Values.client.service.port }}
+      {{- if eq .Values.client.service.type "NodePort" }}
+      nodePort: {{ .Values.client.service.nodePort }}
+      {{- end }}
+      protocol: TCP
+      name: http
+  selector:
+    app: sw-campus-client
+{{- end }}
+
