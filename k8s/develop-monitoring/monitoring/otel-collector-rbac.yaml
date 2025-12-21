@@ -1,5 +1,0 @@
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: dev-otel-collector
-  namespace: monitoring-dev

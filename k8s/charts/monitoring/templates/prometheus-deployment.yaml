@@ -1,0 +1,24 @@
+{{- if .Values.prometheus.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.global.namespace }}-prometheus
+spec:
+  replicas: {{ .Values.prometheus.replicas }}
+  selector:
+    matchLabels:
+      app: {{ .Values.global.namespace }}-prometheus
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.global.namespace }}-prometheus
+        cluster: {{ .Values.global.namespace }}
+    spec:
+      containers:
+        - name: prometheus
+          image: "{{ .Values.prometheus.image.repository }}:{{ .Values.prometheus.image.tag }}"
+          imagePullPolicy: {{ .Values.prometheus.image.pullPolicy }}
+          ports:
+            - containerPort: 9090
+{{- end }}
+

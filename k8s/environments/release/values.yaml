@@ -1,0 +1,50 @@
+# Release environment values
+global:
+  namespace: release
+  imagePullSecrets:
+    - name: ghcr-secret
+
+server:
+  enabled: true
+  replicas: 2
+  image:
+    repository: ghcr.io/sw-campus/sw-campus-server
+    tag: release
+    pullPolicy: IfNotPresent
+  configMap:
+    name: sw-campus-server-config
+  secret:
+    enabled: true
+    name: sw-campus-server-secret
+
+client:
+  enabled: true
+  replicas: 2
+  image:
+    repository: ghcr.io/sw-campus/sw-campus-client
+    tag: release
+    pullPolicy: IfNotPresent
+  configMap:
+    name: sw-campus-client-config
+
+ai:
+  enabled: true
+  replicas: 2
+  image:
+    repository: ghcr.io/sw-campus/sw-campus-ai
+    tag: release
+    pullPolicy: IfNotPresent
+
+database:
+  enabled: true
+  externalService:
+    name: postgres-service
+    externalName: postgres
+    port: 5432
+
+configMaps:
+  server:
+    enabled: true
+  client:
+    enabled: true
+

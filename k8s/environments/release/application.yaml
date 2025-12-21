@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: sw-campus-release
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+
+  source:
+    repoURL: https://github.com/sw-campus/sw-campus-manifest
+    targetRevision: release
+    path: k8s/charts/sw-campus
+    helm:
+      valueFiles:
+        - ../../environments/release/values.yaml
+
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: release
+
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+

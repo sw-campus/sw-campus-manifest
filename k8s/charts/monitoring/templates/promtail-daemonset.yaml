@@ -1,0 +1,28 @@
+{{- if .Values.promtail.enabled }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .Values.global.namespace }}-promtail
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.global.namespace }}-promtail
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.global.namespace }}-promtail
+        cluster: {{ .Values.global.namespace }}
+    spec:
+      containers:
+        - name: promtail
+          image: "{{ .Values.promtail.image.repository }}:{{ .Values.promtail.image.tag }}"
+          imagePullPolicy: {{ .Values.promtail.image.pullPolicy }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/promtail
+      volumes:
+        - name: config
+          configMap:
+            name: promtail-config
+{{- end }}
+

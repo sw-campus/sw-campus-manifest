@@ -1,0 +1,32 @@
+{{- if .Values.server.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sw-campus-server
+  labels:
+    app: sw-campus-server
+spec:
+  replicas: {{ .Values.server.replicas }}
+  selector:
+    matchLabels:
+      app: sw-campus-server
+  template:
+    metadata:
+      labels:
+        app: sw-campus-server
+    spec:
+      containers:
+        - name: server
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.server.configMap.name }}
+            {{- if .Values.server.secret.enabled }}
+            - secretRef:
+                name: {{ .Values.server.secret.name }}
+            {{- end }}
+{{- end }}
+

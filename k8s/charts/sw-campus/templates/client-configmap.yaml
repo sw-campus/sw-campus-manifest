@@ -1,0 +1,14 @@
+{{- if .Values.configMaps.client.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.client.configMap.name }}
+data:
+  {{- if .Values.client.configMap.data }}
+  {{- toYaml .Values.client.configMap.data | nindent 2 }}
+  {{- else }}
+  NODE_ENV: "production"
+  NEXT_PUBLIC_API_URL: "http://sw-campus-server:8080"
+  {{- end }}
+{{- end }}
+
