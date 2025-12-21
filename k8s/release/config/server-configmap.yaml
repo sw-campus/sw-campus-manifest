@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sw-campus-server-config
+data:
+  application.yml: |
+    spring:
+      profiles:
+        active: dev
+
+    spring:
+      data:
+        redis:
+          host: CHANGE_ME
+          port: 6379
+
+    mail:
+      host: CHANGE_ME
+      port: 587
+
+    cloud:
+      aws:
+        region:
+          static: ap-northeast-2
+        s3:
+          bucket:
+            public: CHANGE_ME
+            private: CHANGE_ME
+
+    oauth:
+      google:
+        redirect-uri: CHANGE_ME
+      github:
+        redirect-uri: CHANGE_ME
+
+    ocr:
+      server-url: CHANGE_ME

@@ -1,0 +1,49 @@
+# PostgreSQL이 쿠버네티스 외부(리눅스 서버)에 설치된 경우
+# 이 서비스를 사용하여 외부 PostgreSQL에 접근할 수 있습니다.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+  namespace: default
+  labels:
+    app: postgres
+spec:
+  type: ExternalName
+  externalName: YOUR_POSTGRES_HOST  # 리눅스 서버의 PostgreSQL 호스트명 또는 IP
+  ports:
+  - port: 5432
+    targetPort: 5432
+    protocol: TCP
+    name: postgres
+
+---
+# 또는 Endpoints를 사용하는 방법 (더 세밀한 제어 가능)
+# 주석을 해제하고 externalName 대신 사용하세요
+
+# apiVersion: v1
+# kind: Endpoints
+# metadata:
+#   name: postgres-service
+#   namespace: default
+# subsets:
+# - addresses:
+#   - ip: YOUR_POSTGRES_IP  # 리눅스 서버의 PostgreSQL IP 주소
+#   ports:
+#   - port: 5432
+#     name: postgres
+#     protocol: TCP
+#
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: postgres-service
+#   namespace: default
+# spec:
+#   ports:
+#   - port: 5432
+#     targetPort: 5432
+#     protocol: TCP
+#     name: postgres
+
