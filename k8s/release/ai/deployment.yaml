@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sw-campus-ai
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sw-campus-ai
+  template:
+    metadata:
+      labels:
+        app: sw-campus-ai
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: ai
+          image: ghcr.io/sw-campus/sw-campus-ai:f8e65f03e0ddd77bb64bf245002cfbfd2abe18c0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 60
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 30

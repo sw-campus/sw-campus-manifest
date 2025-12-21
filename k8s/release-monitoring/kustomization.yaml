@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: monitoring
+
+resources:
+  # ===== CONFIG =====
+  - config/grafana-dashboards.yaml
+  - config/grafana-datasources.yaml
+  - config/loki-config.yaml
+  - config/otel-collector-config.yaml
+  - config/promtail-config.yaml
+
+  # ===== WORKLOAD =====
+  - monitoring/grafana-deployment.yaml
+  - monitoring/grafana-dashboard-provisioning.yaml
+
+  - monitoring/prometheus-deployment.yaml
+
+  - monitoring/loki-deployment.yaml
+  - monitoring/promtail-deployment.yaml
+
+  - monitoring/tempo-deployment.yaml
+
+  - monitoring/otel-collector-rbac.yaml
+  - monitoring/otel-collector-deployment.yaml
