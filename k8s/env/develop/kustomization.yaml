@@ -5,4 +5,4 @@ resources:
   - ../../client
   - ../../ai
   - ../../config
-  - ../../server/overlay/staging
+  - ../../server/overlay/dev
