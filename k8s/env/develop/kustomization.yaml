@@ -4,5 +4,4 @@ kind: Kustomization
 resources:
   - ../../client
   - ../../ai
-  - ../../config
   - ../../server/overlay/dev
