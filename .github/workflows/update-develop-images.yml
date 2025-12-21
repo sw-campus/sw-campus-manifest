@@ -3,12 +3,7 @@ name: Update Develop Image Tags
 on:
   workflow_dispatch:  # 수동 실행
   schedule:
-    - cron: '0 * * * *'  # 매시간 실행 (선택사항)
-  push:
-    branches:
-      - develop
-    paths:
-      - 'k8s/**'
+    - cron: '0 * * * *'  # 매시간 실행 - 각 서비스 레포의 develop 브랜치 commit SHA 확인
 
 jobs:
   update-image-tags:
