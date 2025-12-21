@@ -4,8 +4,22 @@ kind: Kustomization
 namespace: release
 
 resources:
-  - ai
-  - client
-  - server
-  - database
-  - config
+  # ===== AI =====
+  - ai/deployment.yaml
+  - ai/service.yaml
+
+  # ===== CLIENT =====
+  - client/deployment.yaml
+  - client/service.yaml
+
+  # ===== SERVER =====
+  - server/deployment.yaml
+  - server/service.yaml
+  - server/configmap.yaml
+
+  # ===== CONFIG =====
+  - config/client-configmap.yaml
+  - config/server-configmap.yaml
+
+  # ===== DATABASE =====
+  - database/postgres-external-service.yaml
