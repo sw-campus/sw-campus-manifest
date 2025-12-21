@@ -1,0 +1,87 @@
+name: Update Develop Image Tags
+
+on:
+  workflow_dispatch:  # 수동 실행
+  schedule:
+    - cron: '0 * * * *'  # 매시간 실행 (선택사항)
+  push:
+    branches:
+      - develop
+    paths:
+      - 'k8s/**'
+
+jobs:
+  update-image-tags:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout manifest repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Checkout server repository
+        uses: actions/checkout@v4
+        with:
+          repository: sw-campus/sw-campus-server
+          path: ../sw-campus-server
+          ref: develop
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout client repository
+        uses: actions/checkout@v4
+        with:
+          repository: sw-campus/sw-campus-client
+          path: ../sw-campus-client
+          ref: develop
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Checkout AI repository
+        uses: actions/checkout@v4
+        with:
+          repository: sw-campus/sw-campus-ai
+          path: ../sw-campus-ai
+          ref: develop
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Get commit SHA
+        id: get-sha
+        run: |
+          SERVER_SHA=$(git -C ../sw-campus-server rev-parse --short develop)
+          CLIENT_SHA=$(git -C ../sw-campus-client rev-parse --short develop)
+          AI_SHA=$(git -C ../sw-campus-ai rev-parse --short develop)
+          
+          echo "SERVER_SHA=$SERVER_SHA" >> $GITHUB_OUTPUT
+          echo "CLIENT_SHA=$CLIENT_SHA" >> $GITHUB_OUTPUT
+          echo "AI_SHA=$AI_SHA" >> $GITHUB_OUTPUT
+          
+          echo "Server SHA: $SERVER_SHA"
+          echo "Client SHA: $CLIENT_SHA"
+          echo "AI SHA: $AI_SHA"
+
+      - name: Update values.yaml
+        run: |
+          # values.yaml에서 각 서비스별로 정확히 태그 업데이트
+          sed -i "/^server:/,/^[a-z]/ { s|tag: \"develop\"|tag: \"${{ steps.get-sha.outputs.SERVER_SHA }}\"|; }" k8s/environments/develop/values.yaml
+          sed -i "/^client:/,/^[a-z]/ { s|tag: \"develop\"|tag: \"${{ steps.get-sha.outputs.CLIENT_SHA }}\"|; }" k8s/environments/develop/values.yaml
+          sed -i "/^ai:/,/^[a-z]/ { s|tag: \"develop\"|tag: \"${{ steps.get-sha.outputs.AI_SHA }}\"|; }" k8s/environments/develop/values.yaml
+          
+          # 변경사항 확인
+          git diff k8s/environments/develop/values.yaml || echo "No changes"
+
+      - name: Commit and push
+        if: github.event_name != 'pull_request'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          
+          git add k8s/environments/develop/values.yaml
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update develop image tags with commit SHA"
+            git push
+          fi
+

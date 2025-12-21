@@ -10,7 +10,7 @@ spec:
 
   source:
     repoURL: https://github.com/sw-campus/sw-campus-manifest
-    targetRevision: release
+    targetRevision: main
     path: k8s/charts/sw-campus
     helm:
       valueFiles:

@@ -21,6 +21,10 @@ spec:
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
           ports:
             - containerPort: 8080
+          {{- if .Values.server.resources }}
+          resources:
+            {{- toYaml .Values.server.resources | nindent 12 }}
+          {{- end }}
           envFrom:
             - configMapRef:
                 name: {{ .Values.server.configMap.name }}

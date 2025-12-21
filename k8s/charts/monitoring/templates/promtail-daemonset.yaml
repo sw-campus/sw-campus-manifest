@@ -23,6 +23,6 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: promtail-config
+            name: {{ .Values.global.namespace }}-promtail-config
 {{- end }}
 

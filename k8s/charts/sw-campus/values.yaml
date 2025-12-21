@@ -24,6 +24,13 @@ server:
   secret:
     enabled: true
     name: sw-campus-server-secret
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
 
 # Client configuration
 client:
@@ -58,7 +65,13 @@ ai:
   service:
     type: ClusterIP
     port: 8000
-  resources: {}
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+    requests:
+      cpu: 500m
+      memory: 512Mi
 
 # Database configuration
 database:
