@@ -11,7 +11,8 @@ spec:
   source:
     repoURL: https://github.com/sw-campus/sw-campus-manifest  # Manifest 레포 URL
     targetRevision: main  # main 브랜치 감시
-    path: k8s  # k8s 디렉토리 경로
+    path: k8s/env/prod  # k8s 디렉토리 경로
+    kustomize: {}
     
   destination:
     server: https://kubernetes.default.svc  # AWS 쿠버네티스 (나중에 변경)
