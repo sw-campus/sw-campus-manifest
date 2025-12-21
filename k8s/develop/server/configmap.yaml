@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: sw-campus-server-config
-data:
-  SPRING_PROFILES_ACTIVE: develop
-  DB_HOST: postgres-service
-  DB_PORT: "5432"
