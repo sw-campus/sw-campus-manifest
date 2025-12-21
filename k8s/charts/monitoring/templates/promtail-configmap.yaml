@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: promtail-config
+  name: {{ .Values.global.namespace }}-promtail-config
 data:
   promtail.yaml: |
     server:

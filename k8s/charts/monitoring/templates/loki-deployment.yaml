@@ -26,6 +26,6 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: loki-config
+            name: {{ .Values.global.namespace }}-loki-config
 {{- end }}
 

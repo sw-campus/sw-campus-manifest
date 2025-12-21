@@ -8,7 +8,7 @@ data:
   {{- toYaml .Values.client.configMap.data | nindent 2 }}
   {{- else }}
   NODE_ENV: "production"
-  NEXT_PUBLIC_API_URL: "http://sw-campus-server:8080"
+  NEXT_PUBLIC_API_URL: "http://sw-campus-server:{{ .Values.server.service.port }}"
   {{- end }}
 {{- end }}
 

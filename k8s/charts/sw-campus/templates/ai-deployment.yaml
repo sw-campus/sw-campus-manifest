@@ -25,6 +25,10 @@ spec:
           imagePullPolicy: {{ .Values.ai.image.pullPolicy }}
           ports:
             - containerPort: 8000
+          {{- if .Values.ai.resources }}
+          resources:
+            {{- toYaml .Values.ai.resources | nindent 12 }}
+          {{- end }}
           livenessProbe:
             httpGet:
               path: /health

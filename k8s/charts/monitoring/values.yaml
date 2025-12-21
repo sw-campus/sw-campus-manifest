@@ -11,7 +11,7 @@ grafana:
   replicas: 2
   image:
     repository: grafana/grafana
-    tag: latest
+    tag: "10.4.2"
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -23,7 +23,7 @@ prometheus:
   replicas: 1
   image:
     repository: prom/prometheus
-    tag: latest
+    tag: "v2.52.0"
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -35,7 +35,7 @@ loki:
   replicas: 1
   image:
     repository: grafana/loki
-    tag: latest
+    tag: "2.9.6"
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -47,7 +47,7 @@ tempo:
   replicas: 2
   image:
     repository: grafana/tempo
-    tag: latest
+    tag: "2.4.1"
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
@@ -58,7 +58,7 @@ promtail:
   enabled: true
   image:
     repository: grafana/promtail
-    tag: latest
+    tag: "2.9.6"
     pullPolicy: IfNotPresent
 
 # OpenTelemetry Collector configuration
@@ -67,7 +67,7 @@ otelCollector:
   replicas: 2
   image:
     repository: otel/opentelemetry-collector
-    tag: latest
+    tag: "0.96.0"
     pullPolicy: IfNotPresent
 
 # ConfigMaps
