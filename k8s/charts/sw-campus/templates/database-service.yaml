@@ -1,0 +1,17 @@
+{{- if .Values.database.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.database.externalService.name }}
+  labels:
+    app: postgres
+spec:
+  type: ExternalName
+  externalName: {{ .Values.database.externalService.externalName }}
+  ports:
+  - port: {{ .Values.database.externalService.port }}
+    targetPort: {{ .Values.database.externalService.port }}
+    protocol: TCP
+    name: postgres
+{{- end }}
+

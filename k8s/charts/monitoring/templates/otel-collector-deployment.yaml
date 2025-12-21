@@ -1,0 +1,23 @@
+{{- if .Values.otelCollector.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.global.namespace }}-otel-collector
+spec:
+  replicas: {{ .Values.otelCollector.replicas | default 2 }}
+  selector:
+    matchLabels:
+      app: {{ .Values.global.namespace }}-otel-collector
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.global.namespace }}-otel-collector
+        cluster: {{ .Values.global.namespace }}
+    spec:
+      serviceAccountName: {{ .Values.global.namespace }}-otel-collector
+      containers:
+        - name: otel-collector
+          image: "{{ .Values.otelCollector.image.repository }}:{{ .Values.otelCollector.image.tag }}"
+          imagePullPolicy: {{ .Values.otelCollector.image.pullPolicy }}
+{{- end }}
+

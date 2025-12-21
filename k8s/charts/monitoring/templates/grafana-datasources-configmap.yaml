@@ -1,0 +1,26 @@
+{{- if .Values.configMaps.grafanaDatasources.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.global.namespace }}-grafana-datasources
+data:
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://{{ .Values.global.namespace }}-prometheus.monitoring:9090
+        isDefault: true
+
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://{{ .Values.global.namespace }}-loki.monitoring:3100
+
+      - name: Tempo
+        type: tempo
+        access: proxy
+        url: http://{{ .Values.global.namespace }}-tempo.monitoring:3200
+{{- end }}
+
