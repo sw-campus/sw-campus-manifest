@@ -1,7 +1,0 @@
-# ⚠️ 이 파일은 더 이상 사용하지 않습니다.
-# 환경별로 분리된 Application을 사용하세요:
-# - application-develop.yaml (리눅스 서버 - 테스트 환경)
-# - application-main.yaml (AWS - 프로덕션 환경)
-
-# 이 파일은 참고용으로 남겨둡니다.
-
