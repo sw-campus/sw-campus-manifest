@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-otel-collector
+  namespace: monitoring-dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dev-otel-collector
+  template:
+    metadata:
+      labels:
+        app: dev-otel-collector
+        cluster: dev
+    spec:
+      containers:
+        - name: otel-collector
+          image: otel/opentelemetry-collector:0.96.0
