@@ -5,7 +5,7 @@ resources:
   - client
   - server
   - ai
-  - config/client-configmap.yaml
+  - config
 #  - monitorin
 #  - database  # PostgreSQL 호스트명 설정 필요
 
