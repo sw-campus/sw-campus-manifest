@@ -2,8 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sw-campus-server
+  namespace: default
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: sw-campus-server
@@ -12,12 +13,13 @@ spec:
       labels:
         app: sw-campus-server
     spec:
+      serviceAccountName: s3-access-sa   # ✅ IRSA
       imagePullSecrets:
         - name: ghcr-secret
       containers:
         - name: server
-          image: ghcr.io/sw-campus/sw-campus-server:latest
-          imagePullPolicy: Always
+          image: ghcr.io/sw-campus/sw-campus-server:<SHA>
+          imagePullPolicy: IfNotPresent
           env:
             - name: SPRING_DATASOURCE_URL
               valueFrom:
@@ -29,7 +31,6 @@ spec:
                 secretKeyRef:
                   name: sw-campus-server-secret
                   key: DB_USERNAME
-
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
@@ -54,18 +55,6 @@ spec:
                   name: sw-campus-server-secret
                   key: JWT_SECRET
 
-            - name: AWS_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: sw-campus-server-secret
-                  key: AWS_ACCESS_KEY
-
-            - name: AWS_SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: sw-campus-server-secret
-                  key: AWS_SECRET_KEY
-
             - name: AWS_REGION
               valueFrom:
                 secretKeyRef:
@@ -83,31 +72,26 @@ spec:
                 secretKeyRef:
                   name: sw-campus-server-secret
                   key: GOOGLE_CLIENT_ID
-
             - name: GOOGLE_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: sw-campus-server-secret
                   key: GOOGLE_CLIENT_SECRET
-
             - name: GITHUB_CLIENT_ID
               valueFrom:
                 secretKeyRef:
                   name: sw-campus-server-secret
                   key: GITHUB_CLIENT_ID
-
             - name: GITHUB_CLIENT_SECRET
               valueFrom:
                 secretKeyRef:
                   name: sw-campus-server-secret
                   key: GITHUB_CLIENT_SECRET
-
             - name: GOOGLE_REDIRECT_URI
               valueFrom:
                 secretKeyRef:
                   name: sw-campus-server-secret
                   key: REDIRECT_URI
-
 
           ports:
             - containerPort: 8080

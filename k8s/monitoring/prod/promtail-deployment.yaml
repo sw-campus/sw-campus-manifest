@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: prod-promtail
+  namespace: monitoring-prod
+spec:
+  selector:
+    matchLabels:
+      app: prod-promtail
+  template:
+    metadata:
+      labels:
+        app: prod-promtail
+        cluster: prod
+    spec:
+      containers:
+        - name: promtail
+          image: grafana/promtail:2.9.6

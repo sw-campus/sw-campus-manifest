@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prod-tempo
+  namespace: monitoring-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prod-tempo
+  template:
+    metadata:
+      labels:
+        app: prod-tempo
+        cluster: prod
+    spec:
+      containers:
+        - name: tempo
+          image: grafana/tempo:2.4.1
+          ports:
+            - containerPort: 3200
+
