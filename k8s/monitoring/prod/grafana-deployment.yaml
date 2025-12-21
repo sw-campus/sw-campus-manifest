@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prod-grafana
+  namespace: monitoring-prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prod-grafana
+  template:
+    metadata:
+      labels:
+        app: prod-grafana
+        cluster: prod
+    spec:
+      containers:
+        - name: grafana
+          image: grafana/grafana:10.4.2
+          ports:
+            - containerPort: 3000
+          volumeMounts:
+            - name: datasources
+              mountPath: /etc/grafana/provisioning/datasources
+      volumes:
+        - name: datasources
+          configMap:
+            name: prod-grafana-datasources

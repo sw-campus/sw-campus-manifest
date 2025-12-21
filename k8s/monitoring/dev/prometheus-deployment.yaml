@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dev-prometheus
+  namespace: monitoring-dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dev-prometheus
+  template:
+    metadata:
+      labels:
+        app: dev-prometheus
+        cluster: dev
+    spec:
+      containers:
+        - name: prometheus
+          image: prom/prometheus:v2.52.0
+          ports:
+            - containerPort: 9090

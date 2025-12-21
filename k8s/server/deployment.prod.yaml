@@ -19,7 +19,7 @@ spec:
       containers:
         - name: server
           image: ghcr.io/sw-campus/sw-campus-server:<SHA>
-          imagePullPolicy: Always
+          imagePullPolicy: IfNotPresent
           env:
             - name: SPRING_DATASOURCE_URL
               valueFrom:
@@ -42,6 +42,7 @@ spec:
                 secretKeyRef:
                   name: sw-campus-server-secret
                   key: MAIL_USERNAME
+
             - name: MAIL_PASSWORD
               valueFrom:
                 secretKeyRef:

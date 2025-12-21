@@ -16,8 +16,8 @@ spec:
         - name: ghcr-secret
       containers:
         - name: server
-          image: ghcr.io/sw-campus/sw-campus-server:latest
-          imagePullPolicy: Always
+          image: ghcr.io/sw-campus/sw-campus-server:<SHA>
+          imagePullPolicy: IfNotPresent
           env:
             - name: SPRING_DATASOURCE_URL
               valueFrom:
