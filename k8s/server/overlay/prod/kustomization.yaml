@@ -4,12 +4,6 @@ kind: Kustomization
 resources:
   - ../../base
 
-patches:
-  - target:
-      kind: Deployment
-      name: sw-campus-server
-    patch: |-
-      - op: replace
-        path: /spec/replicas
-        value: 3
+patchesStrategicMerge:
+  - deployment-patch.yaml
 

@@ -8,4 +8,3 @@ resources:
   - config
 #  - monitorin
 #  - database  # PostgreSQL 호스트명 설정 필요
-
