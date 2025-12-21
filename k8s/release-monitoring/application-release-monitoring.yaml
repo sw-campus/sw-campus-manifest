@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: sw-campus-develop-monitoring
+  name: sw-campus-release-monitoring
   namespace: argocd  # ArgoCD가 설치된 네임스페이스
   finalizers:
     - resources-finalizer.argocd.argoproj.io
@@ -10,12 +10,12 @@ spec:
 
   source:
     repoURL: https://github.com/sw-campus/sw-campus-manifest  # Manifest 레포 URL
-    targetRevision: develop  # develop 브랜치 감시
-    path: k8s/develop-monitoring  # k8s 디렉토리 경로
+    targetRevision: release  # release 브랜치 감시
+    path: k8s/release-monitoring  # k8s 디렉토리 경로
 
   destination:
     server: https://kubernetes.default.svc  # 리눅스 서버 쿠버네티스
-    namespace: develop
+    namespace: monitoring
 
   syncPolicy:
     automated:
@@ -23,3 +23,10 @@ spec:
       selfHeal: true  # 수동 변경사항 자동 복구
     syncOptions:
       - CreateNamespace=true  # 네임스페이스 자동 생성
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+
