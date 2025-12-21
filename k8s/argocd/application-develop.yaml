@@ -16,7 +16,7 @@ spec:
     
   destination:
     server: https://kubernetes.default.svc  # 리눅스 서버 쿠버네티스
-    namespace: development
+    namespace: default
     
   syncPolicy:
     automated:
