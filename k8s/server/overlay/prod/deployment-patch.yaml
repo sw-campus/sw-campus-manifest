@@ -3,9 +3,4 @@ kind: Deployment
 metadata:
   name: sw-campus-server
 spec:
-  replicas: 2
-  template:
-    spec:
-      containers:
-        - name: server
-          image: ghcr.io/sw-campus/sw-campus-server:latest
+  replicas: 3
