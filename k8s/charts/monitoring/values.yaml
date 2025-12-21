@@ -1,0 +1,85 @@
+# Default values for monitoring
+# 환경별 values 파일에서 오버라이드됨
+
+# Global settings
+global:
+  namespace: monitoring
+
+# Grafana configuration
+grafana:
+  enabled: true
+  replicas: 2
+  image:
+    repository: grafana/grafana
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3000
+
+# Prometheus configuration
+prometheus:
+  enabled: true
+  replicas: 1
+  image:
+    repository: prom/prometheus
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 9090
+
+# Loki configuration
+loki:
+  enabled: true
+  replicas: 1
+  image:
+    repository: grafana/loki
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3100
+
+# Tempo configuration
+tempo:
+  enabled: true
+  replicas: 2
+  image:
+    repository: grafana/tempo
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3200
+
+# Promtail configuration
+promtail:
+  enabled: true
+  image:
+    repository: grafana/promtail
+    tag: latest
+    pullPolicy: IfNotPresent
+
+# OpenTelemetry Collector configuration
+otelCollector:
+  enabled: true
+  replicas: 2
+  image:
+    repository: otel/opentelemetry-collector
+    tag: latest
+    pullPolicy: IfNotPresent
+
+# ConfigMaps
+configMaps:
+  grafanaDashboards:
+    enabled: true
+  grafanaDatasources:
+    enabled: true
+  lokiConfig:
+    enabled: true
+  otelCollectorConfig:
+    enabled: true
+  promtailConfig:
+    enabled: true
+

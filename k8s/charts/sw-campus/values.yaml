@@ -1,0 +1,77 @@
+# Default values for sw-campus
+# 환경별 values 파일에서 오버라이드됨
+
+# Global settings
+global:
+  namespace: develop
+  imagePullSecrets:
+    - name: ghcr-secret
+
+# Server configuration
+server:
+  enabled: true
+  replicas: 2
+  image:
+    repository: ghcr.io/sw-campus/sw-campus-server
+    tag: develop
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 8080
+  configMap:
+    name: sw-campus-server-config
+  secret:
+    enabled: true
+    name: sw-campus-server-secret
+
+# Client configuration
+client:
+  enabled: true
+  replicas: 2
+  image:
+    repository: ghcr.io/sw-campus/sw-campus-client
+    tag: develop
+    pullPolicy: IfNotPresent
+  service:
+    type: NodePort
+    port: 3000
+    nodePort: 30080
+  configMap:
+    name: sw-campus-client-config
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+# AI configuration
+ai:
+  enabled: true
+  replicas: 2
+  image:
+    repository: ghcr.io/sw-campus/sw-campus-ai
+    tag: develop
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8000
+  resources: {}
+
+# Database configuration
+database:
+  enabled: true
+  externalService:
+    name: postgres-service
+    externalName: YOUR_POSTGRES_HOST
+    port: 5432
+
+# ConfigMaps
+configMaps:
+  server:
+    enabled: true
+  client:
+    enabled: true
+

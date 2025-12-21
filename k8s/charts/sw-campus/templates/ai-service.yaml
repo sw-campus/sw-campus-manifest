@@ -1,0 +1,14 @@
+{{- if .Values.ai.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: sw-campus-ai
+spec:
+  type: {{ .Values.ai.service.type }}
+  selector:
+    app: sw-campus-ai
+  ports:
+    - port: {{ .Values.ai.service.port }}
+      targetPort: {{ .Values.ai.service.port }}
+{{- end }}
+

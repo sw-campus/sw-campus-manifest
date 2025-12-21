@@ -1,0 +1,14 @@
+{{- if .Values.server.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: sw-campus-server
+spec:
+  selector:
+    app: sw-campus-server
+  ports:
+    - port: {{ .Values.server.service.port }}
+      targetPort: {{ .Values.server.service.targetPort }}
+  type: {{ .Values.server.service.type }}
+{{- end }}
+
