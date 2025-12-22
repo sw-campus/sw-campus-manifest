@@ -2,7 +2,7 @@
 global:
   namespace: develop
   imagePullSecrets:
-    - name: ghcr-secret
+    - ghcr-secret
 
 server:
   enabled: true
