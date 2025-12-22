@@ -17,8 +17,8 @@ jobs:
       - name: Checkout manifest repository
         uses: actions/checkout@v4
         with:
+          token: ${{ secrets.MANIFEST_REPO_TOKEN }}
           fetch-depth: 0
-          persist-credentials: false
 
       - name: Checkout server repository
         uses: actions/checkout@v4
@@ -125,15 +125,37 @@ jobs:
 
       - name: Commit and push
         if: steps.check-changes.outputs.changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.MANIFEST_REPO_TOKEN }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add k8s/environments/develop/values.yaml
-          git commit -m "chore: develop 이미지 태그 업데이트
+          git commit -m "chore: update develop image tags
 
-          - 서버: ${{ steps.check-images.outputs.server_tag }} (SHA: ${{ steps.get-shas.outputs.server_sha }})
-          - 클라이언트: ${{ steps.check-images.outputs.client_tag }} (SHA: ${{ steps.get-shas.outputs.client_sha }})
+          - Server: ${{ steps.check-images.outputs.server_tag }} (SHA: ${{ steps.get-shas.outputs.server_sha }})
+          - Client: ${{ steps.check-images.outputs.client_tag }} (SHA: ${{ steps.get-shas.outputs.client_sha }})
           - AI: ${{ steps.check-images.outputs.ai_tag }} (SHA: ${{ steps.get-shas.outputs.ai_sha }})"
           git remote set-url origin https://x-access-token:${{ secrets.MANIFEST_REPO_TOKEN }}@github.com/${{ github.repository }}.git
           git push origin develop
+
+      - name: Post Checkout AI repository
+        if: always()
+        run: |
+          echo "Cleanup completed"
+
+      - name: Post Checkout client repository
+        if: always()
+        run: |
+          echo "Cleanup completed"
+
+      - name: Post Checkout server repository
+        if: always()
+        run: |
+          echo "Cleanup completed"
+
+      - name: Complete job
+        if: always()
+        run: |
+          echo "Job completed"
 
