@@ -59,18 +59,54 @@ jobs:
           echo "Client SHA: $CLIENT_SHA"
           echo "AI SHA: $AI_SHA"
 
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.MANIFEST_REPO_TOKEN }}
+
+      - name: Check if images exist and determine tags
+        id: check-images
+        run: |
+          # 이미지 존재 여부 확인 함수
+          check_image_exists() {
+            local image=$1
+            local tag=$2
+            if docker manifest inspect "$image:$tag" > /dev/null 2>&1; then
+              echo "Image $image:$tag exists"
+              echo "$tag"
+            else
+              echo "Image $image:$tag does not exist, falling back to 'develop'"
+              echo "develop"
+            fi
+          }
+          
+          SERVER_TAG=$(check_image_exists "ghcr.io/sw-campus/sw-campus-server" "${{ steps.get-shas.outputs.server_sha }}")
+          CLIENT_TAG=$(check_image_exists "ghcr.io/sw-campus/sw-campus-client" "${{ steps.get-shas.outputs.client_sha }}")
+          AI_TAG=$(check_image_exists "ghcr.io/sw-campus/sw-campus-ai" "${{ steps.get-shas.outputs.ai_sha }}")
+          
+          echo "server_tag=$SERVER_TAG" >> $GITHUB_OUTPUT
+          echo "client_tag=$CLIENT_TAG" >> $GITHUB_OUTPUT
+          echo "ai_tag=$AI_TAG" >> $GITHUB_OUTPUT
+          
+          echo "Using tags:"
+          echo "  Server: $SERVER_TAG"
+          echo "  Client: $CLIENT_TAG"
+          echo "  AI: $AI_TAG"
+
       - name: Update values.yaml
         run: |
           VALUES_FILE="k8s/environments/develop/values.yaml"
           
           # Server 태그 업데이트 (server 섹션의 repository 다음 tag 라인)
-          sed -i '/repository: ghcr.io\/sw-campus\/sw-campus-server$/,/pullPolicy:/ s|tag: ".*"|tag: "${{ steps.get-shas.outputs.server_sha }}"|' "$VALUES_FILE"
+          sed -i '/repository: ghcr.io\/sw-campus\/sw-campus-server$/,/pullPolicy:/ s|tag: ".*"|tag: "${{ steps.check-images.outputs.server_tag }}"|' "$VALUES_FILE"
           
           # Client 태그 업데이트 (client 섹션의 repository 다음 tag 라인)
-          sed -i '/repository: ghcr.io\/sw-campus\/sw-campus-client$/,/pullPolicy:/ s|tag: ".*"|tag: "${{ steps.get-shas.outputs.client_sha }}"|' "$VALUES_FILE"
+          sed -i '/repository: ghcr.io\/sw-campus\/sw-campus-client$/,/pullPolicy:/ s|tag: ".*"|tag: "${{ steps.check-images.outputs.client_tag }}"|' "$VALUES_FILE"
           
           # AI 태그 업데이트 (ai 섹션의 repository 다음 tag 라인)
-          sed -i '/repository: ghcr.io\/sw-campus\/sw-campus-ai$/,/pullPolicy:/ s|tag: ".*"|tag: "${{ steps.get-shas.outputs.ai_sha }}"|' "$VALUES_FILE"
+          sed -i '/repository: ghcr.io\/sw-campus\/sw-campus-ai$/,/pullPolicy:/ s|tag: ".*"|tag: "${{ steps.check-images.outputs.ai_tag }}"|' "$VALUES_FILE"
           
           echo "Updated values.yaml:"
           cat "$VALUES_FILE"
@@ -95,11 +131,11 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add k8s/environments/develop/values.yaml
-          git commit -m "chore: update develop image tags with commit SHA
+          git commit -m "chore: update develop image tags
 
-          - Server: ${{ steps.get-shas.outputs.server_sha }}
-          - Client: ${{ steps.get-shas.outputs.client_sha }}
-          - AI: ${{ steps.get-shas.outputs.ai_sha }}"
+          - Server: ${{ steps.check-images.outputs.server_tag }} (SHA: ${{ steps.get-shas.outputs.server_sha }})
+          - Client: ${{ steps.check-images.outputs.client_tag }} (SHA: ${{ steps.get-shas.outputs.client_sha }})
+          - AI: ${{ steps.check-images.outputs.ai_tag }} (SHA: ${{ steps.get-shas.outputs.ai_sha }})"
           git remote set-url origin https://x-access-token:${{ secrets.MANIFEST_REPO_TOKEN }}@github.com/${{ github.repository }}.git
           git push origin develop
 
