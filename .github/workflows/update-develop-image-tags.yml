@@ -132,13 +132,16 @@ jobs:
           git add k8s/environments/develop/values.yaml
 
           cat <<EOF | git commit -F -
-          chore: develop 이미지 태그 업데이트
+      chore: develop 이미지 태그 업데이트
 
-          - 서버: ${{ steps.check-images.outputs.server_tag }} (SHA: ${{ steps.get-shas.outputs.server_sha }})
-          - 클라이언트: ${{ steps.check-images.outputs.client_tag }} (SHA: ${{ steps.get-shas.outputs.client_sha }})
-          - AI: ${{ steps.check-images.outputs.ai_tag }} (SHA: ${{ steps.get-shas.outputs.ai_sha }})
-          EOF
-
-          git remote remove origin || true
-          git remote add origin https://x-access-token:${{ secrets.MANIFEST_REPO_TOKEN }}@github.com/sw-campus/sw-campus-manifest.git
-          git push origin develop
+        - 서버:
+            ${{ steps.check-images.outputs.server_tag }} (SHA: ${{ steps.get-shas.outputs.server_sha }})
+        - 클라이언트:
+            ${{ steps.check-images.outputs.client_tag }} (SHA: ${{ steps.get-shas.outputs.client_sha }})
+        - AI:
+            ${{ steps.check-images.outputs.ai_tag }} (SHA: ${{ steps.get-shas.outputs.ai_sha }})
+      EOF
+      
+      git remote remove origin || true
+      git remote add origin https://x-access-token:${{ secrets.MANIFEST_REPO_TOKEN }}@github.com/sw-campus/sw-campus-manifest.git
+      git push origin develop
