@@ -1,0 +1,37 @@
+{{- if .Values.otelCollector.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.global.namespace }}-otel-collector-config
+data:
+  otel-collector.yml: |
+    receivers:
+      otlp:
+        protocols:
+          http:
+          grpc:
+
+    processors:
+      batch:
+        timeout: 5s           # 최대 5초동안 모아서 전송
+        send_batch_size: 1024 # 최대 1024개의 로그를 모아서 전송
+
+    exporters:
+      loki:
+        endpoint: http://loki.{{ .Values.global.namespace }}:3100/loki/api/v1/push
+        labels:
+          resource:                       # 로그를 메타데이터로 구분하기 위해 사용하는 라벨 → Loki에서 쿼리할 때 이 라벨을 기준으로 필터링
+            service.name: service         # 어떤 서비스에서 온 로그인지
+            deployment.environment: env   # 어떤 환경에서 온 로그인지
+
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]                # 데이터를 수집하는 엔드포인트
+          processors: [batch]              # 수집된 데이터를 처리
+          exporters: [logging, otlp/tempo] # 수집된 데이터를 전송
+        logs:
+          receivers: [otlp]
+          processors: [batch]
+          exporters: [logging, loki]
+{{- end }} 

@@ -82,4 +82,3 @@ configMaps:
     enabled: true
   promtailConfig:
     enabled: true
-
