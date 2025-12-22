@@ -13,6 +13,8 @@ server:
     pullPolicy: IfNotPresent
   configMap:
     name: sw-campus-server-config
+    data:
+      SPRING_PROFILES_ACTIVE: staging
   secret:
     enabled: true
     name: sw-campus-server-secret
