@@ -89,6 +89,8 @@ jobs:
 
       - name: Commit and push
         if: steps.check-changes.outputs.changed == 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.MANIFEST_REPO_TOKEN }}
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
@@ -98,6 +100,7 @@ jobs:
           - Server: ${{ steps.get-shas.outputs.server_sha }}
           - Client: ${{ steps.get-shas.outputs.client_sha }}
           - AI: ${{ steps.get-shas.outputs.ai_sha }}"
+          git remote set-url origin https://x-access-token:${{ secrets.MANIFEST_REPO_TOKEN }}@github.com/${{ github.repository }}.git
           git push origin develop
 
       - name: Post Checkout AI repository
