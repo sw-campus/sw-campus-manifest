@@ -1,0 +1,122 @@
+name: Update Develop Image Tags
+
+on:
+  schedule:
+    # 매시간 실행 (UTC 기준)
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update-image-tags:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout manifest repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.MANIFEST_REPO_TOKEN }}
+          fetch-depth: 0
+
+      - name: Checkout server repository
+        uses: actions/checkout@v4
+        with:
+          repository: sw-campus/sw-campus-server
+          token: ${{ secrets.MANIFEST_REPO_TOKEN }}
+          ref: develop
+          path: server-repo
+
+      - name: Checkout client repository
+        uses: actions/checkout@v4
+        with:
+          repository: sw-campus/sw-campus-client
+          token: ${{ secrets.MANIFEST_REPO_TOKEN }}
+          ref: develop
+          path: client-repo
+
+      - name: Checkout AI repository
+        uses: actions/checkout@v4
+        with:
+          repository: sw-campus/sw-campus-ai
+          token: ${{ secrets.MANIFEST_REPO_TOKEN }}
+          ref: develop
+          path: ai-repo
+
+      - name: Get latest commit SHAs
+        id: get-shas
+        run: |
+          SERVER_SHA=$(cd server-repo && git rev-parse HEAD | cut -c1-7)
+          CLIENT_SHA=$(cd client-repo && git rev-parse HEAD | cut -c1-7)
+          AI_SHA=$(cd ai-repo && git rev-parse HEAD | cut -c1-7)
+          
+          echo "server_sha=$SERVER_SHA" >> $GITHUB_OUTPUT
+          echo "client_sha=$CLIENT_SHA" >> $GITHUB_OUTPUT
+          echo "ai_sha=$AI_SHA" >> $GITHUB_OUTPUT
+          
+          echo "Server SHA: $SERVER_SHA"
+          echo "Client SHA: $CLIENT_SHA"
+          echo "AI SHA: $AI_SHA"
+
+      - name: Update values.yaml
+        run: |
+          VALUES_FILE="k8s/environments/develop/values.yaml"
+          
+          # Server 태그 업데이트 (server 섹션의 repository 다음 tag 라인)
+          sed -i '/repository: ghcr.io\/sw-campus\/sw-campus-server$/,/pullPolicy:/ s|tag: ".*"|tag: "${{ steps.get-shas.outputs.server_sha }}"|' "$VALUES_FILE"
+          
+          # Client 태그 업데이트 (client 섹션의 repository 다음 tag 라인)
+          sed -i '/repository: ghcr.io\/sw-campus\/sw-campus-client$/,/pullPolicy:/ s|tag: ".*"|tag: "${{ steps.get-shas.outputs.client_sha }}"|' "$VALUES_FILE"
+          
+          # AI 태그 업데이트 (ai 섹션의 repository 다음 tag 라인)
+          sed -i '/repository: ghcr.io\/sw-campus\/sw-campus-ai$/,/pullPolicy:/ s|tag: ".*"|tag: "${{ steps.get-shas.outputs.ai_sha }}"|' "$VALUES_FILE"
+          
+          echo "Updated values.yaml:"
+          cat "$VALUES_FILE"
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          if git diff --quiet k8s/environments/develop/values.yaml; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No changes detected"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Changes detected"
+            git diff k8s/environments/develop/values.yaml
+          fi
+
+      - name: Commit and push
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add k8s/environments/develop/values.yaml
+          git commit -m "chore: update develop image tags with commit SHA
+
+          - Server: ${{ steps.get-shas.outputs.server_sha }}
+          - Client: ${{ steps.get-shas.outputs.client_sha }}
+          - AI: ${{ steps.get-shas.outputs.ai_sha }}"
+          git push origin develop
+
+      - name: Post Checkout AI repository
+        if: always()
+        run: |
+          echo "Cleanup completed"
+
+      - name: Post Checkout client repository
+        if: always()
+        run: |
+          echo "Cleanup completed"
+
+      - name: Post Checkout server repository
+        if: always()
+        run: |
+          echo "Cleanup completed"
+
+      - name: Complete job
+        if: always()
+        run: |
+          echo "Job completed"
+
