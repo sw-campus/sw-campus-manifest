@@ -17,9 +17,8 @@ jobs:
       - name: Checkout manifest repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.MANIFEST_REPO_TOKEN }}
           fetch-depth: 0
-          persist-credentials: true
+          persist-credentials: false
 
       - name: Checkout server repository
         uses: actions/checkout@v4
@@ -137,4 +136,3 @@ jobs:
           - AI: ${{ steps.check-images.outputs.ai_tag }} (SHA: ${{ steps.get-shas.outputs.ai_sha }})"
           git remote set-url origin https://x-access-token:${{ secrets.MANIFEST_REPO_TOKEN }}@github.com/${{ github.repository }}.git
           git push origin develop
-
