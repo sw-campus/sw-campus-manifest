@@ -26,4 +26,7 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+    # 주기적으로 Git 변경사항 체크 (3분마다)
+    refresh:
+      interval: 3m
 
