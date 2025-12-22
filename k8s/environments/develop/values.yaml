@@ -24,7 +24,7 @@ client:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
-    tag: "develop"  # CI/CD에서 commit SHA로 덮어쓰기 또는 기본값으로 사용
+    tag: "dev-aae75729016c8b1105ea91779baeecd2ae4f20e0"  # CI/CD에서 commit SHA로 덮어쓰기 또는 기본값으로 사용
     pullPolicy: IfNotPresent
   configMap:
     name: sw-campus-client-config
