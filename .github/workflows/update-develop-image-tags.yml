@@ -134,5 +134,5 @@ jobs:
           - 서버: ${{ steps.check-images.outputs.server_tag }} (SHA: ${{ steps.get-shas.outputs.server_sha }})
           - 클라이언트: ${{ steps.check-images.outputs.client_tag }} (SHA: ${{ steps.get-shas.outputs.client_sha }})
           - AI: ${{ steps.check-images.outputs.ai_tag }} (SHA: ${{ steps.get-shas.outputs.ai_sha }})"
-          git remote set-url origin https://x-access-token:${{ secrets.MANIFEST_REPO_TOKEN }}@github.com/${{ github.repository }}.git
+          git remote set-url origin https://x-access-token:${{ secrets.MANIFEST_REPO_TOKEN }}@github.com/sw-campus/sw-campus-manifest.git
           git push origin develop
