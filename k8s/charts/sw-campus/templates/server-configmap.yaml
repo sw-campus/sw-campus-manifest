@@ -4,10 +4,20 @@ kind: ConfigMap
 metadata:
   name: {{ .Values.server.configMap.name }}
 data:
+  {{- $profile := "staging" }}
+  {{- if ne .Values.global.namespace "develop" }}
+    {{- $profile = .Values.global.namespace }}
+  {{- end }}
   {{- if .Values.server.configMap.data }}
-  {{- toYaml .Values.server.configMap.data | nindent 2 }}
+  {{- $data := .Values.server.configMap.data }}
+  SPRING_PROFILES_ACTIVE: {{ $profile }}
+  {{- range $key, $value := $data }}
+  {{- if ne $key "SPRING_PROFILES_ACTIVE" }}
+  {{ $key }}: {{ $value }}
+  {{- end }}
+  {{- end }}
   {{- else }}
-  SPRING_PROFILES_ACTIVE: {{ .Values.global.namespace }}
+  SPRING_PROFILES_ACTIVE: {{ $profile }}
   DB_HOST: {{ .Values.database.externalService.name }}
   DB_PORT: "{{ .Values.database.externalService.port }}"
   {{- end }}
