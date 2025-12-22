@@ -128,18 +128,12 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-
           git add k8s/environments/develop/values.yaml
+          git commit -m "chore: develop 이미지 태그 업데이트
 
-          cat <<'EOF' | git commit -F -
-chore: develop 이미지 태그 업데이트
-
-- 서버: ${{ steps.check-images.outputs.server_tag }} (SHA: ${{ steps.get-shas.outputs.server_sha }})
-- 클라이언트: ${{ steps.check-images.outputs.client_tag }} (SHA: ${{ steps.get-shas.outputs.client_sha }})
-- AI: ${{ steps.check-images.outputs.ai_tag }} (SHA: ${{ steps.get-shas.outputs.ai_sha }})
-EOF
-      
-          git remote remove origin || true
-          git remote add origin https://x-access-token:${{ secrets.MANIFEST_REPO_TOKEN }}@github.com/sw-campus/sw-campus-manifest.git
+          - 서버: ${{ steps.check-images.outputs.server_tag }} (SHA: ${{ steps.get-shas.outputs.server_sha }})
+          - 클라이언트: ${{ steps.check-images.outputs.client_tag }} (SHA: ${{ steps.get-shas.outputs.client_sha }})
+          - AI: ${{ steps.check-images.outputs.ai_tag }} (SHA: ${{ steps.get-shas.outputs.ai_sha }})"
+          git remote set-url origin https://x-access-token:${{ secrets.MANIFEST_REPO_TOKEN }}@github.com/${{ github.repository }}.git
           git push origin develop
 
