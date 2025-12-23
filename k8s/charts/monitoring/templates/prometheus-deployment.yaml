@@ -38,6 +38,6 @@ spec:
           configMap:
             name: {{ .Values.global.namespace }}-prometheus-config
         - name: storage
-          emptyDir: {}
+          emptyDir: {}    # 개발 환경에서만 사용 - pod 재시작될 때마다 데이터 날아감
 {{- end }}
 
