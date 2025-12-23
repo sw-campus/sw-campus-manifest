@@ -10,6 +10,13 @@ server:
     repository: ghcr.io/sw-campus/sw-campus-server
     tag: v1.0.0
     pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 300m
+      memory: 512Mi
 
   # ✅ profile = release
   configMap:
@@ -22,6 +29,34 @@ server:
     enabled: true
     name: swcampus-db-release
 
+client:
+  enabled: true
+  replicas: 1
+  image:
+    repository: ghcr.io/sw-campus/sw-campus-client
+    tag: v1.0.0
+    pullPolicy: IfNotPresent
+  service:
+    type: NodePort
+    port: 3000
+    nodePort: 30081
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+  configMap:
+    name: sw-campus-client-config
+
+ai:
+  enabled: true
+  replicas: 1
+  image:
+    repository: ghcr.io/sw-campus/sw-campus-ai
+    tag: v1.0.0
+    pullPolicy: IfNotPresent
   resources:
     requests:
       cpu: 100m
@@ -29,3 +64,9 @@ server:
     limits:
       cpu: 300m
       memory: 512Mi
+
+configMaps:
+  server:
+    enabled: true
+  client:
+    enabled: true
