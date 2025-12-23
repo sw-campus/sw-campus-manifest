@@ -39,7 +39,7 @@ database:
   enabled: true
   externalService:
     name: postgres-service
-    externalName: postgres
+    externalName: ip-172-16-2-174.ap-northeast-2.compute.internal
     port: 5432
 
 configMaps:
