@@ -1,4 +1,3 @@
-# Release environment values
 global:
   namespace: release
   imagePullSecrets:
@@ -19,6 +18,17 @@ server:
       cpu: 300m
       memory: 512Mi
 
+  # ✅ profile = release
+  configMap:
+    name: sw-campus-server-config-release
+    data:
+      SPRING_PROFILES_ACTIVE: release
+
+  # ✅ DB Secret = release
+  secret:
+    enabled: true
+    name: swcampus-db-release
+
 client:
   enabled: true
   replicas: 1
@@ -37,7 +47,8 @@ client:
     limits:
       cpu: 200m
       memory: 256Mi
-
+  configMap:
+    name: sw-campus-client-config
 
 ai:
   enabled: true
@@ -54,18 +65,8 @@ ai:
       cpu: 300m
       memory: 512Mi
 
-
-database:
-  enabled: true
-  externalService:
-    name: postgres-service
-    # TODO: 실제 데이터베이스 서버 주소로 변경 필요 (환경 변수 또는 별도 설정 파일 사용 권장)
-    externalName: <database-server-address>
-    port: 5432
-
 configMaps:
   server:
     enabled: true
   client:
     enabled: true
-
