@@ -15,7 +15,7 @@ spec:
         - ../../environments/release/values.yaml
 
   destination:
-    server: https://kubernetes.default.svc
+    server: eks-prod
     namespace: release
 
   syncPolicy:
