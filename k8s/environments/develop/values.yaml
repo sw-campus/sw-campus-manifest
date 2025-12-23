@@ -10,6 +10,13 @@ server:
     repository: ghcr.io/sw-campus/sw-campus-server
     tag: "develop"
     pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 300m
+      memory: 512Mi
 
   # ✅ ConfigMap: profile 같은 비민감 정보만
   configMap:
