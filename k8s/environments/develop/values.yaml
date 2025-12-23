@@ -15,6 +15,7 @@ server:
     name: sw-campus-server-config
     data:
       SPRING_PROFILES_ACTIVE: staging
+      # TODO: 실제 데이터베이스 서버 주소로 변경 필요 (환경 변수 또는 별도 설정 파일 사용 권장)
       SPRING_DATASOURCE_URL: jdbc:postgresql://172.30.1.83:5432/swcampus
       SPRING_DATASOURCE_USERNAME: postgres
   secret:

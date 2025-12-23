@@ -15,7 +15,7 @@ spec:
         - ../../environments/develop/values.yaml
 
   destination:
-    server: https://kubernetes.default.svc
+    server: in-cluster
     namespace: develop
 
   syncPolicy:
