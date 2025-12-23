@@ -27,7 +27,7 @@ server:
   # ✅ Secret: DB 정보만
   secret:
     enabled: true
-    name: swcampus-db-dev   # ← DB Secret 이름
+    name: sw-campus-server-secret-develop 
 
 client:
   enabled: true
