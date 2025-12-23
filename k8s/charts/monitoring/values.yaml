@@ -12,7 +12,7 @@ grafana:
   image:
     repository: grafana/grafana
     tag: "10.4.2"
-    pullPolicy: IfNotPresent
+    pullPolicy:
   service:
     type: ClusterIP
     port: 3000
@@ -41,26 +41,6 @@ loki:
     type: ClusterIP
     port: 3100
 
-# Tempo configuration
-tempo:
-  enabled: true
-  replicas: 2
-  image:
-    repository: grafana/tempo
-    tag: "2.4.1"
-    pullPolicy: IfNotPresent
-  service:
-    type: ClusterIP
-    port: 3200
-
-# Promtail configuration
-promtail:
-  enabled: true
-  image:
-    repository: grafana/promtail
-    tag: "2.9.6"
-    pullPolicy: IfNotPresent
-
 # OpenTelemetry Collector configuration
 otelCollector:
   enabled: true
@@ -80,6 +60,4 @@ configMaps:
   lokiConfig:
     enabled: true
   otelCollectorConfig:
-    enabled: true
-  promtailConfig:
     enabled: true

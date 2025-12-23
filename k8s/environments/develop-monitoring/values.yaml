@@ -26,21 +26,6 @@ loki:
     tag: "2.9.6"
     pullPolicy: IfNotPresent
 
-tempo:
-  enabled: true
-  replicas: 2
-  image:
-    repository: grafana/tempo
-    tag: "2.4.1"
-    pullPolicy: IfNotPresent
-
-promtail:
-  enabled: false # OTel Collector를 통해 로그 수집하므로 비활성화
-  image:
-    repository: grafana/promtail
-    tag: "2.9.6"
-    pullPolicy: IfNotPresent
-
 otelCollector:
   enabled: true
   replicas: 2
@@ -58,6 +43,4 @@ configMaps:
   lokiConfig:
     enabled: true
   otelCollectorConfig:
-    enabled: true
-  promtailConfig:
     enabled: true
