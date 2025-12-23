@@ -27,7 +27,7 @@ server:
   # ✅ DB Secret = release
   secret:
     enabled: true
-    name: swcampus-db-release
+    name: sw-campus-server-secret-release
 
 client:
   enabled: true
