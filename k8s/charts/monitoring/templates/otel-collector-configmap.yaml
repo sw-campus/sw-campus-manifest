@@ -26,6 +26,13 @@ data:
           resource:                                               # resource attributes에서 동적으로 라벨 추출
             "service.name": service_name                            # 백업: resource에서도 추출
             "deployment.environment": deployment_environment
+      
+      # prometheus exporter - OTel Collector에서 metrics를 수집하여 Prometheus로 전송
+      prometheus:
+        endpoint: "0.0.0.0:8889"
+        namespace: otel
+        const_labels:
+          cluster: {{ .Values.global.namespace }}
 
       {{- if .Values.otelCollector.debug }}
       logging:
@@ -42,4 +49,11 @@ data:
             - logging
             {{- end }}
             - loki
+        
+        # 메트릭 파이프라인 - 애플리케이션 메트릭을 prometheus로 전송
+        metrics:
+          receivers: [otlp]
+          processors: [batch]
+          exporters:
+            - prometheus
 {{- end }} 
