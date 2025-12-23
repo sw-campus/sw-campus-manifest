@@ -59,7 +59,8 @@ database:
   enabled: true
   externalService:
     name: postgres-service
-    externalName: ip-172-16-2-174.ap-northeast-2.compute.internal
+    # TODO: 실제 데이터베이스 서버 주소로 변경 필요 (환경 변수 또는 별도 설정 파일 사용 권장)
+    externalName: <database-server-address>
     port: 5432
 
 configMaps:
