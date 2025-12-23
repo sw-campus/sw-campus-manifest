@@ -24,6 +24,10 @@ client:
     repository: ghcr.io/sw-campus/sw-campus-client
     tag: v1.0.0
     pullPolicy: IfNotPresent
+  service:
+    type: NodePort
+    port: 3000
+    nodePort: 30080
   configMap:
     name: sw-campus-client-config
 
