@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: monitoring-develop
+  name: sw-campus-monitoring-develop
   namespace: argocd
 spec:
   project: default
@@ -15,7 +15,7 @@ spec:
         - ../../environments/develop-monitoring/values.yaml
 
   destination:
-    server: https://kubernetes.default.svc
+    server: in-cluster
     namespace: monitoring
 
   syncPolicy:
