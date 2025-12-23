@@ -27,7 +27,7 @@ client:
   service:
     type: NodePort
     port: 3000
-    nodePort: 30080
+    nodePort: 30081
   configMap:
     name: sw-campus-client-config
 
