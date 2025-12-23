@@ -18,6 +18,8 @@ spec:
         - name: loki
           image: "{{ .Values.loki.image.repository }}:{{ .Values.loki.image.tag }}"
           imagePullPolicy: {{ .Values.loki.image.pullPolicy }}
+          args:
+            - "-config.file=/etc/loki/loki.yml"
           ports:
             - containerPort: 3100
           volumeMounts:
