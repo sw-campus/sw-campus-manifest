@@ -21,5 +21,20 @@ spec:
           - name: otel-collector
             image: "{{ .Values.otelCollector.image.repository }}:{{ .Values.otelCollector.image.tag }}"
             imagePullPolicy: "{{ .Values.otelCollector.image.pullPolicy }}"
+            args:
+              - "--config=/etc/otel-collector/otel-collector.yml"
+            ports:
+              - containerPort: 4317  # gRPC
+                name: otlp-grpc
+              - containerPort: 4318  # HTTP
+                name: otlp-http
+            volumeMounts:
+              - name: config
+                mountPath: /etc/otel-collector
+                readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Values.global.namespace }}-otel-collector-config
   {{ end }}
 
