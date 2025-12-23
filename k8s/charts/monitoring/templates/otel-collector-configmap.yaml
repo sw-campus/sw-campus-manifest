@@ -34,14 +34,6 @@ data:
 
     service:
       pipelines:
-        traces:
-          receivers: [otlp]           # 데이터를 수집하는 엔드포인트
-          processors: [batch]         # 수집된 데이터를 처리
-          exporters:                  # 수집된 데이터를 전송
-            {{- if .Values.otelCollector.debug }}
-            - logging
-            {{- end }}
-            - otlp/tempo
         logs:
           receivers: [otlp]
           processors: [batch]
