@@ -6,20 +6,22 @@ global:
 
 server:
   enabled: true
-  replicas: 2
+  replicas: 1
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
     tag: v1.0.0
     pullPolicy: IfNotPresent
-  configMap:
-    name: sw-campus-server-config
-  secret:
-    enabled: true
-    name: sw-campus-server-secret
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 300m
+      memory: 512Mi
 
 client:
   enabled: true
-  replicas: 2
+  replicas: 1
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
     tag: v1.0.0
@@ -27,17 +29,31 @@ client:
   service:
     type: NodePort
     port: 3000
-    nodePort: 30080
-  configMap:
-    name: sw-campus-client-config
+    nodePort: 30081
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
 
 ai:
   enabled: true
-  replicas: 2
+  replicas: 1
   image:
     repository: ghcr.io/sw-campus/sw-campus-ai
     tag: v1.0.0
     pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 300m
+      memory: 512Mi
+
 
 database:
   enabled: true

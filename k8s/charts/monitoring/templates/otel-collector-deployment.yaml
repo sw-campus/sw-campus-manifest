@@ -1,8 +1,10 @@
-{{- if .Values.otelCollector.enabled }}
+{{ if .Values.otelCollector.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: {{ .Values.global.namespace }}-otel-collector
+  labels:
+    app: {{ .Values.global.namespace }}-otel-collector
 spec:
   replicas: {{ .Values.otelCollector.replicas | default 2 }}
   selector:
@@ -16,17 +18,8 @@ spec:
     spec:
       serviceAccountName: {{ .Values.global.namespace }}-otel-collector
       containers:
-        - name: otel-collector
-          image: "{{ .Values.otelCollector.image.repository }}:{{ .Values.otelCollector.image.tag }}"
-          imagePullPolicy: {{ .Values.otelCollector.image.pullPolicy }}
-          args:
-            - "--config=/etc/otel-collector/otel-collector.yml"
-           volumeMounts:
-            - name: config
-              mountPath: /etc/otel-collector
-              readOnly: true
-      volumes:
-        - name: config
-          configMap:
-            name: {{ .Values.global.namespace }}-otel-collector-config
-{{- end }}
+          - name: otel-collector
+            image: "{{ .Values.otelCollector.image.repository }}:{{ .Values.otelCollector.image.tag }}"
+            imagePullPolicy: "{{ .Values.otelCollector.image.pullPolicy }}"
+  {{ end }}
+
