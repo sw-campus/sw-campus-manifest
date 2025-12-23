@@ -19,5 +19,14 @@ spec:
         - name: otel-collector
           image: "{{ .Values.otelCollector.image.repository }}:{{ .Values.otelCollector.image.tag }}"
           imagePullPolicy: {{ .Values.otelCollector.image.pullPolicy }}
+          args:
+            - "--config=/etc/otel-collector/otel-collector.yml"
+           volumeMounts:
+            - name: config
+              mountPath: /etc/otel-collector
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Values.global.namespace }}-otel-collector-config
 {{- end }}
-
