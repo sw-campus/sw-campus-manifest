@@ -10,9 +10,6 @@ spec:
   ports:
     - port: {{ .Values.client.service.port }}
       targetPort: {{ .Values.client.service.port }}
-      {{- if eq .Values.client.service.type "NodePort" }}
-      nodePort: {{ .Values.client.service.nodePort }}
-      {{- end }}
       protocol: TCP
       name: http
   selector:
