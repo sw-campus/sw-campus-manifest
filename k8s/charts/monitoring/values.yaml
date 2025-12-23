@@ -57,6 +57,8 @@ configMaps:
     enabled: true
   grafanaDatasources:
     enabled: true
+  prometheusConfig:
+    enabled: true
   lokiConfig:
     enabled: true
   otelCollectorConfig:
