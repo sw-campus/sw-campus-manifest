@@ -1,0 +1,26 @@
+{{- if .Values.configMaps.prometheusConfig.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.global.namespace }}-prometheus-config
+data:
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+      evaluation_interval: 15s
+      external_labels:
+        cluster: {{ .Values.global.namespace }}
+
+    scrape_configs:
+      # OTel Collector 메트릭 수집
+      - job_name: 'otel-collector'
+        static_configs:
+          - targets: ['{{ .Values.global.namespace }}-otel-collector:8889']
+            labels:
+              component: 'otel-collector'
+
+      # Prometheus 자체 메트릭
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['localhost:9090']
+{{- end }}
