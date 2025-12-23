@@ -15,6 +15,8 @@ server:
     name: sw-campus-server-config
     data:
       SPRING_PROFILES_ACTIVE: staging
+      SPRING_DATASOURCE_URL: jdbc:postgresql://172.30.1.83:5432/swcampus
+      SPRING_DATASOURCE_USERNAME: postgres
   secret:
     enabled: true
     name: sw-campus-server-secret
@@ -38,7 +40,7 @@ ai:
     pullPolicy: IfNotPresent
 
 database:
-  enabled: true
+  enabled: false
   externalService:
     name: postgres-service
     externalName: postgres  
