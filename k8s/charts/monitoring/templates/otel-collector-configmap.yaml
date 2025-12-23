@@ -1,4 +1,4 @@
-{{- if .Values.configMaps.otelConfig.enabled }}
+{{- if .Values.configMaps.otelCollectorConfig.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -21,11 +21,11 @@ data:
         endpoint: http://{{ .Values.global.namespace }}-loki:3100/loki/api/v1/push
         labels:
           attributes:                                             # 로그의 attributes에서 동적으로 라벨 추출
-            service.name: service_name                            # 어떤 서비스에서 온 로그인지 - OTel SDK에서 보낸 service.name attribute 사용
-            deployment.environment: deployment_environment        # 어떤 환경에서 온 로그인지 - OTel SDK에서 보낸 deployment.environment attribute 사용
+            "service.name": service_name                            # 어떤 서비스에서 온 로그인지 - OTel SDK에서 보낸 service.name attribute 사용
+            "deployment.environment": deployment_environment        # 어떤 환경에서 온 로그인지 - OTel SDK에서 보낸 deployment.environment attribute 사용
           resource:                                               # resource attributes에서 동적으로 라벨 추출
-            service.name: service_name                            # 백업: resource에서도 추출
-            deployment.environment: deployment_environment
+            "service.name": service_name                            # 백업: resource에서도 추출
+            "deployment.environment": deployment_environment
 
       {{- if .Values.otelCollector.debug }}
       logging:
