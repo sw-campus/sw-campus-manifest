@@ -18,9 +18,5 @@ data:
         access: proxy
         url: http://{{ .Values.global.namespace }}-loki.monitoring:3100
 
-      - name: Tempo
-        type: tempo
-        access: proxy
-        url: http://{{ .Values.global.namespace }}-tempo.monitoring:3200
 {{- end }}
 
