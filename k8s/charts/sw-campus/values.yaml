@@ -5,7 +5,7 @@
 global:
   namespace: develop
   imagePullSecrets:
-    - name: ghcr-secret
+    - ghcr-secret
 
 # Server configuration
 server:
@@ -78,7 +78,7 @@ database:
   enabled: true
   externalService:
     name: postgres-service
-    externalName: YOUR_POSTGRES_HOST
+    externalName: postgres
     port: 5432
 
 # ConfigMaps
