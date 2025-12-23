@@ -65,6 +65,7 @@ promtail:
 otelCollector:
   enabled: true
   replicas: 2
+  debug: false  # logging exporter 활성화 여부 (개발: true, 프로덕션: false)
   image:
     repository: otel/opentelemetry-collector
     tag: "0.96.0"
