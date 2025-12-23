@@ -9,7 +9,7 @@ server:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: "develop"  # CI/CD에서 commit SHA로 덮어쓰기 또는 기본값으로 사용
+    tag: "5e9770662bbdf292f5be29ede200e5e81fc3c835"  # CI/CD에서 commit SHA로 덮어쓰기 또는 기본값으로 사용
     pullPolicy: IfNotPresent
   configMap:
     name: sw-campus-server-config
