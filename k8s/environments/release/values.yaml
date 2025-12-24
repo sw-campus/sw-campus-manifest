@@ -22,7 +22,7 @@ server:
   configMap:
     name: sw-campus-server-config-release
     data:
-      SPRING_PROFILES_ACTIVE: release
+      SPRING_PROFILES_ACTIVE: prod
 
   # ✅ DB Secret = release
   secret:
