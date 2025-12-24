@@ -4,9 +4,9 @@ kind: ConfigMap
 metadata:
   name: {{ .Values.server.configMap.name }}
 data:
-  {{- $profile := "staging" }}
-  {{- if ne .Values.global.namespace "develop" }}
-    {{- $profile = .Values.global.namespace }}
+  {{- $profile := "staging" }}                    # default profile은 staging
+  {{- if eq .Values.global.namespace "release" }} # release 환경에서는 prod로 설정
+    {{- $profile = "prod" }}
   {{- end }}
   {{- if .Values.server.configMap.data }}
   {{- $data := .Values.server.configMap.data }}
