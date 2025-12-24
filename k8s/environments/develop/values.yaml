@@ -34,7 +34,7 @@ client:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
-    tag: "develop"
+    tag: "dev-36038fb9aa21cf3b7052fcdfa6f423543a13d3d7"
     pullPolicy: IfNotPresent
   configMap:
     name: sw-campus-client-config
