@@ -22,7 +22,7 @@ server:
   configMap:
     name: sw-campus-server-config-develop
     data:
-      SPRING_PROFILES_ACTIVE: develop
+      SPRING_PROFILES_ACTIVE: staging
 
   # ✅ Secret: DB 정보만
   secret:
