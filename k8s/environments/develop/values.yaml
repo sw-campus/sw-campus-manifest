@@ -1,4 +1,3 @@
-# Develop environment values
 global:
   namespace: develop
   imagePullSecrets:
@@ -9,22 +8,33 @@ server:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: "develop"  # CI/CD에서 commit SHA로 덮어쓰기 또는 기본값으로 사용
+    tag: "develop"
     pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 300m
+      memory: 512Mi
+
+  # ✅ ConfigMap: profile 같은 비민감 정보만
   configMap:
-    name: sw-campus-server-config
+    name: sw-campus-server-config-develop
     data:
-      SPRING_PROFILES_ACTIVE: staging
+      SPRING_PROFILES_ACTIVE: dev
+
+  # ✅ Secret: DB 정보만
   secret:
     enabled: true
-    name: sw-campus-server-secret
+    name: sw-campus-server-secret-develop 
 
 client:
   enabled: true
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
-    tag: "develop"  # CI/CD에서 commit SHA로 덮어쓰기 또는 기본값으로 사용
+    tag: "develop"
     pullPolicy: IfNotPresent
   configMap:
     name: sw-campus-client-config
@@ -34,19 +44,11 @@ ai:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-ai
-    tag: "develop"  # CI/CD에서 commit SHA로 덮어쓰기 또는 기본값으로 사용
+    tag: "develop"
     pullPolicy: IfNotPresent
-
-database:
-  enabled: true
-  externalService:
-    name: postgres-service
-    externalName: postgres  
-    port: 5432
 
 configMaps:
   server:
     enabled: true
   client:
     enabled: true
-

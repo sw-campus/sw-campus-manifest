@@ -1,4 +1,3 @@
-# Release environment values
 global:
   namespace: release
   imagePullSecrets:
@@ -19,6 +18,17 @@ server:
       cpu: 300m
       memory: 512Mi
 
+  # ✅ profile = release
+  configMap:
+    name: sw-campus-server-config-release
+    data:
+      SPRING_PROFILES_ACTIVE: release
+
+  # ✅ DB Secret = release
+  secret:
+    enabled: true
+    name: sw-campus-server-secret-release
+
 client:
   enabled: true
   replicas: 1
@@ -37,7 +47,8 @@ client:
     limits:
       cpu: 200m
       memory: 256Mi
-
+  configMap:
+    name: sw-campus-client-config
 
 ai:
   enabled: true
@@ -54,17 +65,8 @@ ai:
       cpu: 300m
       memory: 512Mi
 
-
-database:
-  enabled: true
-  externalService:
-    name: postgres-service
-    externalName: ip-172-16-2-174.ap-northeast-2.compute.internal
-    port: 5432
-
 configMaps:
   server:
     enabled: true
   client:
     enabled: true
-
