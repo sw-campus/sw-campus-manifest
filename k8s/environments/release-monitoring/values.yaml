@@ -31,7 +31,7 @@ otelCollector:
   replicas: 2
   debug: false # 프로덕션 환경에서는 성능을 위해 logging exporter 비활성화
   image:
-    repository: otel/opentelemetry-collector
+    repository: otel/opentelemetry-collector-contrib
     tag: "0.96.0"
     pullPolicy: IfNotPresent
 
@@ -39,6 +39,8 @@ configMaps:
   grafanaDashboards:
     enabled: true
   grafanaDatasources:
+    enabled: true
+  prometheusConfig:
     enabled: true
   lokiConfig:
     enabled: true
