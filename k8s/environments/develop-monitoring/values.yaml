@@ -1,6 +1,6 @@
 # Develop monitoring environment values
 global:
-  namespace: develop
+  namespace: monitoring
 
 grafana:
   enabled: true

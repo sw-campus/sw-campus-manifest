@@ -1,6 +1,6 @@
 # Release monitoring environment values
 global:
-  namespace: release
+  namespace: monitoring
 
 grafana:
   enabled: true
