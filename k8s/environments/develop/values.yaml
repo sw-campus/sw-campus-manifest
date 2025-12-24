@@ -22,12 +22,12 @@ server:
   configMap:
     name: sw-campus-server-config-develop
     data:
-      SPRING_PROFILES_ACTIVE: dev
+      SPRING_PROFILES_ACTIVE: develop
 
   # ✅ Secret: DB 정보만
   secret:
     enabled: true
-    name: sw-campus-server-secret-develop 
+    name: sw-campus-server-secret-develop
 
 client:
   enabled: true

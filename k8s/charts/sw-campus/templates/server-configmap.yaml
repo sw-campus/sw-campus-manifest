@@ -5,8 +5,8 @@ metadata:
   name: {{ .Values.server.configMap.name }}
 data:
   {{- $profile := "staging" }}
-  {{- if ne .Values.global.namespace "develop" }}
-    {{- $profile = .Values.global.namespace }}
+  {{- if eq .Values.global.namespace "release" }}
+    {{- $profile = "prod" }}
   {{- end }}
   {{- if .Values.server.configMap.data }}
   {{- $data := .Values.server.configMap.data }}
