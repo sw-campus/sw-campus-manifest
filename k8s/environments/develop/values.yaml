@@ -28,6 +28,11 @@ server:
   secret:
     enabled: true
     name: sw-campus-server-secret-develop
+  
+  # ✅ InfraSecret: SSH 터널링용 (develop 환경에서는 비활성화 - 로컬 DB 사용)
+  infraSecret:
+    enabled: false
+    name: sw-campus-infra-secret-develop
 
 client:
   enabled: true
@@ -46,6 +51,14 @@ ai:
     repository: ghcr.io/sw-campus/sw-campus-ai
     tag: "develop"
     pullPolicy: IfNotPresent
+
+# Database configuration (develop: 로컬 DB 사용)
+database:
+  enabled: true
+  externalService:
+    name: postgres-service
+    externalName: postgres  # VM 리눅스 서버의 로컬 DB 서비스명
+    port: 5432
 
 configMaps:
   server:
