@@ -38,5 +38,37 @@ spec:
             - secretRef:
                 name: {{ .Values.server.secret.name }}
             {{- end }}
-{{- end }}
+        
+        - name: ssh-tunnel
+          image: kroniak/ssh-client
+          env:
+          - name: DATABASE_PRIVATEIP
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.server.infraSecret.name }}
+                key: DATABASE_PRIVATEIP
+          - name: BASTION_PUBLICIP
+            valueFrom:
+              secretKeyRef:
+                name: {{ .Values.server.infraSecret.name }}
+                key: BASTION_PUBLICIP
+          command:
+          - sh
+          - -c
+          - |
+            chmod 600 /ssh-key/ssh-privatekey
+            ssh -N -L 0.0.0.0:5432:${DATABASE_PRIVATEIP}:5432 \
+              -o StrictHostKeyChecking=no \
+              -i /ssh-key/ssh-privatekey \
+              ec2-user@${BASTION_PUBLICIP}
+          volumeMounts:
+          - name: ssh-key
+            mountPath: /ssh-key
+            readOnly: true
 
+      volumes:
+      - name: ssh-key
+        secret:
+          secretName: {{ .Values.server.infraSecret.name }}
+          defaultMode: 0600
+{{- end }}

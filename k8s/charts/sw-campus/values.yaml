@@ -23,7 +23,10 @@ server:
     name: sw-campus-server-config
   secret:
     enabled: true
-    name: sw-campus-server-secret
+    name: sw-campus-server-secret # 애플리케이션용
+  infraSecret:
+    enabled: true
+    name: sw-campus-infra-secret # 인프라용
   resources:
     limits:
       cpu: 1000m
@@ -87,4 +90,3 @@ configMaps:
     enabled: true
   client:
     enabled: true
-
