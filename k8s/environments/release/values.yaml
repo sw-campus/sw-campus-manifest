@@ -28,6 +28,11 @@ server:
   secret:
     enabled: true
     name: sw-campus-server-secret-release
+  
+  # ✅ InfraSecret: SSH 터널링용 (release 환경에서는 활성화 - EC2 DB 사용)
+  infraSecret:
+    enabled: true
+    name: sw-campus-infra-secret-release
 
 client:
   enabled: true
@@ -64,6 +69,14 @@ ai:
     limits:
       cpu: 300m
       memory: 512Mi
+
+# Database configuration (release: EC2 DB 사용, SSH 터널링 필요)
+database:
+  enabled: true
+  externalService:
+    name: postgres-service
+    externalName: localhost  # SSH 터널링을 통해 localhost:5432로 접근
+    port: 5432
 
 configMaps:
   server:
