@@ -23,17 +23,18 @@ server:
       cpu: 300m
       memory: 512Mi
 
-  # ✅ Spring profile = prod (release)
+  # Spring profile
   configMap:
     name: sw-campus-server-config-release
     data:
       SPRING_PROFILES_ACTIVE: prod
 
-  # ✅ DB / 외부 연동 Secret (직접 연결)
+  # DB / 외부 연동 Secret
   secret:
     enabled: true
     name: sw-campus-server-secret-release
-  
+
+  # 🔑 AWS (S3)
   env:
     - name: aws.credentials.access-key
       valueFrom:
@@ -53,10 +54,9 @@ server:
           name: sw-campus-aws-secret
           key: AWS_REGION
 
-  # ❌ SSH 터널링 완전 제거 (정석)
+  # SSH 터널링 완전 제거
   infraSecret:
     enabled: false
-
 
 # =========================
 # Client (React)
@@ -73,7 +73,6 @@ client:
   service:
     type: ClusterIP
     port: 3000
-    nodePort: 30081
 
   resources:
     requests:
@@ -85,7 +84,6 @@ client:
 
   configMap:
     name: sw-campus-client-config
-
 
 # =========================
 # AI Service
@@ -107,15 +105,11 @@ ai:
       cpu: 300m
       memory: 512Mi
 
-
 # =========================
-# Database (External - EC2)
+# Database (External)
 # =========================
 database:
   enabled: false
-  # ❌ externalName / localhost 구조 제거
-  # 서버는 Secret의 DB_HOST / SPRING_DATASOURCE_URL로 직접 접근
-
 
 # =========================
 # ConfigMaps
