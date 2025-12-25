@@ -44,7 +44,7 @@ ai:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-ai
-    tag: "develop"
+    tag: "40756c768e2ca38d8fe44412f3e715c8f845f4a2"
     pullPolicy: IfNotPresent
 
 configMaps:
