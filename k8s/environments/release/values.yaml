@@ -3,13 +3,18 @@ global:
   imagePullSecrets:
     - ghcr-secret
 
+# =========================
+# Server (Spring Boot)
+# =========================
 server:
   enabled: true
   replicas: 1
+
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
     tag: v1.0.0
     pullPolicy: IfNotPresent
+
   resources:
     requests:
       cpu: 100m
@@ -18,33 +23,39 @@ server:
       cpu: 300m
       memory: 512Mi
 
-  # ✅ profile = release
+  # ✅ Spring profile = prod (release)
   configMap:
     name: sw-campus-server-config-release
     data:
       SPRING_PROFILES_ACTIVE: prod
 
-  # ✅ DB Secret = release
+  # ✅ DB / 외부 연동 Secret (직접 연결)
   secret:
     enabled: true
     name: sw-campus-server-secret-release
-  
-  # ✅ InfraSecret: SSH 터널링용 (release 환경에서는 활성화 - EC2 DB 사용)
-  infraSecret:
-    enabled: true
-    name: sw-campus-infra-secret-release
 
+  # ❌ SSH 터널링 완전 제거 (정석)
+  infraSecret:
+    enabled: false
+
+
+# =========================
+# Client (React)
+# =========================
 client:
   enabled: true
   replicas: 1
+
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
     tag: v1.0.0
     pullPolicy: IfNotPresent
+
   service:
     type: NodePort
     port: 3000
     nodePort: 30081
+
   resources:
     requests:
       cpu: 50m
@@ -52,16 +63,23 @@ client:
     limits:
       cpu: 200m
       memory: 256Mi
+
   configMap:
     name: sw-campus-client-config
 
+
+# =========================
+# AI Service
+# =========================
 ai:
   enabled: true
   replicas: 1
+
   image:
     repository: ghcr.io/sw-campus/sw-campus-ai
     tag: v1.0.0
     pullPolicy: IfNotPresent
+
   resources:
     requests:
       cpu: 100m
@@ -70,14 +88,19 @@ ai:
       cpu: 300m
       memory: 512Mi
 
-# Database configuration (release: EC2 DB 사용, SSH 터널링 필요)
-database:
-  enabled: true
-  externalService:
-    name: postgres-service
-    externalName: localhost  # SSH 터널링을 통해 localhost:5432로 접근
-    port: 5432
 
+# =========================
+# Database (External - EC2)
+# =========================
+database:
+  enabled: false
+  # ❌ externalName / localhost 구조 제거
+  # 서버는 Secret의 DB_HOST / SPRING_DATASOURCE_URL로 직접 접근
+
+
+# =========================
+# ConfigMaps
+# =========================
 configMaps:
   server:
     enabled: true
