@@ -33,6 +33,25 @@ server:
   secret:
     enabled: true
     name: sw-campus-server-secret-release
+  
+  env:
+    - name: aws.credentials.access-key
+      valueFrom:
+        secretKeyRef:
+          name: sw-campus-aws-secret
+          key: aws.credentials.access-key
+
+    - name: aws.credentials.secret-key
+      valueFrom:
+        secretKeyRef:
+          name: sw-campus-aws-secret
+          key: aws.credentials.secret-key
+
+    - name: AWS_REGION
+      valueFrom:
+        secretKeyRef:
+          name: sw-campus-aws-secret
+          key: AWS_REGION
 
   # ❌ SSH 터널링 완전 제거 (정석)
   infraSecret:
