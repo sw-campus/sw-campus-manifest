@@ -7,6 +7,11 @@ metadata:
     app: sw-campus-client
 spec:
   replicas: {{ .Values.client.replicas }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: sw-campus-client
