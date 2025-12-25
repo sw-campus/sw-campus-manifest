@@ -23,26 +23,26 @@ server:
       cpu: 300m
       memory: 512Mi
 
-  # Spring profile
+  # ✅ Spring profile
   configMap:
     name: sw-campus-server-config-release
     data:
       SPRING_PROFILES_ACTIVE: prod
 
-  # DB / 외부 연동 Secret
+  # ✅ DB / 외부 연동 Secret
   secret:
     enabled: true
     name: sw-campus-server-secret-release
 
-  # 🔑 AWS (S3)
+  # ✅ AWS (S3) - ★ 여기 중요 ★
   env:
-    - name: aws.credentials.access-key
+    - name: AWS_CREDENTIALS_ACCESS_KEY
       valueFrom:
         secretKeyRef:
           name: sw-campus-aws-secret
           key: aws.credentials.access-key
 
-    - name: aws.credentials.secret-key
+    - name: AWS_CREDENTIALS_SECRET_KEY
       valueFrom:
         secretKeyRef:
           name: sw-campus-aws-secret
@@ -54,9 +54,10 @@ server:
           name: sw-campus-aws-secret
           key: AWS_REGION
 
-  # SSH 터널링 완전 제거
+  # ❌ SSH 터널링 완전 제거
   infraSecret:
     enabled: false
+
 
 # =========================
 # Client (React)
@@ -85,6 +86,7 @@ client:
   configMap:
     name: sw-campus-client-config
 
+
 # =========================
 # AI Service
 # =========================
@@ -105,11 +107,13 @@ ai:
       cpu: 300m
       memory: 512Mi
 
+
 # =========================
 # Database (External)
 # =========================
 database:
   enabled: false
+
 
 # =========================
 # ConfigMaps
