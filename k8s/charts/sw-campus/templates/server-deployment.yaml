@@ -1,83 +1,25 @@
-{{- if .Values.server.enabled }}
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: sw-campus-server
-  labels:
-    app: sw-campus-server
-spec:
-  replicas: {{ .Values.server.replicas }}
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
-  selector:
-    matchLabels:
-      app: sw-campus-server
-  template:
-    metadata:
-      labels:
-        app: sw-campus-server
-    spec:
-      {{- if .Values.global.imagePullSecrets }}
-      imagePullSecrets:
-      {{- range .Values.global.imagePullSecrets }}
-      - name: {{ . }}
-      {{- end }}
-      {{- end }}
-      containers:
-        - name: server
-          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
-          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
-          ports:
-            - containerPort: 8080
-          {{- if .Values.server.resources }}
-          resources:
-            {{- toYaml .Values.server.resources | nindent 12 }}
-          {{- end }}
-          envFrom:
-            - configMapRef:
-                name: {{ .Values.server.configMap.name }}
-            {{- if .Values.server.secret.enabled }}
-            - secretRef:
-                name: {{ .Values.server.secret.name }}
-            {{- end }}
-        
-        {{- if and .Values.server.infraSecret.enabled .Values.server.infraSecret.name }}
-        - name: ssh-tunnel
-          image: kroniak/ssh-client
-          env:
-          - name: DATABASE_PRIVATEIP
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.server.infraSecret.name }}
-                key: DATABASE_PRIVATEIP
-          - name: BASTION_PUBLICIP
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Values.server.infraSecret.name }}
-                key: BASTION_PUBLICIP
-          command:
-          - sh
-          - -c
-          - |
-            chmod 600 /ssh-key/ssh-privatekey
-            ssh -N -L 0.0.0.0:5432:${DATABASE_PRIVATEIP}:5432 \
-              -o StrictHostKeyChecking=no \
-              -i /ssh-key/ssh-privatekey \
-              ec2-user@${BASTION_PUBLICIP}
-          volumeMounts:
-          - name: ssh-key
-            mountPath: /ssh-key
-            readOnly: true
-        {{- end }}
+containers:
+  - name: server
+    image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+    imagePullPolicy: {{ .Values.server.image.pullPolicy }}
 
-      {{- if and .Values.server.infraSecret.enabled .Values.server.infraSecret.name }}
-      volumes:
-      - name: ssh-key
-        secret:
-          secretName: {{ .Values.server.infraSecret.name }}
-          defaultMode: 0600
+    ports:
+      - containerPort: 8080
+
+    {{- if .Values.server.resources }}
+    resources:
+      {{- toYaml .Values.server.resources | nindent 12 }}
+    {{- end }}
+
+    envFrom:
+      - configMapRef:
+          name: {{ .Values.server.configMap.name }}
+      {{- if .Values.server.secret.enabled }}
+      - secretRef:
+          name: {{ .Values.server.secret.name }}
       {{- end }}
-{{- end }}
+
+    {{- if .Values.server.env }}
+    env:
+      {{- toYaml .Values.server.env | nindent 12 }}
+    {{- end }}
