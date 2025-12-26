@@ -4,7 +4,7 @@
 # Global settings
 # =========================
 global:
-  namespace: develop
+  namespace: release
   imagePullSecrets:
     - name: ghcr-secret
 
@@ -22,7 +22,7 @@ server:
 
   service:
     type: ClusterIP
-    port: 80
+    port: 8080
     targetPort: 8080
 
   configMap:
