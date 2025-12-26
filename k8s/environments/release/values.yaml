@@ -34,9 +34,10 @@ server:
 
   # 역할별 추가 시크릿 (🔥 핵심)
   extraSecrets:
-    - sw-campus-aws-secret-release     # AWS_ACCESS_KEY, S3_BUCKET
-    - sw-campus-db-secret-release      # DB_HOST, DB_NAME, USER, PW
-    - sw-campus-oauth-secret-release   # GOOGLE / GITHUB OAuth
+    awsSecret: sw-campus-aws-secret-release
+    dbSecret: sw-campus-db-secret-release
+    oauthSecret: sw-campus-oauth-secret-release
+
 
   infraSecret:
     enabled: false
