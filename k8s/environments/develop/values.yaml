@@ -22,13 +22,14 @@ server:
   configMap:
     name: sw-campus-server-config-develop
     data:
-      SPRING_PROFILES_ACTIVE: staging
+      GITHUB_REDIRECT_URI: "https://localhost:8080/api/auth/oauth/github/callback"
+      GOOGLE_REDIRECT_URI: "https://localhost:8080/api/auth/oauth/google/callback"
 
   # ✅ Secret: DB 정보만
   secret:
     enabled: true
     name: sw-campus-server-secret-develop
-  
+
   # ✅ InfraSecret: SSH 터널링용 (develop 환경에서는 비활성화 - 로컬 DB 사용)
   infraSecret:
     enabled: false
@@ -54,11 +55,7 @@ ai:
 
 # Database configuration (develop: 로컬 DB 사용)
 database:
-  enabled: true
-  externalService:
-    name: postgres-service
-    externalName: postgres  # VM 리눅스 서버의 로컬 DB 서비스명
-    port: 5432
+  enabled: false
 
 configMaps:
   server:
