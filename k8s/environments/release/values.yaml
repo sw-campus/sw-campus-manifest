@@ -37,10 +37,9 @@ server:
     name: sw-campus-db-secret-release
 
   # 역할별 추가 시크릿 (🔥 핵심)
-  extraSecrets:
-    awsSecret: sw-campus-aws-secret-release
-    dbSecret: sw-campus-db-secret-release
-    oauthSecret: sw-campus-oauth-secret-release
+  awsSecret: sw-campus-aws-secret-release
+  dbSecret: sw-campus-db-secret-release
+  oauthSecret: sw-campus-oauth-secret-release
 
 
   infraSecret:
