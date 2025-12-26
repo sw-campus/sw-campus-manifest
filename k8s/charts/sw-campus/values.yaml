@@ -1,32 +1,48 @@
 # Default values for sw-campus
-# 환경별 values 파일에서 오버라이드됨
 
+# =========================
 # Global settings
+# =========================
 global:
   namespace: develop
   imagePullSecrets:
-    - ghcr-secret
+    - name: ghcr-secret
 
-# Server configuration
+# =========================
+# Server settings
+# =========================
 server:
   enabled: true
-  replicas: 2
+  replicas: 1
+
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
     tag: develop
     pullPolicy: IfNotPresent
+
   service:
     type: ClusterIP
     port: 80
     targetPort: 8080
+
   configMap:
     name: sw-campus-server-config-release
-  secret:
+
+  serverSecret:
     enabled: true
     name: sw-campus-server-secret-release
-  awsSecret: sw-campus-aws-secret-release
-  dbSecret: sw-campus-db-secret-release
-  oauthSecret: sw-campus-oauth-secret-release
+
+  dbsecret:
+    enabled: true
+    name: sw-campus-db-secret-release
+
+  awsSecret:
+    enabled: true
+    name: sw-campus-aws-secret-release
+
+  oauth2Secret:
+    enabled: true
+    name: sw-campus-oauth-secret-release
 
   resources:
     limits:
@@ -36,20 +52,27 @@ server:
       cpu: 500m
       memory: 512Mi
 
-# Client configuration
+
+# =========================
+# Client settings
+# =========================
 client:
   enabled: true
-  replicas: 2
+  replicas: 1
+
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
     tag: develop
     pullPolicy: IfNotPresent
+
   service:
     type: NodePort
     port: 3000
     nodePort: 30080
+
   configMap:
     name: sw-campus-client-config
+
   resources:
     limits:
       cpu: 500m
@@ -58,17 +81,23 @@ client:
       cpu: 100m
       memory: 128Mi
 
-# AI configuration
+
+# =========================
+# AI settings
+# =========================
 ai:
-  enabled: true
-  replicas: 2
+  enabled: true 
+  replicas: 1
+
   image:
     repository: ghcr.io/sw-campus/sw-campus-ai
     tag: develop
     pullPolicy: IfNotPresent
+
   service:
     type: ClusterIP
     port: 8000
+
   resources:
     limits:
       cpu: 1000m
@@ -77,7 +106,10 @@ ai:
       cpu: 500m
       memory: 512Mi
 
+
+# =========================
 # Database configuration
+# =========================
 database:
   enabled: true
   externalService:
@@ -85,7 +117,10 @@ database:
     externalName: postgres
     port: 5432
 
+
+# =========================
 # ConfigMaps
+# =========================
 configMaps:
   server:
     enabled: true

@@ -22,6 +22,7 @@ spec:
         - name: server
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+
           ports:
             - containerPort: 8080
 
@@ -29,32 +30,27 @@ spec:
             - configMapRef:
                 name: {{ .Values.server.configMap.name }}
 
-            {{- if .Values.server.serverSecret.enabled }}
+{{- if .Values.server.serverSecret.enabled }}
             - secretRef:
                 name: {{ .Values.server.serverSecret.name }}
-            {{- end }}
+{{- end }}
 
-            {{- if .Values.server.dbsecret.enabled }}
+{{- if .Values.server.dbsecret.enabled }}
             - secretRef:
                 name: {{ .Values.server.dbsecret.name }}
-            {{- end }}
+{{- end }}
 
-            {{- if .Values.server.awsSecret.enabled }}
+{{- if .Values.server.awsSecret.enabled }}
             - secretRef:
                 name: {{ .Values.server.awsSecret.name }}
-            {{- end }}
+{{- end }}
 
-            {{- if .Values.server.oauth2Secret.enabled }}
+{{- if .Values.server.oauth2Secret.enabled }}
             - secretRef:
                 name: {{ .Values.server.oauth2Secret.name }}
-            {{- end }}
+{{- end }}
 
-          {{- if .Values.server.resources }}
+{{- if .Values.server.resources }}
           resources:
 {{ toYaml .Values.server.resources | nindent 12 }}
-          {{- end }}
-
-          {{- if .Values.server.env }}
-          env:
-{{ toYaml .Values.server.env | nindent 12 }}
-          {{- end }}
+{{- end }}
