@@ -1,7 +1,7 @@
 global:
   namespace: release
   imagePullSecrets:
-    - ghcr-secret
+    - name: ghcr-secret
 
 # =========================
 # Server (Spring Boot)
