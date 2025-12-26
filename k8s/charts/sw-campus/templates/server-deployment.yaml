@@ -13,20 +13,25 @@ containers:
     {{- end }}
 
     envFrom:
-      # ConfigMap
       - configMapRef:
-          name: {{ .Values.server.configMap.name }}
+          name: { { .Values.server.configMap.name } }
 
-      # 기본 서버 시크릿 (JWT, MAIL)
-      {{- if .Values.server.secret.enabled }}
+      { { - if .Values.server.secret.enabled } }
       - secretRef:
-          name: {{ .Values.server.secret.name }}
-      {{- end }}
+          name: { { .Values.server.secret.name } }
+      { { - end } }
 
-      # 🔥 역할별 추가 시크릿
-      {{- if .Values.server.extraSecrets }}
-      {{- range .Values.server.extraSecrets }}
+      { { - if .Values.server.awsSecret } }
       - secretRef:
-          name: {{ . }}
-      {{- end }}
-      {{- end }}
+          name: { { .Values.server.awsSecret } }
+      { { - end } }
+
+      { { - if .Values.server.dbSecret } }
+      - secretRef:
+          name: { { .Values.server.dbSecret } }
+      { { - end } }
+
+      { { - if .Values.server.oauthSecret } }
+      - secretRef:
+          name: { { .Values.server.oauthSecret } }
+      { { - end } }
