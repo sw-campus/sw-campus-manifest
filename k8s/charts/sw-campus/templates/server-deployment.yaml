@@ -19,39 +19,42 @@ spec:
         {{- toYaml .Values.global.imagePullSecrets | nindent 8 }}
 
       containers:
-        - name: server
-          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
-          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
-
-          ports:
-            - containerPort: 8080
-              protocol: TCP
-
-          {{- if .Values.server.resources }}
-          resources:
-            {{- toYaml .Values.server.resources | nindent 12 }}
-          {{- end }}
-
-          envFrom:
-            - configMapRef:
-                name: {{ .Values.server.configMap.name }}
-
-            {{- if .Values.server.secret.enabled }}
-            - secretRef:
-                name: {{ .Values.server.secret.name }}
-            {{- end }}
-
-            {{- if .Values.server.awsSecret }}
-            - secretRef:
-                name: {{ .Values.server.awsSecret }}
-            {{- end }}
-
-            {{- if .Values.server.dbSecret }}
-            - secretRef:
-                name: {{ .Values.server.dbSecret }}
-            {{- end }}
-
-            {{- if .Values.server.oauthSecret }}
-            - secretRef:
-                name: {{ .Values.server.oauthSecret }}
-            {{- end }}
+      - name: server
+        image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+        imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+        ports:
+        - containerPort: 8080
+        envFrom:
+        - configMapRef:
+            name: {{ .Values.server.configMap.name }}
+        
+        {{- if .Values.server.serverSecret.enabled }}
+        - secretRef:
+            name: {{ .Values.server.serverSecret.name }}
+        {{- end }}
+        
+        {{- if .Values.server.dbsecret.enabled }}
+        - secretRef:
+            name: {{ .Values.server.dbsecret.name }}
+        {{- end }}
+        
+        {{- if .Values.server.awsSecret.enabled }}
+        - secretRef:
+            name: {{ .Values.server.awsSecret.name }}
+        {{- end }}
+        
+        {{- if .Values.server.oauth2Secret.enabled }}
+        - secretRef:
+            name: {{ .Values.server.oauth2Secret.name }}
+        {{- end }}
+        
+        {{- if .Values.server.resources }}
+        resources:
+          {{- toYaml .Values.server.resources | nindent 10 }}
+        {{- end }}
+        
+        {{- if .Values.server.env }}
+        env:
+          {{- toYaml .Values.server.env | nindent 10 }}
+        {{- end }}
+{{- end }}
