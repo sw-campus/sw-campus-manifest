@@ -5,6 +5,7 @@ containers:
 
     ports:
       - containerPort: 8080
+        protocol: TCP
 
     {{- if .Values.server.resources }}
     resources:
@@ -12,14 +13,20 @@ containers:
     {{- end }}
 
     envFrom:
+      # ConfigMap
       - configMapRef:
           name: {{ .Values.server.configMap.name }}
+
+      # 기본 서버 시크릿 (JWT, MAIL)
       {{- if .Values.server.secret.enabled }}
       - secretRef:
           name: {{ .Values.server.secret.name }}
       {{- end }}
 
-    {{- if .Values.server.env }}
-    env:
-      {{- toYaml .Values.server.env | nindent 12 }}
-    {{- end }}
+      # 🔥 역할별 추가 시크릿
+      {{- if .Values.server.extraSecrets }}
+      {{- range .Values.server.extraSecrets }}
+      - secretRef:
+          name: {{ . }}
+      {{- end }}
+      {{- end }}
