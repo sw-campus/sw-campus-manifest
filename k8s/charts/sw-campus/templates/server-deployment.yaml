@@ -1,38 +1,57 @@
-containers:
-  - name: server
-    image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
-    imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sw-campus-server
+  namespace: {{ .Values.global.namespace }}
+  labels:
+    app: sw-campus-server
+spec:
+  replicas: {{ .Values.server.replicas }}
+  selector:
+    matchLabels:
+      app: sw-campus-server
+  template:
+    metadata:
+      labels:
+        app: sw-campus-server
+    spec:
+      imagePullSecrets:
+        {{- toYaml .Values.global.imagePullSecrets | nindent 8 }}
 
-    ports:
-      - containerPort: 8080
-        protocol: TCP
+      containers:
+        - name: server
+          image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
+          imagePullPolicy: {{ .Values.server.image.pullPolicy }}
 
-    {{- if .Values.server.resources }}
-    resources:
-      {{- toYaml .Values.server.resources | nindent 12 }}
-    {{- end }}
+          ports:
+            - containerPort: 8080
+              protocol: TCP
 
-    envFrom:
-      - configMapRef:
-          name: { { .Values.server.configMap.name } }
+          {{- if .Values.server.resources }}
+          resources:
+            {{- toYaml .Values.server.resources | nindent 12 }}
+          {{- end }}
 
-      { { - if .Values.server.secret.enabled } }
-      - secretRef:
-          name: { { .Values.server.secret.name } }
-      { { - end } }
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.server.configMap.name }}
 
-      { { - if .Values.server.awsSecret } }
-      - secretRef:
-          name: { { .Values.server.awsSecret } }
-      { { - end } }
+            {{- if .Values.server.secret.enabled }}
+            - secretRef:
+                name: {{ .Values.server.secret.name }}
+            {{- end }}
 
-      { { - if .Values.server.dbSecret } }
-      - secretRef:
-          name: { { .Values.server.dbSecret } }
-      { { - end } }
+            {{- if .Values.server.awsSecret }}
+            - secretRef:
+                name: {{ .Values.server.awsSecret }}
+            {{- end }}
 
-      { { - if .Values.server.oauthSecret } }
-      - secretRef:
-          name: { { .Values.server.oauthSecret } }
-      { { - end } }
+            {{- if .Values.server.dbSecret }}
+            - secretRef:
+                name: {{ .Values.server.dbSecret }}
+            {{- end }}
 
+            {{- if .Values.server.oauthSecret }}
+            - secretRef:
+                name: {{ .Values.server.oauthSecret }}
+            {{- end }}
