@@ -35,3 +35,4 @@ containers:
       - secretRef:
           name: { { .Values.server.oauthSecret } }
       { { - end } }
+
