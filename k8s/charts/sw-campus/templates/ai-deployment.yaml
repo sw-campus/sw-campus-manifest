@@ -21,7 +21,7 @@ spec:
       {{- if .Values.global.imagePullSecrets }}
       imagePullSecrets:
       {{- range .Values.global.imagePullSecrets }}
-      - name: {{ . }}
+        - name: {{ .name }}
       {{- end }}
       {{- end }}
       containers:
@@ -32,7 +32,7 @@ spec:
             - containerPort: 8000
           {{- if .Values.ai.resources }}
           resources:
-            {{- toYaml .Values.ai.resources | nindent 12 }}
+{{ toYaml .Values.ai.resources | nindent 12 }}
           {{- end }}
           livenessProbe:
             httpGet:
@@ -45,4 +45,3 @@ spec:
               port: 8000
             initialDelaySeconds: 30
 {{- end }}
-
