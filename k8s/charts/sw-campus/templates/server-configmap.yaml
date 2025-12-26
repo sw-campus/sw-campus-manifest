@@ -8,18 +8,12 @@ data:
   {{- if eq .Values.global.namespace "release" }} # release 환경에서는 prod로 설정
     {{- $profile = "prod" }}
   {{- end }}
+  SPRING_PROFILES_ACTIVE: {{ $profile }}
   {{- if .Values.server.configMap.data }}
-  {{- $data := .Values.server.configMap.data }}
-  SPRING_PROFILES_ACTIVE: {{ $profile }}
-  {{- range $key, $value := $data }}
-  {{- if ne $key "SPRING_PROFILES_ACTIVE" }}
-  {{ $key }}: {{ $value }}
-  {{- end }}
-  {{- end }}
-  {{- else }}
-  SPRING_PROFILES_ACTIVE: {{ $profile }}
-  DB_HOST: {{ .Values.database.externalService.name }}
-  DB_PORT: "{{ .Values.database.externalService.port }}"
+    {{- range $key, $value := .Values.server.configMap.data }}
+    {{- if ne $key "SPRING_PROFILES_ACTIVE" }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+    {{- end }}
   {{- end }}
 {{- end }}
-
