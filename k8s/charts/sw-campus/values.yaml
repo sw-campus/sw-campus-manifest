@@ -68,7 +68,6 @@ client:
   service:
     type: ClusterIP
     port: 3000
-    targetPort: 3000
 
   configMap:
     name: sw-campus-client-config
