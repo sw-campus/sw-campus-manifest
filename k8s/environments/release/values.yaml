@@ -28,30 +28,23 @@ server:
     name: sw-campus-server-config-release
     data:
       SPRING_PROFILES_ACTIVE: prod
-
-  # ✅ DB / 외부 연동 Secret
-  secret:
+  serverSecret:
     enabled: true
     name: sw-campus-server-secret-release
+  # ✅ DB / 외부 연동 Secret
+  dbsecret:
+    enabled: true
+    name: sw-campus-db-secret-release
 
   # ✅ AWS (S3) 
-  env:
-  - name: aws.credentials.access-key
-    valueFrom:
-      secretKeyRef:
-        name: sw-campus-aws-secret
-        key: aws.credentials.access-key
-  - name: aws.credentials.secret-key
-    valueFrom:
-      secretKeyRef:
-        name: sw-campus-aws-secret
-        key: aws.credentials.secret-key
-  - name: aws.region
-    valueFrom:
-      secretKeyRef:
-        name: sw-campus-aws-secret
-        key: AWS_REGION
+  awsSecret:
+    enabled: true
+    name: sw-campus-aws-secret-release
 
+  # OAuth2 Secret(GitHub / Google)
+  oauth2Secret:
+    enabled: true
+    name: sw-campus-oauth-secret-release
 
   # ❌ SSH 터널링 완전 제거
   infraSecret:
