@@ -1,12 +1,15 @@
 # Default values for sw-campus
 
+# =========================
+# Global settings
+# =========================
 global:
   namespace: develop
   imagePullSecrets:
     - name: ghcr-secret
 
 # =========================
-# Server configuration
+# Server settings
 # =========================
 server:
   enabled: true
@@ -51,7 +54,7 @@ server:
 
 
 # =========================
-# Client configuration
+# Client settings
 # =========================
 client:
   enabled: true
@@ -80,7 +83,7 @@ client:
 
 
 # =========================
-# AI configuration
+# AI settings
 # =========================
 ai:
   enabled: true 
