@@ -7,6 +7,12 @@ metadata:
     app: sw-campus-server
 spec:
   replicas: {{ .Values.server.replicas }}
+  revisionHistoryLimit: {{ .Values.server.revisionHistoryLimit | default 3 }}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   selector:
     matchLabels:
       app: sw-campus-server
@@ -17,39 +23,31 @@ spec:
     spec:
       imagePullSecrets:
 {{ toYaml .Values.global.imagePullSecrets | nindent 8 }}
-
       containers:
         - name: server
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
-
           ports:
             - containerPort: 8080
-
           envFrom:
             - configMapRef:
                 name: {{ .Values.server.configMap.name }}
-
 {{- if .Values.server.serverSecret.enabled }}
             - secretRef:
                 name: {{ .Values.server.serverSecret.name }}
 {{- end }}
-
 {{- if .Values.server.dbsecret.enabled }}
             - secretRef:
                 name: {{ .Values.server.dbsecret.name }}
 {{- end }}
-
 {{- if .Values.server.awsSecret.enabled }}
             - secretRef:
                 name: {{ .Values.server.awsSecret.name }}
 {{- end }}
-
 {{- if .Values.server.oauth2Secret.enabled }}
             - secretRef:
                 name: {{ .Values.server.oauth2Secret.name }}
 {{- end }}
-
 {{- if .Values.server.resources }}
           resources:
 {{ toYaml .Values.server.resources | nindent 12 }}
