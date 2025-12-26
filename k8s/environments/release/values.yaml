@@ -36,22 +36,22 @@ server:
 
   # ✅ AWS (S3) 
   env:
-  - name: CLOUD_AWS_CREDENTIALS_ACCESS_KEY
+  - name: aws.credentials.access-key
     valueFrom:
       secretKeyRef:
         name: sw-campus-aws-secret
         key: aws.credentials.access-key
-  - name: CLOUD_AWS_CREDENTIALS_SECRET_KEY
+  - name: aws.credentials.secret-key
     valueFrom:
       secretKeyRef:
         name: sw-campus-aws-secret
         key: aws.credentials.secret-key
-  - name: CLOUD_AWS_REGION_STATIC
+  - name: aws.region
     valueFrom:
       secretKeyRef:
         name: sw-campus-aws-secret
         key: AWS_REGION
-        
+
 
   # ❌ SSH 터널링 완전 제거
   infraSecret:
