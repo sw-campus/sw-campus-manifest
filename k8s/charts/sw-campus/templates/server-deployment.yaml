@@ -23,9 +23,24 @@ spec:
         - configMapRef:
             name: {{ .Values.server.configMap.name }}
         
-        {{- if .Values.server.secret.enabled }}
+        {{- if .Values.server.serverSecret.enabled }}
         - secretRef:
-            name: {{ .Values.server.secret.name }}
+            name: {{ .Values.server.serverSecret.name }}
+        {{- end }}
+        
+        {{- if .Values.server.dbsecret.enabled }}
+        - secretRef:
+            name: {{ .Values.server.dbsecret.name }}
+        {{- end }}
+        
+        {{- if .Values.server.awsSecret.enabled }}
+        - secretRef:
+            name: {{ .Values.server.awsSecret.name }}
+        {{- end }}
+        
+        {{- if .Values.server.oauth2Secret.enabled }}
+        - secretRef:
+            name: {{ .Values.server.oauth2Secret.name }}
         {{- end }}
         
         {{- if .Values.server.resources }}
