@@ -23,35 +23,34 @@ spec:
       {{- if .Values.global.imagePullSecrets }}
       imagePullSecrets:
       {{- range .Values.global.imagePullSecrets }}
-      - name: {{ . }}
+        - name: {{ .name }}
       {{- end }}
       {{- end }}
       containers:
-      - name: client
-        image: "{{ .Values.client.image.repository }}:{{ .Values.client.image.tag }}"
-        imagePullPolicy: {{ .Values.client.image.pullPolicy }}
-        ports:
-        - containerPort: 3000
-          name: http
-          protocol: TCP
-        envFrom:
-        - configMapRef:
-            name: {{ .Values.client.configMap.name }}
-        {{- if .Values.client.resources }}
-        resources:
-          {{- toYaml .Values.client.resources | nindent 10 }}
-        {{- end }}
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 5
+        - name: client
+          image: "{{ .Values.client.image.repository }}:{{ .Values.client.image.tag }}"
+          imagePullPolicy: {{ .Values.client.image.pullPolicy }}
+          ports:
+            - containerPort: 3000
+              name: http
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ .Values.client.configMap.name }}
+          {{- if .Values.client.resources }}
+          resources:
+{{ toYaml .Values.client.resources | nindent 12 }}
+          {{- end }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
 {{- end }}
-
