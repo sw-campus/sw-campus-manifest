@@ -5,23 +5,17 @@ metadata:
   name: sw-campus-ingress
   namespace: {{ .Values.global.namespace }}
   annotations:
-    kubernetes.io/ingress.class: {{ .Values.ingress.className }}
     kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
-    alb.ingress.kubernetes.io/healthcheck-path: /
-    alb.ingress.kubernetes.io/success-codes: "200-399"
-{{- range $key, $value := .Values.ingress.annotations }}
+    {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
-{{- end }}
+    {{- end }}
 spec:
   rules:
-{{- range .Values.ingress.hosts }}
+  {{- range .Values.ingress.hosts }}
     - host: {{ .host }}
       http:
         paths:
-{{- range .paths }}
+        {{- range .paths }}
           - path: {{ .path }}
             pathType: {{ .pathType }}
             backend:
@@ -29,6 +23,6 @@ spec:
                 name: {{ .service.name }}
                 port:
                   number: {{ .service.port }}
-{{- end }}
-{{- end }}
+        {{- end }}
+  {{- end }}
 {{- end }}

@@ -127,6 +127,8 @@ ingress:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /
+    alb.ingress.kubernetes.io/success-codes: "200-399"
 
   hosts:
     - host: www.softwarecampus.co.kr
@@ -136,6 +138,7 @@ ingress:
           service:
             name: sw-campus-client
             port: 3000
+
 
 # =========================
 # ConfigMaps
