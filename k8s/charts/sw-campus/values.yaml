@@ -20,13 +20,14 @@ server:
     port: 80
     targetPort: 8080
   configMap:
-    name: sw-campus-server-config
+    name: sw-campus-server-config-release
   secret:
     enabled: true
-    name: sw-campus-server-secret # 애플리케이션용
-  infraSecret:
-    enabled: true
-    name: sw-campus-infra-secret # 인프라용
+    name: sw-campus-server-secret-release
+  awsSecret: sw-campus-aws-secret-release
+  dbSecret: sw-campus-db-secret-release
+  oauthSecret: sw-campus-oauth-secret-release
+
   resources:
     limits:
       cpu: 1000m

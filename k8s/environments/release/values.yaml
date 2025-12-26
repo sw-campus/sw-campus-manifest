@@ -23,12 +23,12 @@ server:
       cpu: 300m
       memory: 512Mi
 
-  # ✅ Spring profile
+  # Spring profile
   configMap:
     name: sw-campus-server-config-release
-    data:
-      SPRING_PROFILES_ACTIVE: prod
-  serverSecret:
+
+  # 공통 서버 시크릿 (JWT, MAIL 등)
+  secret:
     enabled: true
     name: sw-campus-server-secret-release
   # ✅ DB / 외부 연동 Secret
@@ -36,17 +36,12 @@ server:
     enabled: true
     name: sw-campus-db-secret-release
 
-  # ✅ AWS (S3) 
-  awsSecret:
-    enabled: true
-    name: sw-campus-aws-secret-release
+  # 역할별 추가 시크릿 (🔥 핵심)
+  awsSecret: sw-campus-aws-secret-release
+  dbSecret: sw-campus-db-secret-release
+  oauthSecret: sw-campus-oauth-secret-release
 
-  # OAuth2 Secret(GitHub / Google)
-  oauth2Secret:
-    enabled: true
-    name: sw-campus-oauth-secret-release
 
-  # ❌ SSH 터널링 완전 제거
   infraSecret:
     enabled: false
 
@@ -105,13 +100,3 @@ ai:
 # =========================
 database:
   enabled: false
-
-
-# =========================
-# ConfigMaps
-# =========================
-configMaps:
-  server:
-    enabled: true
-  client:
-    enabled: true
