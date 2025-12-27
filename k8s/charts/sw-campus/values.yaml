@@ -131,6 +131,9 @@ ingress:
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
     alb.ingress.kubernetes.io/healthcheck-path: /api/health
     alb.ingress.kubernetes.io/success-codes: "200"
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:ap-northeast-2:...:certificate/497c06da-5c46-45f6-8adf-cfd0ec28ec9c
+    alb.ingress.kubernetes.io/ssl-redirect: '443'
+
 
 
   hosts:
