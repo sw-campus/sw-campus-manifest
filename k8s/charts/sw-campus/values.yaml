@@ -46,6 +46,14 @@ server:
     enabled: true
     name: sw-campus-oauth-secret-release
 
+  env:
+    - name: SPRING_BATCH_JOB_ENABLED
+      value: "false"
+    - name: SPRING_BATCH_JOB_NAMES
+      value: "NONE"
+    - name: JAVA_TOOL_OPTIONS
+      value: "-Djava.net.preferIPv4Stack=true"
+
   resources:
     limits:
       cpu: 1000m
