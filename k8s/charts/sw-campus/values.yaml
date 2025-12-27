@@ -215,5 +215,6 @@ configMaps:
     enabled: true
     data:
       SPRING_MAIN_KEEP_ALIVE: "true"
+      SPRING_MAIN_WEB_APPLICATION_TYPE: "servlet"
   client:
     enabled: true
