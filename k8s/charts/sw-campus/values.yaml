@@ -155,7 +155,7 @@ ingress:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/healthcheck-path: /internal/health
     alb.ingress.kubernetes.io/healthcheck-port: "8080"
-    alb.ingress.kubernetes.io/success-codes: "200"
+    alb.ingress.kubernetes.io/success-codes: "200,401"
 
   certificateArn: ""
 
