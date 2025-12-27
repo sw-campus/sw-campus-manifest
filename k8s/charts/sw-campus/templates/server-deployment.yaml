@@ -61,8 +61,4 @@ spec:
 {{- if .Values.server.livenessProbe }}
           livenessProbe:
 {{ toYaml .Values.server.livenessProbe | nindent 12 }}
-            {{- end }}
-{{- if .Values.server.readinessProbe }}
-          readinessProbe:
-{{ toYaml .Values.server.readinessProbe | nindent 12 }}
 {{- end }}
