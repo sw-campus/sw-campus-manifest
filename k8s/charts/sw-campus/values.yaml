@@ -17,7 +17,7 @@ server:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: develop
+    tag: release
     pullPolicy: IfNotPresent
 
   service:
