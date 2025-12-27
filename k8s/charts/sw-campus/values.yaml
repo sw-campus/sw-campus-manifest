@@ -134,6 +134,15 @@ ingress:
 
 
   hosts:
+    - host: softwarecampus.co.kr
+      paths:
+        - path: /
+          pathType: Prefix
+          service:
+            name: sw-campus-client
+            port: 3000
+
+
     - host: www.softwarecampus.co.kr
       paths:
         - path: /
