@@ -203,5 +203,7 @@ ingress:
 configMaps:
   server:
     enabled: true
+    data:
+      SPRING_MAIN_KEEP_ALIVE: "true"
   client:
     enabled: true
