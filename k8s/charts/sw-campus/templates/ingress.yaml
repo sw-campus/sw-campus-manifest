@@ -5,15 +5,14 @@ metadata:
   name: sw-campus-ingress
   namespace: {{ .Values.global.namespace }}
   annotations:
-    kubernetes.io/ingress.class: alb
     {{- range $key, $value := .Values.ingress.annotations }}
     {{ $key }}: {{ $value | quote }}
     {{- end }}
     {{- if .Values.ingress.certificateArn }}
     alb.ingress.kubernetes.io/certificate-arn: {{ .Values.ingress.certificateArn }}
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
     {{- end }}
 spec:
+  ingressClassName: {{ .Values.ingress.className }}
   rules:
   {{- range .Values.ingress.hosts }}
     - host: {{ .host }}
