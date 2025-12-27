@@ -146,10 +146,13 @@ ingress:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/healthcheck-path: /
-    alb.ingress.kubernetes.io/success-codes: 200-399
 
-  certificateArn: "" 
+    # 🔥 핵심 수정
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
+    alb.ingress.kubernetes.io/healthcheck-port: "8080"
+    alb.ingress.kubernetes.io/success-codes: "200"
+
+  certificateArn: ""
 
   hosts:
     - host: softwarecampus.co.kr
@@ -177,6 +180,7 @@ ingress:
           service:
             name: sw-campus-server
             port: 8080
+
             
 
 # =========================
