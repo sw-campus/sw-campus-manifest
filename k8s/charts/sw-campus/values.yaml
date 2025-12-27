@@ -141,6 +141,11 @@ ingress:
           service:
             name: sw-campus-client
             port: 3000
+        - path: /api
+          pathType: Prefix
+          service:
+            name: sw-campus-server
+            port: 8080
 
     - host: www.softwarecampus.co.kr
       paths:
@@ -149,6 +154,11 @@ ingress:
           service:
             name: sw-campus-client
             port: 3000
+        - path: /api
+          pathType: Prefix
+          service:
+            name: sw-campus-server
+            port: 8080
             
 
 # =========================
