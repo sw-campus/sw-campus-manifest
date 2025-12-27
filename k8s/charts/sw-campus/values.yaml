@@ -154,6 +154,11 @@ ingress:
   hosts:
     - host: softwarecampus.co.kr
       paths:
+        - path: /actuator
+          pathType: Prefix
+          service:
+            name: sw-campus-server
+            port: 8080
         - path: /
           pathType: Prefix
           service:
@@ -167,6 +172,11 @@ ingress:
 
     - host: www.softwarecampus.co.kr
       paths:
+        - path: /actuator
+          pathType: Prefix
+          service:
+            name: sw-campus-server
+            port: 8080
         - path: /
           pathType: Prefix
           service:
