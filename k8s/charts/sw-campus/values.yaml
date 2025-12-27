@@ -27,6 +27,8 @@ server:
 
   configMap:
     name: sw-campus-server-config-release
+    data:
+      cors.allowed-origins: https://www.softwarecampus.co.kr,https://softwarecampus.co.kr
 
   serverSecret:
     enabled: true
