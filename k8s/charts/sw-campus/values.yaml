@@ -62,6 +62,22 @@ server:
       cpu: 500m
       memory: 512Mi
 
+  livenessProbe:
+    httpGet:
+      path: /internal/health
+      port: 8080
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    failureThreshold: 5
+
+  # readinessProbe:
+  #   httpGet:
+  #     path: /internal/health
+  #     port: 8080
+  #   initialDelaySeconds: 30
+  #   periodSeconds: 5
+  #   failureThreshold: 3
+
 # =========================
 # Client settings
 # =========================
