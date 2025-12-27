@@ -4,16 +4,18 @@ kind: ConfigMap
 metadata:
   name: {{ .Values.server.configMap.name }}
 data:
-  {{- $profile := "staging" }}                    # default profile은 staging
-  {{- if eq .Values.global.namespace "release" }} # release 환경에서는 prod로 설정
+  {{- /* profile 결정 */}}
+  {{- $profile := "staging" }}
+  {{- if eq .Values.global.namespace "release" }}
     {{- $profile = "prod" }}
   {{- end }}
-  SPRING_PROFILES_ACTIVE: {{ $profile }}
-  {{- if .Values.server.configMap.data }}
-    {{- range $key, $value := .Values.server.configMap.data }}
-    {{- if ne $key "SPRING_PROFILES_ACTIVE" }}
-      {{ $key }}: {{ $value | quote }}
-    {{- end }}
-    {{- end }}
+
+  SPRING_PROFILES_ACTIVE: {{ $profile | quote }}
+
+  {{- /* server.configMap.data 가 있을 때만 주입 */}}
+  {{- with .Values.server.configMap.data }}
+  {{- range $key, $value := . }}
+  {{ $key }}: {{ $value | quote }}
+  {{- end }}
   {{- end }}
 {{- end }}
