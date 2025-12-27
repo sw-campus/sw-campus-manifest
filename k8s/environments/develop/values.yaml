@@ -8,7 +8,7 @@ server:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: "develop"
+    tag: "43ba0bde96f321b1017ffba3f9e4ddffa6a4434e"
     pullPolicy: IfNotPresent
   resources:
     requests:
