@@ -52,25 +52,6 @@ server:
       cpu: 500m
       memory: 512Mi
 
-  livenessProbe:
-    httpGet:
-      path: /actuator/health/liveness
-      port: 8080
-    initialDelaySeconds: 60
-    periodSeconds: 10
-    timeoutSeconds: 5
-    failureThreshold: 3
-
-  readinessProbe:
-    httpGet:
-      path: /actuator/health/readiness
-      port: 8080
-    initialDelaySeconds: 30
-    periodSeconds: 5
-    timeoutSeconds: 3
-    failureThreshold: 3
-
-
 # =========================
 # Client settings
 # =========================
@@ -146,8 +127,8 @@ ingress:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/healthcheck-path: /
-    alb.ingress.kubernetes.io/healthcheck-port: "3000"
+    alb.ingress.kubernetes.io/healthcheck-path: /internal/health
+    alb.ingress.kubernetes.io/healthcheck-port: "8080"
     alb.ingress.kubernetes.io/success-codes: "200"
 
   certificateArn: ""
