@@ -25,11 +25,16 @@ server:
     port: 8080
     targetPort: 8080
 
+  # ✅ Server ConfigMap
   configMap:
     name: sw-campus-server-config-release
     data:
+      server.address: 0.0.0.0
+      server.port: "8080"
       cors.allowed-origins: https://www.softwarecampus.co.kr,https://softwarecampus.co.kr
+      management.endpoints.web.exposure.include: health
 
+  # ✅ Secrets
   serverSecret:
     enabled: true
     name: sw-campus-server-secret-release
@@ -54,7 +59,6 @@ server:
     - name: JAVA_TOOL_OPTIONS
       value: "-Djava.net.preferIPv4Stack=true"
 
-
   resources:
     requests:
       cpu: 300m
@@ -63,17 +67,19 @@ server:
       cpu: 1000m
       memory: 1.5Gi
 
+  # ✅ Liveness Probe (존재하는 경로만 사용)
   livenessProbe:
     httpGet:
-      path: /internal/health
+      path: /actuator/health
       port: 8080
-    initialDelaySeconds: 30
+    initialDelaySeconds: 90
     periodSeconds: 10
     failureThreshold: 5
 
+  # ✅ Readiness Probe
   readinessProbe:
     httpGet:
-      path: /health
+      path: /actuator/health
       port: 8080
     initialDelaySeconds: 60
     periodSeconds: 10
@@ -99,19 +105,18 @@ client:
     name: sw-campus-client-config
 
   resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
     requests:
       cpu: 100m
       memory: 128Mi
-
+    limits:
+      cpu: 500m
+      memory: 512Mi
 
 # =========================
 # AI settings
 # =========================
 ai:
-  enabled: true 
+  enabled: true
   replicas: 2
 
   image:
@@ -124,13 +129,12 @@ ai:
     port: 8000
 
   resources:
-    limits:
-      cpu: 1000m
-      memory: 1Gi
     requests:
       cpu: 500m
       memory: 512Mi
-
+    limits:
+      cpu: 1000m
+      memory: 1Gi
 
 # =========================
 # Database configuration
@@ -143,7 +147,7 @@ database:
     port: 5432
 
 # =========================
-# Ingress settings
+# Ingress settings (ALB)
 # =========================
 ingress:
   enabled: true
@@ -153,18 +157,15 @@ ingress:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    # alb.ingress.kubernetes.io/healthcheck-path: /health
-    # alb.ingress.kubernetes.io/healthcheck-port: "8080"
-    # alb.ingress.kubernetes.io/success-codes: "200"
-    alb.ingress.kubernetes.io/healthcheck-path: /
-    alb.ingress.kubernetes.io/healthcheck-port: "3000"
+
+    # ✅ ALB Health Check (핵심)
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
+    alb.ingress.kubernetes.io/healthcheck-port: "8080"
     alb.ingress.kubernetes.io/success-codes: "200"
     alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30"
     alb.ingress.kubernetes.io/healthcheck-timeout-seconds: "10"
     alb.ingress.kubernetes.io/healthy-threshold-count: "2"
     alb.ingress.kubernetes.io/unhealthy-threshold-count: "3"
-
-
 
   certificateArn: ""
 
@@ -195,16 +196,11 @@ ingress:
             name: sw-campus-server
             port: 8080
 
-            
-
 # =========================
-# ConfigMaps
+# ConfigMaps (Helm-level)
 # =========================
 configMaps:
   server:
     enabled: true
-    data:
-      SERVER_ADDRESS: 0.0.0.0
-      SERVER_PORT: "8080"
   client:
     enabled: true
