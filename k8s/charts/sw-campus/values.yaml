@@ -131,6 +131,7 @@ ingress:
     alb.ingress.kubernetes.io/healthcheck-path: /
     alb.ingress.kubernetes.io/success-codes: 200-399
 
+  certificateArn: "" 
 
   hosts:
     - host: softwarecampus.co.kr
@@ -141,7 +142,6 @@ ingress:
             name: sw-campus-client
             port: 3000
 
-
     - host: www.softwarecampus.co.kr
       paths:
         - path: /
@@ -149,7 +149,7 @@ ingress:
           service:
             name: sw-campus-client
             port: 3000
-
+            
 
 # =========================
 # ConfigMaps
