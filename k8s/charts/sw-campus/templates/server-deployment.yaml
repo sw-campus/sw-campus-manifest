@@ -32,6 +32,8 @@ spec:
               value: "false"
             - name: SPRING_BATCH_JOB_NAMES
               value: "NONE"
+            - name: JAVA_TOOL_OPTIONS
+              value: "-Djava.net.preferIPv4Stack=true"
 
           ports:
             - containerPort: 8080
