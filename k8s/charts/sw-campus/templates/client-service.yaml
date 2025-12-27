@@ -7,15 +7,11 @@ metadata:
     app: sw-campus-client
 spec:
   type: {{ .Values.client.service.type }}
-  ports:
-    - port: {{ .Values.client.service.port }}
-      targetPort: {{ .Values.client.service.port }}
-      {{- if eq .Values.client.service.type "NodePort" }}
-      nodePort: {{ .Values.client.service.nodePort }}
-      {{- end }}
-      protocol: TCP
-      name: http
   selector:
     app: sw-campus-client
+  ports:
+    - name: http
+      port: {{ .Values.client.service.port }}
+      targetPort: {{ .Values.client.service.targetPort }}
+      protocol: TCP
 {{- end }}
-

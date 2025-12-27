@@ -4,7 +4,7 @@ global:
 
 grafana:
   enabled: true
-  replicas: 2
+  replicas: 1
   image:
     repository: grafana/grafana
     tag: "10.4.2"
