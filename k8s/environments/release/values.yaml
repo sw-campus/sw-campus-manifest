@@ -106,3 +106,47 @@ ai:
 # =========================
 database:
   enabled: false
+
+# =========================
+# Ingress settings (기본값 오버라이드)
+# =========================
+ingress:
+  enabled: true
+  className: alb
+
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+    alb.ingress.kubernetes.io/healthcheck-port: "8080"
+    alb.ingress.kubernetes.io/success-codes: "200"
+
+  certificateArn: ""
+
+  hosts:
+    - host: softwarecampus.co.kr
+      paths:
+        - path: /
+          pathType: Prefix
+          service:
+            name: sw-campus-client
+            port: 3000
+        - path: /api
+          pathType: Prefix
+          service:
+            name: sw-campus-server
+            port: 8080
+
+    - host: www.softwarecampus.co.kr
+      paths:
+        - path: /
+          pathType: Prefix
+          service:
+            name: sw-campus-client
+            port: 3000
+        - path: /api
+          pathType: Prefix
+          service:
+            name: sw-campus-server
+            port: 8080
