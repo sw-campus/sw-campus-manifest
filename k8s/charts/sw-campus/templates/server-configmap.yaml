@@ -1,4 +1,4 @@
-{{- if .Values.configMaps.server.enabled }}
+{{- if .Values.server.configMap.name }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
