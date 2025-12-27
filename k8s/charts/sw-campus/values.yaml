@@ -204,7 +204,7 @@ configMaps:
   server:
     enabled: true
     data:
-      SPRING_MAIN_KEEP_ALIVE: "true"
-      SPRING_MAIN_WEB_APPLICATION_TYPE: "servlet"
+      SERVER_ADDRESS: 0.0.0.0
+      SERVER_PORT: "8080"
   client:
     enabled: true
