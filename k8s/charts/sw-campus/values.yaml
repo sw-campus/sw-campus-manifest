@@ -54,13 +54,14 @@ server:
     - name: JAVA_TOOL_OPTIONS
       value: "-Djava.net.preferIPv4Stack=true"
 
+
   resources:
+    requests:
+      cpu: 300m
+      memory: 768Mi
     limits:
       cpu: 1000m
-      memory: 1Gi
-    requests:
-      cpu: 500m
-      memory: 512Mi
+      memory: 1.5Gi
 
   livenessProbe:
     httpGet:
