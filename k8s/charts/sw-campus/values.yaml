@@ -134,7 +134,7 @@ ingress:
 
 
   hosts:
-    - host: ""
+    - host: www.softwarecampus.co.kr
       paths:
         - path: /
           pathType: Prefix
