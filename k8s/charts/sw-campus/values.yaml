@@ -1,5 +1,3 @@
-# Default values for sw-campus
-
 # =========================
 # Global settings
 # =========================
@@ -25,7 +23,7 @@ server:
     port: 8080
     targetPort: 8080
 
-  # Server ConfigMap
+  # ✅ Server ConfigMap (유일한 ConfigMap 정의)
   configMap:
     name: sw-campus-server-config-release
     data:
@@ -33,12 +31,11 @@ server:
       server.port: "8080"
       cors.allowed-origins: https://www.softwarecampus.co.kr,https://softwarecampus.co.kr
 
-      # Actuator 설정 (health만, base-path=/)
-      management.endpoints.web.base-path: /
+      # Actuator 최소 노출 (보안 OK)
       management.endpoints.web.exposure.include: health
+      management.endpoints.web.base-path: /
       management.endpoint.health.probes.enabled: true
 
-  # Secrets
   serverSecret:
     enabled: true
     name: sw-campus-server-secret-release
@@ -71,7 +68,7 @@ server:
       cpu: 1000m
       memory: 1.5Gi
 
-  # Probes (오직 /health)
+  # ✅ Probes는 /health (Actuator base-path=/)
   livenessProbe:
     httpGet:
       path: /health
@@ -161,7 +158,7 @@ ingress:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
 
-    # ALB Health Check (서버와 완전히 동일)
+    # ✅ ALB Health Check
     alb.ingress.kubernetes.io/healthcheck-path: /health
     alb.ingress.kubernetes.io/healthcheck-port: "8080"
     alb.ingress.kubernetes.io/success-codes: "200"
