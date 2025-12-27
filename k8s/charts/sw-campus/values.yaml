@@ -25,16 +25,20 @@ server:
     port: 8080
     targetPort: 8080
 
-  # ✅ Server ConfigMap
+  # Server ConfigMap
   configMap:
     name: sw-campus-server-config-release
     data:
       server.address: 0.0.0.0
       server.port: "8080"
       cors.allowed-origins: https://www.softwarecampus.co.kr,https://softwarecampus.co.kr
-      management.endpoints.web.exposure.include: health
 
-  # ✅ Secrets
+      # Actuator 설정 (health만, base-path=/)
+      management.endpoints.web.base-path: /
+      management.endpoints.web.exposure.include: health
+      management.endpoint.health.probes.enabled: true
+
+  # Secrets
   serverSecret:
     enabled: true
     name: sw-campus-server-secret-release
@@ -67,19 +71,18 @@ server:
       cpu: 1000m
       memory: 1.5Gi
 
-  # ✅ Liveness Probe (존재하는 경로만 사용)
+  # Probes (오직 /health)
   livenessProbe:
     httpGet:
-      path: /actuator/health
+      path: /health
       port: 8080
     initialDelaySeconds: 90
     periodSeconds: 10
     failureThreshold: 5
 
-  # ✅ Readiness Probe
   readinessProbe:
     httpGet:
-      path: /actuator/health
+      path: /health
       port: 8080
     initialDelaySeconds: 60
     periodSeconds: 10
@@ -158,8 +161,8 @@ ingress:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
 
-    # ✅ ALB Health Check (핵심)
-    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
+    # ALB Health Check (서버와 완전히 동일)
+    alb.ingress.kubernetes.io/healthcheck-path: /health
     alb.ingress.kubernetes.io/healthcheck-port: "8080"
     alb.ingress.kubernetes.io/success-codes: "200"
     alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30"
@@ -195,21 +198,3 @@ ingress:
           service:
             name: sw-campus-server
             port: 8080
-
-# =========================
-# ConfigMaps (Helm-level)
-# =========================
-configMaps:
-  server:
-    enabled: true
-    data:
-      server.address: 0.0.0.0
-      server.port: "8080"
-
-      management.endpoints.web.exposure.include: health
-      management.endpoint.health.probes.enabled: "true"
-
-  client:
-    enabled: true
-
-
