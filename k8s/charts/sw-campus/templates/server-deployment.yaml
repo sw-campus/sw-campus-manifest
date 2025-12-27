@@ -27,14 +27,12 @@ spec:
         - name: server
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
+{{- if .Values.server.env }}
           env:
-            - name: SPRING_BATCH_JOB_ENABLED
-              value: "false"
-            - name: SPRING_BATCH_JOB_NAMES
-              value: "NONE"
-            - name: JAVA_TOOL_OPTIONS
-              value: "-Djava.net.preferIPv4Stack=true"
-
+{{- with .Values.server.env }}
+{{- toYaml . | nindent 12 }}
+{{- end }}
+{{- end }}
           ports:
             - containerPort: 8080
           envFrom:
