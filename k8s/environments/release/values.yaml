@@ -12,7 +12,7 @@ server:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: v1.0.1  # 새 이미지 태그 (SecurityConfig 수정 반영)
+    tag: v1.0.0  # 존재하는 이미지 태그로 고정
     pullPolicy: IfNotPresent
 
   resources:
