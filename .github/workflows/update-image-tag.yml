@@ -1,0 +1,50 @@
+name: Update Image Tag
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [server-updated]
+
+jobs:
+  update-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout manifest repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: manifest
+
+      - name: Checkout server repository
+        uses: actions/checkout@v4
+        with:
+          repository: sw-campus/sw-campus-server
+          token: ${{ secrets.GITHUB_TOKEN }}
+          path: server
+
+      - name: Get commit SHA
+        id: get-sha
+        run: |
+          cd server
+          SHA=$(git rev-parse --short HEAD)
+          echo "sha=$SHA" >> $GITHUB_OUTPUT
+          echo "tag=v1.0.0-$SHA" >> $GITHUB_OUTPUT
+          echo "Commit SHA: $SHA"
+          echo "New tag: v1.0.0-$SHA"
+
+      - name: Update values.yaml
+        run: |
+          cd manifest
+          TAG="${{ steps.get-sha.outputs.tag }}"
+          sed -i "s|tag: v1.0.0-.*|tag: ${TAG}|" k8s/environments/release/values.yaml
+          echo "Updated tag to: $TAG"
+
+      - name: Commit and push
+        run: |
+          cd manifest
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add k8s/environments/release/values.yaml
+          git diff --staged --quiet || git commit -m "chore: update server image tag to ${{ steps.get-sha.outputs.tag }}"
+          git push
+
