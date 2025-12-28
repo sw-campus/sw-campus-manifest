@@ -51,6 +51,11 @@ server:
   infraSecret:
     enabled: false
 
+  # 환경변수 설정
+  env:
+    - name: MANAGEMENT_METRICS_EXPORT_OTLP_ENABLED
+      value: "false"  # ❌ OTLP 메트릭스 export 비활성화 (연결 실패 에러 방지)
+
 
 # =========================
 # Client (React)
