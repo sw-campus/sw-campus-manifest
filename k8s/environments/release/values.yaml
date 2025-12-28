@@ -129,21 +129,35 @@ ingress:
 
   certificateArn: ""
 
+  # ⚠️ 임시: 도메인 연동 전까지 모든 호스트 허용 (와일드카드)
+  # 내일 도메인 연동 시 아래 주석을 해제하고 실제 도메인으로 변경
   hosts:
-    - host: softwarecampus.co.kr
-      paths:
-        - path: /
-          pathType: Prefix
-          service:
-            name: sw-campus-client
-            port: 3000
-        - path: /api
-          pathType: Prefix
-          service:
-            name: sw-campus-server
-            port: 8080
-
-    - host: www.softwarecampus.co.kr
+    # - host: softwarecampus.co.kr
+    #   paths:
+    #     - path: /
+    #       pathType: Prefix
+    #       service:
+    #         name: sw-campus-client
+    #         port: 3000
+    #     - path: /api
+    #       pathType: Prefix
+    #       service:
+    #         name: sw-campus-server
+    #         port: 8080
+    # - host: www.softwarecampus.co.kr
+    #   paths:
+    #     - path: /
+    #       pathType: Prefix
+    #       service:
+    #         name: sw-campus-client
+    #         port: 3000
+    #     - path: /api
+    #       pathType: Prefix
+    #       service:
+    #         name: sw-campus-server
+    #         port: 8080
+    # 임시: 모든 호스트 허용 (host 필드 없음)
+    - host: ""
       paths:
         - path: /
           pathType: Prefix
