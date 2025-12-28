@@ -30,10 +30,13 @@ server:
       server.port: "8080"
       cors.allowed-origins: https://www.softwarecampus.co.kr,https://softwarecampus.co.kr
 
-      # 🔧 Actuator 최소 노출 (ALB HealthCheck용)
+      # 🔧 Actuator 설정 (Kubernetes Probe용)
+      # 참고: HealthController의 /health를 주로 사용하고, Actuator는 보조적으로 사용
+      # Kubernetes probe는 클러스터 내부에서 Pod에 직접 접근하므로 안전하게 사용 가능
+      # Spring Boot는 환경변수에서 점(.)을 언더스코어(_)로 변환하여 인식
       management.endpoints.web.exposure.include: health
-      management.endpoints.web.base-path: /      # 🔧 여기 중요
-      management.endpoint.health.probes.enabled: true
+      management.endpoints.web.base-path: /
+      management.endpoint.health.probes.enabled: "true"
 
   serverSecret:
     enabled: true
@@ -69,13 +72,15 @@ server:
       cpu: 1000m
       memory: 1.5Gi
 
-  # ✅ Probes → 실제로 존재하는 /health
+  # ✅ Probes → HealthController의 /health 엔드포인트 사용
+  # HealthController가 있고 SecurityConfig에서 permitAll로 설정되어 있어 안전하게 사용 가능
   livenessProbe:
     httpGet:
       path: /health
       port: 8080
     initialDelaySeconds: 90
     periodSeconds: 10
+    timeoutSeconds: 5
     failureThreshold: 5
 
   readinessProbe:
@@ -84,6 +89,7 @@ server:
       port: 8080
     initialDelaySeconds: 60
     periodSeconds: 10
+    timeoutSeconds: 5
 
 # =========================
 # Client settings
@@ -158,9 +164,14 @@ ingress:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    alb.ingress.kubernetes.io/healthcheck-path: /health
-    alb.ingress.kubernetes.io/healthcheck-port: "8080"
-    alb.ingress.kubernetes.io/success-codes: "200"
+
+    # ✅ 아키텍처: 백엔드(서버, AI, DB)는 프론트엔드를 통해서만 접근 가능
+    # 따라서 ALB 헬스체크는 클라이언트(프론트엔드)만 체크하면 됨
+    # 서버, AI는 클러스터 내부에서만 접근 가능하므로 ALB 헬스체크 불필요
+    # Kubernetes probe (liveness/readiness)가 내부에서 헬스체크를 담당함
+    # ALB는 기본 헬스체크를 사용하거나, 필요시 클라이언트 루트 경로(/)만 체크
+    # alb.ingress.kubernetes.io/healthcheck-path: /
+    # alb.ingress.kubernetes.io/success-codes: "200"
 
   hosts:
     - paths:
@@ -177,7 +188,7 @@ ingress:
             port: 8080
 
 # =========================
-# Helm template guard 
+# Helm template guard
 # =========================
 configMaps:
   server:
