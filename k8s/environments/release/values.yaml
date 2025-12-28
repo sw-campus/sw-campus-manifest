@@ -122,7 +122,7 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/target-type: instance  # ALB가 NodePort로 트래픽 라우팅
     # ✅ 아키텍처: 백엔드(서버, AI, DB)는 프론트엔드를 통해서만 접근 가능
     # 따라서 ALB 헬스체크는 클라이언트(프론트엔드)만 체크하면 됨
     # 서버, AI는 클러스터 내부에서만 접근 가능하므로 ALB 헬스체크 불필요
