@@ -40,6 +40,11 @@ server:
       # - probes.enabled: true는 application.yml에 이미 설정되어 있음
       management.endpoints.web.exposure.include: health
       management.endpoint.health.probes.enabled: "true"
+      # ✅ readiness probe에서 DB/Redis 제외 (운영 정석)
+      # DB/Redis 연결 문제가 있어도 웹 서버 준비되면 트래픽 수신 가능
+      # readiness = 웹서버 준비 여부만 체크
+      management.health.db.enabled: "false"
+      management.health.redis.enabled: "false"
 
   serverSecret:
     enabled: true
