@@ -99,20 +99,36 @@ server:
   # - readinessProbe만으로 충분
   # - startupProbe는 오히려 보안 설정과 충돌 가능
 
+  # ⭐ Actuator를 별도 포트(9090)로 분리 (보안과 헬스체크 완전 분리)
+  # - 메인 API 포트(8080)와 헬스체크 포트(9090) 물리적 분리
+  # - JWT / Security / Filter 전부 무시됨 (포트 자체가 다르므로 인증 개입 불가)
+  # - 실무에서 99% 사용하는 정석 방법
+  
   # ⭐ readinessProbe: 서버가 트래픽을 받을 준비가 되었는지 확인
+  # - port: 9090 (Actuator 전용 포트)
   # - initialDelaySeconds: 180초 (서버 최대 ~136초 + 여유 40초 이상 + 운영 환경 대비)
   # - timeoutSeconds: 2초 (빠른 실패 감지)
   # - failureThreshold: 6 (여유 있게)
   readinessProbe:
     httpGet:
       path: /actuator/health/readiness
-      port: 8080
+      port: 9090  # Actuator 전용 포트
     initialDelaySeconds: 180  # 서버 최대 ~136초 + 여유 40초 이상 + 운영 환경 대비
     periodSeconds: 10
     timeoutSeconds: 2
     failureThreshold: 6
 
-  # ❌ livenessProbe 제거 (Pod 재시작 문제 방지)
+  # ⭐ livenessProbe: 서버가 살아있는지 확인
+  # - port: 9090 (Actuator 전용 포트)
+  # - initialDelaySeconds: 180초 (readinessProbe와 동일)
+  livenessProbe:
+    httpGet:
+      path: /actuator/health/liveness
+      port: 9090  # Actuator 전용 포트
+    initialDelaySeconds: 180
+    periodSeconds: 10
+    timeoutSeconds: 2
+    failureThreshold: 3
 
 # =========================
 # Client settings
