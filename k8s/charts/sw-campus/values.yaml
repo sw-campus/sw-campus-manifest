@@ -40,11 +40,12 @@ server:
       # - probes.enabled: true는 application.yml에 이미 설정되어 있음
       management.endpoints.web.exposure.include: health
       management.endpoint.health.probes.enabled: "true"
-      # ✅ readiness probe에서 DB/Redis 제외 (운영 정석)
-      # DB/Redis 연결 문제가 있어도 웹 서버 준비되면 트래픽 수신 가능
+      # ✅ readiness probe에서 DB/Redis/Mail 제외 (운영 정석)
+      # DB/Redis/Mail 연결 문제가 있어도 웹 서버 준비되면 트래픽 수신 가능
       # readiness = 웹서버 준비 여부만 체크
       management.health.db.enabled: "false"
       management.health.redis.enabled: "false"
+      management.health.mail.enabled: "false"   # ⭐ Mail health check 비활성화 (130초 블로킹 방지)
 
   serverSecret:
     enabled: true
@@ -64,7 +65,7 @@ server:
 
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: release
+      value: prod
     - name: SPRING_BATCH_JOB_ENABLED
       value: "false"
     - name: SPRING_BATCH_JOB_NAMES
@@ -170,8 +171,8 @@ ingress:
 
     # ✅ ALB 헬스체크 설정 (서버 타겟그룹용)
     # SecurityConfig에서 /actuator/health/**가 permitAll로 허용되어 있음
-    # management.health.db/redis.enabled: false로 설정되어 DB/Redis 체크 제외
-    # → /actuator/health/readiness는 항상 200 반환 (인증 불필요, DB 체크 없음)
+    # management.health.db/redis/mail.enabled: false로 설정되어 DB/Redis/Mail 체크 제외
+    # → /actuator/health/readiness는 항상 200 반환 (인증 불필요, DB/Redis/Mail 체크 없음)
     alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/readiness
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/healthcheck-port: traffic-port
