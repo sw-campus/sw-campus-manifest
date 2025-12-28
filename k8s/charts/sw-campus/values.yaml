@@ -64,7 +64,7 @@ server:
 
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: release
+      value: prod
     - name: SPRING_BATCH_JOB_ENABLED
       value: "false"
     - name: SPRING_BATCH_JOB_NAMES
