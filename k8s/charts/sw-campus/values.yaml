@@ -83,16 +83,19 @@ server:
       cpu: 1000m
       memory: 1.5Gi
 
-  # ✅ 헬스체크 설정 (가장 안전한 방법)
+  # ✅ 헬스체크 설정 (HTTP 기반 - Spring 진짜 준비 상태 확인)
   # ⚠️ livenessProbe는 실패 시 Pod 재시작으로 인한 문제 발생 가능 → 제거
   # ALB + readinessProbe만으로 충분한 헬스체크 제공
-  # TCP Socket 사용: Tomcat 포트가 열리면 바로 Ready
-  # Security / Actuator / 인증 설정과 무관하게 동작
+  # HTTP 사용: Spring Context / Security / Filter 체인까지 모두 준비된 상태만 Ready
+  # /actuator/health/readiness는 DB/Redis/Mail 체크 없이 즉시 200 반환 (인증 불필요)
+  # TCP는 포트만 열리면 OK라서 실제 요청 처리 불가능한 상태에서도 Ready 될 수 있음
   readinessProbe:
-    tcpSocket:
+    httpGet:
+      path: /actuator/health/readiness
       port: 8080
     initialDelaySeconds: 120  # 앱 시작 시간(143초) 고려하여 여유있게
     periodSeconds: 10
+    timeoutSeconds: 3
     failureThreshold: 3
 
   # ❌ livenessProbe 제거 (Pod 재시작 문제 방지)
