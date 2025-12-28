@@ -53,6 +53,8 @@ server:
     name: sw-campus-oauth-secret-release
 
   env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: release
     - name: SPRING_BATCH_JOB_ENABLED
       value: "false"
     - name: SPRING_BATCH_JOB_NAMES
