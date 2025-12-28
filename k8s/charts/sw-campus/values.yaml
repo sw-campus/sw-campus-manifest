@@ -106,27 +106,30 @@ server:
   
   # ⭐ readinessProbe: 서버가 트래픽을 받을 준비가 되었는지 확인
   # - port: 9090 (Actuator 전용 포트)
-  # - initialDelaySeconds: 180초 (서버 최대 ~136초 + 여유 40초 이상 + 운영 환경 대비)
+  # - initialDelaySeconds: 300초 (5분) - 절대 흔들리기 싫다면 5분이 과한 게 아님
+  #   운영에서 5분 readinessDelay 쓰는 서비스 많음
   # - timeoutSeconds: 2초 (빠른 실패 감지)
   # - failureThreshold: 6 (여유 있게)
   readinessProbe:
     httpGet:
       path: /actuator/health/readiness
       port: 9090  # Actuator 전용 포트
-    initialDelaySeconds: 180  # 서버 최대 ~136초 + 여유 40초 이상 + 운영 환경 대비
+    initialDelaySeconds: 300  # 5분 - 절대 흔들리기 싫다면 과한 게 아님 (운영에서 흔함)
     periodSeconds: 10
     timeoutSeconds: 2
     failureThreshold: 6
 
   # ⭐ livenessProbe: 서버가 살아있는지 확인
-  # - port: 9090 (Actuator 전용 포트)
-  # - initialDelaySeconds: 180초 (readinessProbe와 동일)
+  # - port: 8080 (메인 API 포트)
+  # - initialDelaySeconds: 300초 (5분) - 진짜 죽었을 때만 죽여야 함
+  #   초기화 무거운 앱에선 더더욱 신중해야 함
+  # - periodSeconds: 20초 (readiness보다 덜 자주 체크)
   livenessProbe:
     httpGet:
       path: /actuator/health/liveness
-      port: 9090  # Actuator 전용 포트
-    initialDelaySeconds: 180
-    periodSeconds: 10
+      port: 8080  # 메인 API 포트
+    initialDelaySeconds: 300  # 5분 - 진짜 죽었을 때만 죽여야 함
+    periodSeconds: 20  # readiness보다 덜 자주 체크
     timeoutSeconds: 2
     failureThreshold: 3
 
