@@ -75,27 +75,28 @@ server:
       cpu: 1000m
       memory: 1.5Gi
 
-  # ✅ 헬스체크 설정 (임시: HealthController의 /health 사용)
-  # TODO: Actuator /actuator/health/liveness, /actuator/health/readiness로 전환 검토
-  # 현재 HealthController의 /health 엔드포인트 사용 (SecurityConfig에서 permitAll)
+  # ✅ 헬스체크 설정 (HealthController의 /health 사용)
+  # ⚠️ 가장 안전한 방법: livenessProbe 제거, readinessProbe만 사용
+  # ALB + readinessProbe만 있으면 충분함
+  # livenessProbe는 실패 시 Pod를 재시작시켜서 오히려 문제를 일으킬 수 있음
   # 150초 이상 걸리는 앱이므로 initialDelaySeconds: 180 필수
-  livenessProbe:
-    httpGet:
-      path: /health
-      port: 8080
-    initialDelaySeconds: 180
-    periodSeconds: 10
-    timeoutSeconds: 5
-    failureThreshold: 5
+  # livenessProbe:
+  #   httpGet:
+  #     path: /health
+  #     port: 8080
+  #   initialDelaySeconds: 180
+  #   periodSeconds: 10
+  #   timeoutSeconds: 5
+  #   failureThreshold: 5
 
+  # ✅ readinessProbe만 유지 (트래픽 수신 준비 여부만 체크)
   readinessProbe:
     httpGet:
       path: /health
       port: 8080
-    initialDelaySeconds: 180
+    initialDelaySeconds: 180  # 🔥 핵심: 앱 시작 시간 고려
     periodSeconds: 10
     timeoutSeconds: 5
-    failureThreshold: 3
 
 # =========================
 # Client settings
