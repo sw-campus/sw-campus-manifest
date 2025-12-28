@@ -158,14 +158,14 @@ ingress:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
 
-    # ✅ ALB Health Check
-    alb.ingress.kubernetes.io/healthcheck-path: /health
-    alb.ingress.kubernetes.io/healthcheck-port: "8080"
-    alb.ingress.kubernetes.io/success-codes: "200"
-    alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30"
-    alb.ingress.kubernetes.io/healthcheck-timeout-seconds: "10"
-    alb.ingress.kubernetes.io/healthy-threshold-count: "2"
-    alb.ingress.kubernetes.io/unhealthy-threshold-count: "3"
+    # # ✅ ALB Health Check
+    # alb.ingress.kubernetes.io/healthcheck-path: /health
+    # alb.ingress.kubernetes.io/healthcheck-port: "8080"
+    # alb.ingress.kubernetes.io/success-codes: "200"
+    # alb.ingress.kubernetes.io/healthcheck-interval-seconds: "30"
+    # alb.ingress.kubernetes.io/healthcheck-timeout-seconds: "10"
+    # alb.ingress.kubernetes.io/healthy-threshold-count: "2"
+    # alb.ingress.kubernetes.io/unhealthy-threshold-count: "3"
 
   certificateArn: ""
 
