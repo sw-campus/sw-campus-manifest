@@ -12,7 +12,7 @@ server:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: v1.0.0
+    tag: v1.0.0-54fee07  # TODO: CI/CD에서 자동으로 커밋 SHA로 업데이트
     pullPolicy: IfNotPresent
 
   resources:

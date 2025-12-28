@@ -15,7 +15,7 @@ server:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: v1.0.0-54fee07
+    tag: v1.0.0  # 환경별 values.yaml에서 커밋 SHA 기반 태그로 override
     pullPolicy: IfNotPresent
 
   service:
