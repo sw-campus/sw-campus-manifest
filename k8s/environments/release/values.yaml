@@ -123,14 +123,14 @@ ingress:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: instance  # ALB가 NodePort로 트래픽 라우팅
-    # ✅ 아키텍처: 백엔드(서버, AI, DB)는 프론트엔드를 통해서만 접근 가능
-    # 따라서 ALB 헬스체크는 클라이언트(프론트엔드)만 체크하면 됨
-    # 서버, AI는 클러스터 내부에서만 접근 가능하므로 ALB 헬스체크 불필요
-    # Kubernetes probe (liveness/readiness)가 내부에서 헬스체크를 담당함
-    # ⚠️ 보안 중요: Ingress에 /actuator 경로 없음 → 외부에서 /actuator 접근 불가능
-    # ALB는 기본 헬스체크를 사용하거나, 필요시 클라이언트 루트 경로(/)만 체크
-    # alb.ingress.kubernetes.io/healthcheck-path: /
-    # alb.ingress.kubernetes.io/success-codes: "200"
+    # ✅ ALB 헬스체크 설정 (서버 타겟그룹용)
+    # SecurityConfig에서 /actuator/health/**가 permitAll로 허용되어 있음
+    # management.health.db/redis.enabled: false로 설정되어 DB/Redis 체크 제외
+    # → /actuator/health/readiness는 항상 200 반환 (인증 불필요, DB 체크 없음)
+    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/readiness
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
+    alb.ingress.kubernetes.io/success-codes: "200"  # ⚠️ 반드시 명시 (기본값 200-399여도 401 에러 방지)
 
   certificateArn: ""
 
