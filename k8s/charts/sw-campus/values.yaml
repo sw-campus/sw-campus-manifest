@@ -46,6 +46,10 @@ server:
       management.health.db.enabled: "false"
       management.health.redis.enabled: "false"
       management.health.mail.enabled: "false"   # ⭐ Mail health check 비활성화 (130초 블로킹 방지)
+      # ⭐ Spring Batch 자동 실행 비활성화 (JobExecutionAlreadyRunningException 방지)
+      # - 운영 환경에서는 Batch Job을 API/스케줄러/별도 Pod로 실행하는 것이 정석
+      # - 서버 기동 시 자동 실행 시 중복 실행으로 인한 예외 발생 → 서버 셧다운 방지
+      spring.batch.job.enabled: "false"
 
   serverSecret:
     enabled: true
