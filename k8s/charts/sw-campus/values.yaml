@@ -75,28 +75,26 @@ server:
       cpu: 1000m
       memory: 1.5Gi
 
-  # ✅ 헬스체크 설정 (HealthController의 /health 사용)
-  # ⚠️ 가장 안전한 방법: livenessProbe 제거, readinessProbe만 사용
-  # ALB + readinessProbe만 있으면 충분함
-  # livenessProbe는 실패 시 Pod를 재시작시켜서 오히려 문제를 일으킬 수 있음
-  # 150초 이상 걸리는 앱이므로 initialDelaySeconds: 180 필수
-  # livenessProbe:
-  #   httpGet:
-  #     path: /health
-  #     port: 8080
-  #   initialDelaySeconds: 180
-  #   periodSeconds: 10
-  #   timeoutSeconds: 5
-  #   failureThreshold: 5
-
-  # ✅ readinessProbe만 유지 (트래픽 수신 준비 여부만 체크)
+  # ✅ Spring Boot 3 Actuator 헬스체크 사용 (정석)
+  # management.endpoint.health.probes.enabled: true 설정으로
+  # /actuator/health/liveness와 /actuator/health/readiness 자동 생성됨
+  # 150초 이상 걸리는 앱이므로 initialDelaySeconds 설정 중요
   readinessProbe:
     httpGet:
-      path: /health
+      path: /actuator/health/readiness
       port: 8080
-    initialDelaySeconds: 180  # 🔥 핵심: 앱 시작 시간 고려
+    initialDelaySeconds: 180
     periodSeconds: 10
     timeoutSeconds: 5
+
+  livenessProbe:
+    httpGet:
+      path: /actuator/health/liveness
+      port: 8080
+    initialDelaySeconds: 240
+    periodSeconds: 20
+    timeoutSeconds: 5
+    failureThreshold: 3
 
 # =========================
 # Client settings
