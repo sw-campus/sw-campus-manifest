@@ -75,14 +75,13 @@ server:
       cpu: 1000m
       memory: 1.5Gi
 
-  # ✅ Actuator 헬스체크 사용 (Spring Boot 3 공식 권장 방식)
-  # /actuator/health/liveness와 /actuator/health/readiness 자동 생성
-  # ⚠️ 보안: Kubernetes probe는 Pod 내부에서 localhost 접근 → 외부 노출 아님
-  # ⚠️ 중요: Ingress에 /actuator 경로가 없어야 외부 접근 차단됨
+  # ✅ 헬스체크 설정 (임시: HealthController의 /health 사용)
+  # TODO: Actuator /actuator/health/liveness, /actuator/health/readiness로 전환 검토
+  # 현재 HealthController의 /health 엔드포인트 사용 (SecurityConfig에서 permitAll)
   # 150초 이상 걸리는 앱이므로 initialDelaySeconds: 180 필수
   livenessProbe:
     httpGet:
-      path: /actuator/health/liveness
+      path: /health
       port: 8080
     initialDelaySeconds: 180
     periodSeconds: 10
@@ -91,7 +90,7 @@ server:
 
   readinessProbe:
     httpGet:
-      path: /actuator/health/readiness
+      path: /health
       port: 8080
     initialDelaySeconds: 180
     periodSeconds: 10
