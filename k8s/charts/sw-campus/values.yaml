@@ -119,7 +119,17 @@ server:
     timeoutSeconds: 2
     failureThreshold: 6
 
-  # ❌ livenessProbe 완전히 제거 (Pod 재시작 문제 방지)
+  # ❌ livenessProbe 주석 처리 (Pod 재시작 문제 방지)
+  # 초기화 무거운 앱에서 livenessProbe는 오히려 위험
+  # readinessProbe만으로 충분
+  # livenessProbe:
+  #   httpGet:
+  #     path: /actuator/health/liveness
+  #     port: 8080  # 메인 API 포트
+  #   initialDelaySeconds: 300  # 5분 - 진짜 죽었을 때만 죽여야 함
+  #   periodSeconds: 20  # readiness보다 덜 자주 체크
+  #   timeoutSeconds: 2
+  #   failureThreshold: 3
 
 # =========================
 # Client settings
