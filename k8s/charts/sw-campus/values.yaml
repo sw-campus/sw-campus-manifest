@@ -119,19 +119,7 @@ server:
     timeoutSeconds: 2
     failureThreshold: 6
 
-  # ⭐ livenessProbe: 서버가 살아있는지 확인
-  # - port: 8080 (메인 API 포트)
-  # - initialDelaySeconds: 300초 (5분) - 진짜 죽었을 때만 죽여야 함
-  #   초기화 무거운 앱에선 더더욱 신중해야 함
-  # - periodSeconds: 20초 (readiness보다 덜 자주 체크)
-  livenessProbe:
-    httpGet:
-      path: /actuator/health/liveness
-      port: 8080  # 메인 API 포트
-    initialDelaySeconds: 300  # 5분 - 진짜 죽었을 때만 죽여야 함
-    periodSeconds: 20  # readiness보다 덜 자주 체크
-    timeoutSeconds: 2
-    failureThreshold: 3
+  # ❌ livenessProbe 완전히 제거 (Pod 재시작 문제 방지)
 
 # =========================
 # Client settings
