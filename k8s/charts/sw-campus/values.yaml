@@ -195,3 +195,12 @@ ingress:
           service:
             name: sw-campus-server
             port: 8080
+
+# =========================
+# Helm template guard 
+# =========================
+configMaps:
+  server:
+    enabled: true
+  client:
+    enabled: true
