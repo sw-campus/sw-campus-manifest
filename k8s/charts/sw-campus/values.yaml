@@ -31,9 +31,9 @@ server:
       server.port: "8080"
       cors.allowed-origins: https://www.softwarecampus.co.kr,https://softwarecampus.co.kr
 
-      # Actuator 최소 노출 (보안 OK)
+      # Actuator 최소 노출 (내부 모니터링용, base-path=/actuator)
       management.endpoints.web.exposure.include: health
-      management.endpoints.web.base-path: /
+      management.endpoints.web.base-path: /actuator
       management.endpoint.health.probes.enabled: true
 
   serverSecret:
