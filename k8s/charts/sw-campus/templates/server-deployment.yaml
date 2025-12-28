@@ -59,9 +59,10 @@ spec:
 {{ toYaml .Values.server.resources | nindent 12 }}
 {{- end }}
 {{- if .Values.server.livenessProbe }}
-          livenessProbe:
-{{ toYaml .Values.server.livenessProbe | nindent 12 }}
-            {{- end }}
+          # ❌ livenessProbe 주석 처리 (Pod 재시작 문제 방지)
+          # livenessProbe:
+          # {{ toYaml .Values.server.livenessProbe | nindent 12 }}
+{{- end }}
 {{- if .Values.server.readinessProbe }}
           readinessProbe:
 {{ toYaml .Values.server.readinessProbe | nindent 12 }}
