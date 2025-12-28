@@ -80,27 +80,19 @@ server:
       cpu: 1000m
       memory: 1.5Gi
 
-  # ✅ 헬스체크 설정 (readinessProbe만 사용 - 가장 안전)
-  # ⚠️ livenessProbe는 실패 시 Pod 재시작으로 인한 문제 발생 가능
+  # ✅ 헬스체크 설정 (가장 안전한 방법)
+  # ⚠️ livenessProbe는 실패 시 Pod 재시작으로 인한 문제 발생 가능 → 제거
   # ALB + readinessProbe만으로 충분한 헬스체크 제공
-  # Actuator readiness 엔드포인트 사용
+  # TCP Socket 사용: Tomcat 포트가 열리면 바로 Ready
+  # Security / Actuator / 인증 설정과 무관하게 동작
   readinessProbe:
-    httpGet:
-      path: /actuator/health/readiness
+    tcpSocket:
       port: 8080
-    initialDelaySeconds: 180  # 앱 시작 시간(143초) 고려
+    initialDelaySeconds: 120  # 앱 시작 시간(143초) 고려하여 여유있게
     periodSeconds: 10
-    timeoutSeconds: 5
+    failureThreshold: 3
 
   # ❌ livenessProbe 제거 (Pod 재시작 문제 방지)
-  # livenessProbe:
-  #   httpGet:
-  #     path: /actuator/health/liveness
-  #     port: 8080
-  #   initialDelaySeconds: 240
-  #   periodSeconds: 20
-  #   timeoutSeconds: 5
-  #   failureThreshold: 3
 
 # =========================
 # Client settings
