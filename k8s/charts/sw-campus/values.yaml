@@ -15,7 +15,7 @@ server:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: release-20251229
+    tag: v1.0.0-54fee07
     pullPolicy: IfNotPresent
 
   service:
