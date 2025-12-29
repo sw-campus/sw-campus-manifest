@@ -16,7 +16,7 @@ server:
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
     tag: v1.0.0  # 환경별 values.yaml에서 커밋 SHA 기반 태그로 override
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   service:
     type: NodePort  # ALB target-type: instance 사용을 위해 NodePort 필요
@@ -138,7 +138,7 @@ client:
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
     tag: v1.0.0
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   service:
     type: ClusterIP
@@ -166,7 +166,7 @@ ai:
   image:
     repository: ghcr.io/sw-campus/sw-campus-ai
     tag: v1.0.0
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   service:
     type: ClusterIP
