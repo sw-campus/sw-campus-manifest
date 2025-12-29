@@ -50,7 +50,7 @@ ai:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-ai
-    tag: "develop"
+    tag: "dev-7ddd67e5c69d812d97e9c96be6afcc6b6fa76494"
     pullPolicy: IfNotPresent
 
 # Database configuration (develop: 로컬 DB 사용)
