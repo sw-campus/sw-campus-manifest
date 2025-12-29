@@ -137,7 +137,7 @@ client:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
-    tag: develop
+    tag: v1.0.0
     pullPolicy: IfNotPresent
 
   service:
@@ -165,7 +165,7 @@ ai:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-ai
-    tag: develop
+    tag: v1.0.0
     pullPolicy: IfNotPresent
 
   service:
