@@ -202,12 +202,11 @@ ingress:
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: instance  # ALB가 NodePort로 트래픽 라우팅
 
-    # ✅ ALB 헬스체크 설정 (서버 타겟그룹용) - 유일한 정답 루트
-    # 1. ALB 헬스체크 경로를 명시: /actuator/health
-    # 2. SecurityConfig에서 /actuator/health/** permitAll()로 허용
-    # 3. JwtAuthenticationFilter에서 shouldNotFilter로 /actuator/health 제외
-    # - permitAll()은 JWT 필터보다 앞에서 처리됨
-    # - → /actuator/health는 항상 200 반환 (인증 불필요)
+    # ✅ ALB 헬스체크 설정 (서버 타겟그룹용)
+    # - SecurityConfig에서 /actuator/health/**가 permitAll()로 허용됨
+    # - JwtAuthenticationFilter에서도 shouldNotFilter로 제외됨
+    # - management.health.db/redis/mail.enabled: false로 설정되어 DB/Redis/Mail 체크 제외
+    # - → /actuator/health는 항상 200 반환 (인증 불필요, DB/Redis/Mail 체크 없음)
     # - ALB는 200~399 아니면 무조건 UNHEALTHY이므로 permitAll() 필수
     alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
