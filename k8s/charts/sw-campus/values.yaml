@@ -200,7 +200,7 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: instance  # ALB가 NodePort로 트래픽 라우팅
+    alb.ingress.kubernetes.io/target-type: ip  # 🔥 EKS + Pod 직접 연결 표준 방식 (핵심)
 
     # ✅ ALB 헬스체크 설정 (서버 타겟그룹용)
     # - SecurityConfig에서 /actuator/health/**가 permitAll()로 허용됨
