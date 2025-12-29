@@ -208,7 +208,7 @@ ingress:
     # - management.health.db/redis/mail.enabled: false로 설정되어 DB/Redis/Mail 체크 제외
     # - → /actuator/health는 항상 200 반환 (인증 불필요, DB/Redis/Mail 체크 없음)
     # - ALB는 200~399 아니면 무조건 UNHEALTHY이므로 permitAll() 필수
-    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
+    alb.ingress.kubernetes.io/healthcheck-path: /
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/healthcheck-port: traffic-port
     alb.ingress.kubernetes.io/success-codes: "200"  # ⚠️ 반드시 명시 (기본값 200-399여도 401 에러 방지)
