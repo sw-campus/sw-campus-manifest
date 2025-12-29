@@ -203,12 +203,14 @@ ingress:
     alb.ingress.kubernetes.io/target-type: instance  # ALB가 NodePort로 트래픽 라우팅
 
     # ✅ ALB 헬스체크 설정 (서버 타겟그룹용) - 가장 정석적인 해결
-    # - /healthz: 헬스체크 전용 엔드포인트 (HealthController)
-    # - SecurityConfig에서 /healthz, /actuator/health/**가 permitAll()로 허용됨
+    # - /healthz: 헬스체크 전용 엔드포인트 (HealthController) - 유지
+    # - SecurityConfig에서 /healthz가 permitAll()로 허용됨
     # - JwtAuthenticationFilter에서도 shouldNotFilter로 제외됨
     # - permitAll()은 JWT 필터보다 앞에서 처리됨
     # - → /healthz는 항상 200 반환 (인증 불필요)
     # - ALB는 200~399 아니면 무조건 UNHEALTHY이므로 permitAll() 필수
+    # - actuator 관련은 주석 처리 (나중에 필요하면 주석 해제)
+    #   alb.ingress.kubernetes.io/healthcheck-path: /actuator/health
     alb.ingress.kubernetes.io/healthcheck-path: /healthz
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/healthcheck-port: traffic-port
