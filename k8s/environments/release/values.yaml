@@ -143,7 +143,7 @@ ingress:
 
   # ⚠️ ACM 인증서 ARN 입력 필요!
   # AWS Console → ACM → 인증서 선택 → ARN 복사
-  certificateArn: "REMOVED"  # TODO: 여기에 인증서 ARN 입력
+  certificateArn: ""
 
   # ⚠️ 임시: 도메인 연동 전까지 모든 호스트 허용 (와일드카드)
   # 내일 도메인 연동 시 아래 주석을 해제하고 실제 도메인으로 변경
