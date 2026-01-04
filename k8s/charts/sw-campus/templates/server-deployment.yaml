@@ -58,6 +58,13 @@ spec:
           resources:
 {{ toYaml .Values.server.resources | nindent 12 }}
 {{- end }}
+{{- if .Values.server.gaSecret.enabled }}
+          volumeMounts:
+            - name: ga-credentials
+              mountPath: /app/config/ga-credentials.json
+              subPath: ga-credentials.json
+              readOnly: true
+{{- end }}
 {{- if .Values.server.livenessProbe }}
           # ❌ livenessProbe 주석 처리 (Pod 재시작 문제 방지)
           # livenessProbe:
@@ -67,4 +74,10 @@ spec:
           # ❌ readinessProbe 주석 처리 (현실적인 추천)
           # readinessProbe:
           # {{ toYaml .Values.server.readinessProbe | nindent 12 }}
+{{- end }}
+{{- if .Values.server.gaSecret.enabled }}
+      volumes:
+        - name: ga-credentials
+          secret:
+            secretName: {{ .Values.server.gaSecret.name }}
 {{- end }}

@@ -47,6 +47,11 @@ server:
     enabled: true
     name: sw-campus-oauth-secret-release
 
+  # Google Analytics
+  gaSecret:
+    enabled: true
+    name: ga-credentials-release
+
   # SSH 터널링용 Secret
   infraSecret:
     enabled: false
@@ -97,6 +102,10 @@ ai:
     tag: "v1.0.4"
     pullPolicy: IfNotPresent
 
+  service:
+    type: ClusterIP
+    port: 8000
+
   resources:
     requests:
       cpu: 100m
@@ -122,16 +131,18 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: instance  # ALB가 NodePort로 트래픽 라우팅
-    # ✅ ALB 헬스체크 설정 (서버 타겟그룹용)
-    # SecurityConfig에서 /actuator/health/**가 permitAll로 허용되어 있음
-    # management.health.db/redis.enabled: false로 설정되어 DB/Redis 체크 제외
-    # → /actuator/health/readiness는 항상 200 반환 (인증 불필요, DB 체크 없음)
-    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/readiness
+    alb.ingress.kubernetes.io/target-type: ip
+    # HTTPS 설정
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"  # HTTP → HTTPS 자동 리디렉션
+    # 헬스체크 설정
+    alb.ingress.kubernetes.io/healthcheck-path: /
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/healthcheck-port: traffic-port
-    alb.ingress.kubernetes.io/success-codes: "200"  # ⚠️ 반드시 명시 (기본값 200-399여도 401 에러 방지)
+    alb.ingress.kubernetes.io/success-codes: "200"
 
+  # ⚠️ ACM 인증서 ARN 입력 필요!
+  # AWS Console → ACM → 인증서 선택 → ARN 복사
   certificateArn: ""
 
   # ⚠️ 임시: 도메인 연동 전까지 모든 호스트 허용 (와일드카드)
@@ -174,3 +185,8 @@ ingress:
           service:
             name: sw-campus-server
             port: 8080
+        - path: /ocr
+          pathType: Prefix
+          service:
+            name: sw-campus-ai
+            port: 8000
