@@ -166,7 +166,7 @@ ai:
   image:
     repository: ghcr.io/sw-campus/sw-campus-ai
     tag: v1.0.0
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   service:
     type: ClusterIP
