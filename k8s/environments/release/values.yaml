@@ -47,6 +47,11 @@ server:
     enabled: true
     name: sw-campus-oauth-secret-release
 
+  # Google Analytics
+  gaSecret:
+    enabled: true
+    name: ga-credentials-release
+
   # SSH 터널링용 Secret
   infraSecret:
     enabled: false
