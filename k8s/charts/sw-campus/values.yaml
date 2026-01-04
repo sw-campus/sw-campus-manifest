@@ -16,7 +16,7 @@ server:
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
     tag: v1.0.0  # 환경별 values.yaml에서 커밋 SHA 기반 태그로 override
-    pullPolicy: IfNotPresent
+    pullPolicy: Always
 
   service:
     type: NodePort  # ALB target-type: instance 사용을 위해 NodePort 필요
@@ -46,6 +46,10 @@ server:
       management.health.db.enabled: "false"
       management.health.redis.enabled: "false"
       management.health.mail.enabled: "false"   # ⭐ Mail health check 비활성화 (130초 블로킹 방지)
+      # ⭐ Spring Batch 자동 실행 비활성화 (JobExecutionAlreadyRunningException 방지)
+      # - 운영 환경에서는 Batch Job을 API/스케줄러/별도 Pod로 실행하는 것이 정석
+      # - 서버 기동 시 자동 실행 시 중복 실행으로 인한 예외 발생 → 서버 셧다운 방지
+      spring.batch.job.enabled: "false"
 
   serverSecret:
     enabled: true
@@ -89,16 +93,40 @@ server:
   # HTTP 사용: Spring Context / Security / Filter 체인까지 모두 준비된 상태만 Ready
   # /actuator/health/readiness는 DB/Redis/Mail 체크 없이 즉시 200 반환 (인증 불필요)
   # TCP는 포트만 열리면 OK라서 실제 요청 처리 불가능한 상태에서도 Ready 될 수 있음
-  readinessProbe:
-    httpGet:
-      path: /actuator/health/readiness
-      port: 8080
-    initialDelaySeconds: 120  # 앱 시작 시간(143초) 고려하여 여유있게
-    periodSeconds: 10
-    timeoutSeconds: 3
-    failureThreshold: 3
+  
+  # ❌ startupProbe 제거
+  # - Spring Boot는 이미 느림 (150초)
+  # - readinessProbe만으로 충분
+  # - startupProbe는 오히려 보안 설정과 충돌 가능
 
-  # ❌ livenessProbe 제거 (Pod 재시작 문제 방지)
+  # ⭐ Actuator를 별도 포트(9090)로 분리 (보안과 헬스체크 완전 분리)
+  # - 메인 API 포트(8080)와 헬스체크 포트(9090) 물리적 분리
+  # - JWT / Security / Filter 전부 무시됨 (포트 자체가 다르므로 인증 개입 불가)
+  # - 실무에서 99% 사용하는 정석 방법
+  
+  # ❌ readinessProbe 주석 처리 (현실적인 추천)
+  # - readinessProbe 제거 후 merge → Argo Sync → 상태 확인
+  # - kubectl get pod -n release → 1/1 Running 확인
+  # - ALB / 도메인 접근 확인
+  # - 필요하면 나중에 주석 해제 가능
+  # readinessProbe:
+  #   httpGet:
+  #     path: /actuator/health/readiness
+  #     port: 8080  # 메인 API 포트
+  #   initialDelaySeconds: 30
+  #   periodSeconds: 10
+
+  # ❌ livenessProbe 주석 처리 (Pod 재시작 문제 방지)
+  # 초기화 무거운 앱에서 livenessProbe는 오히려 위험
+  # readinessProbe만으로 충분
+  # livenessProbe:
+  #   httpGet:
+  #     path: /actuator/health/liveness
+  #     port: 8080  # 메인 API 포트
+  #   initialDelaySeconds: 300  # 5분 - 진짜 죽었을 때만 죽여야 함
+  #   periodSeconds: 20  # readiness보다 덜 자주 체크
+  #   timeoutSeconds: 2
+  #   failureThreshold: 3
 
 # =========================
 # Client settings
@@ -109,8 +137,8 @@ client:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
-    tag: develop
-    pullPolicy: IfNotPresent
+    tag: v1.0.0
+    pullPolicy: Always
 
   service:
     type: ClusterIP
@@ -137,7 +165,7 @@ ai:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-ai
-    tag: develop
+    tag: v1.0.0
     pullPolicy: IfNotPresent
 
   service:
@@ -172,13 +200,15 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: instance  # ALB가 NodePort로 트래픽 라우팅
+    alb.ingress.kubernetes.io/target-type: ip  # 🔥 EKS + Pod 직접 연결 표준 방식 (핵심)
 
     # ✅ ALB 헬스체크 설정 (서버 타겟그룹용)
-    # SecurityConfig에서 /actuator/health/**가 permitAll로 허용되어 있음
-    # management.health.db/redis/mail.enabled: false로 설정되어 DB/Redis/Mail 체크 제외
-    # → /actuator/health/readiness는 항상 200 반환 (인증 불필요, DB/Redis/Mail 체크 없음)
-    alb.ingress.kubernetes.io/healthcheck-path: /actuator/health/readiness
+    # - SecurityConfig에서 /actuator/health/**가 permitAll()로 허용됨
+    # - JwtAuthenticationFilter에서도 shouldNotFilter로 제외됨
+    # - management.health.db/redis/mail.enabled: false로 설정되어 DB/Redis/Mail 체크 제외
+    # - → /actuator/health는 항상 200 반환 (인증 불필요, DB/Redis/Mail 체크 없음)
+    # - ALB는 200~399 아니면 무조건 UNHEALTHY이므로 permitAll() 필수
+    alb.ingress.kubernetes.io/healthcheck-path: /
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/healthcheck-port: traffic-port
     alb.ingress.kubernetes.io/success-codes: "200"  # ⚠️ 반드시 명시 (기본값 200-399여도 401 에러 방지)
