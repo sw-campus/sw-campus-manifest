@@ -25,15 +25,34 @@ server:
       GITHUB_REDIRECT_URI: "https://localhost:8080/api/auth/oauth/github/callback"
       GOOGLE_REDIRECT_URI: "https://localhost:8080/api/auth/oauth/google/callback"
 
-  # ✅ Secret: DB 정보만
+  # ✅ Secret: JWT, MAIL 등
   secret:
     enabled: true
     name: sw-campus-server-secret-develop
 
-  # ✅ InfraSecret: SSH 터널링용 (develop 환경에서는 비활성화 - 로컬 DB 사용)
+  # ✅ DB Secret
+  dbSecret:
+    enabled: true
+    name: sw-campus-db-secret-develop
+
+  # ✅ AWS Secret (S3)
+  awsSecret:
+    enabled: true
+    name: sw-campus-aws-secret-develop
+
+  # ✅ OAuth Secret
+  oauthSecret:
+    enabled: true
+    name: sw-campus-oauth-secret-develop
+
+  # ✅ Google Analytics Secret
+  gaSecret:
+    enabled: true
+    name: ga-credentials-develop
+
+  # ✅ InfraSecret: SSH 터널링용 (develop 환경에서는 비활성화)
   infraSecret:
     enabled: false
-    name: sw-campus-infra-secret-develop
 
 client:
   enabled: true
