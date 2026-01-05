@@ -34,6 +34,10 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Values.client.configMap.name }}
+{{- if .Values.client.secret.enabled }}
+            - secretRef:
+                name: {{ .Values.client.secret.name }}
+{{- end }}
           {{- if .Values.client.resources }}
           resources:
 {{ toYaml .Values.client.resources | nindent 12 }}
