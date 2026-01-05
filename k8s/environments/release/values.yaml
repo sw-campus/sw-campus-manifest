@@ -27,6 +27,11 @@ server:
   configMap:
     name: sw-campus-server-config-release
 
+  # ✅ Redis Sidecar (Server 파드에 포함)
+  redis:
+    enabled: true
+    image: redis:7-alpine
+
   # 공통 서버 시크릿 (JWT, MAIL 등)
   secret:
     enabled: true

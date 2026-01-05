@@ -25,6 +25,11 @@ server:
       GITHUB_REDIRECT_URI: "https://localhost:8080/api/auth/oauth/github/callback"
       GOOGLE_REDIRECT_URI: "https://localhost:8080/api/auth/oauth/google/callback"
 
+  # ✅ Redis Sidecar (Server 파드에 포함)
+  redis:
+    enabled: true
+    image: redis:7-alpine
+
   # ✅ Secret: JWT, MAIL 등
   serverSecret:
     enabled: true

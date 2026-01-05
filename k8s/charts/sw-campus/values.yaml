@@ -51,6 +51,11 @@ server:
       # - 서버 기동 시 자동 실행 시 중복 실행으로 인한 예외 발생 → 서버 셧다운 방지
       spring.batch.job.enabled: "false"
 
+  # ✅ Redis Sidecar (Server 파드에 포함)
+  redis:
+    enabled: true
+    image: redis:7-alpine
+
   serverSecret:
     enabled: true
     name: sw-campus-server-secret-release
