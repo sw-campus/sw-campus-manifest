@@ -89,6 +89,11 @@ client:
   configMap:
     name: sw-campus-client-config
 
+  # Gemini API Key Secret
+  secret:
+    enabled: true
+    name: sw-campus-client-secret-release
+
 
 # =========================
 # AI Service
