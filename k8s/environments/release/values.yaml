@@ -142,17 +142,17 @@ ingress:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    # HTTPS 설정 (인증서 연결 후 활성화)
-    # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-    # alb.ingress.kubernetes.io/ssl-redirect: "443"
+    # ⚠️ HTTPS(443)는 AWS 콘솔에서 수동 관리! 여기서는 HTTP만!
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    # ssl-redirect는 AWS 콘솔에서 수동 설정 (여기서 설정하면 충돌 가능)
     # 헬스체크 설정
     alb.ingress.kubernetes.io/healthcheck-path: /
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/healthcheck-port: traffic-port
     alb.ingress.kubernetes.io/success-codes: "200"
 
-  # ⚠️ ACM 인증서 ARN 입력 필요!
-  # AWS Console → ACM → 인증서 선택 → ARN 복사
+  # ⚠️ 인증서는 AWS 콘솔에서 443 리스너에 직접 연결!
+  # 여기에 ARN 넣으면 퍼블릭 레포에 노출되므로 비워둠
   certificateArn: ""
 
   # ⚠️ 임시: 도메인 연동 전까지 모든 호스트 허용 (와일드카드)
