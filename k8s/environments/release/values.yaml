@@ -135,7 +135,7 @@ database:
 # Ingress settings (기본값 오버라이드)
 # =========================
 ingress:
-  enabled: true
+  enabled: false
   className: alb
 
   annotations:
