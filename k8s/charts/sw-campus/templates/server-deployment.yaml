@@ -27,7 +27,7 @@ spec:
         # ========================
         # Redis Sidecar Container
         # ========================
-        {{- if .Values.server.redis.enabled }}
+        {{- if and .Values.server.redis .Values.server.redis.enabled }}
         - name: redis
           image: "{{ .Values.server.redis.image | default "redis:7-alpine" }}"
           ports:
@@ -47,7 +47,7 @@ spec:
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
           env:
-            {{- if .Values.server.redis.enabled }}
+            {{- if and .Values.server.redis .Values.server.redis.enabled }}
             # Redis 사이드카 사용 시 localhost로 연결
             - name: REDIS_HOST
               value: "localhost"
