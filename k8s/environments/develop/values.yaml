@@ -26,12 +26,12 @@ server:
       GOOGLE_REDIRECT_URI: "https://localhost:8080/api/auth/oauth/google/callback"
 
   # ✅ Secret: JWT, MAIL 등
-  secret:
+  serverSecret:
     enabled: true
     name: sw-campus-server-secret-develop
 
   # ✅ DB Secret
-  dbSecret:
+  dbsecret:
     enabled: true
     name: sw-campus-db-secret-develop
 
@@ -41,7 +41,7 @@ server:
     name: sw-campus-aws-secret-develop
 
   # ✅ OAuth Secret
-  oauthSecret:
+  oauth2Secret:
     enabled: true
     name: sw-campus-oauth-secret-develop
 
