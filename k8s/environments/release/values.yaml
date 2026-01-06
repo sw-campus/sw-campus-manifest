@@ -109,7 +109,7 @@ ai:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-ai
-    tag: "v1.0.4"
+    tag: "v1.0.6"
     pullPolicy: IfNotPresent
 
   service:
