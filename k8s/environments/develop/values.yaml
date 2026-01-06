@@ -24,6 +24,7 @@ server:
     data:
       GITHUB_REDIRECT_URI: "https://localhost:8080/api/auth/oauth/github/callback"
       GOOGLE_REDIRECT_URI: "https://localhost:8080/api/auth/oauth/google/callback"
+      cors.allowed-origins: "http://localhost:3000,http://172.30.1.83:3000"
 
   # ✅ Redis Sidecar (Server 파드에 포함)
   redis:
@@ -79,6 +80,10 @@ ai:
 
 # Database configuration (develop: 로컬 DB 사용)
 database:
+  enabled: false
+
+# Ingress (develop: 로컬 환경이라 비활성화, 포트포워딩 사용)
+ingress:
   enabled: false
 
 configMaps:
