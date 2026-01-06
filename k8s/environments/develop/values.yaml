@@ -8,7 +8,7 @@ server:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: "develop"
+    tag: "RHSA-799553780ec007e585ef3087dd5912c65151c321"
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -75,7 +75,7 @@ ai:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-ai
-    tag: "develop"
+    tag: "RHSA-fcceaaf00a185dbed1af703c42b56cffc587a82d"
     pullPolicy: IfNotPresent
 
 # Database configuration (develop: 로컬 DB 사용)

@@ -135,68 +135,62 @@ database:
 # Ingress settings (기본값 오버라이드)
 # =========================
 ingress:
-  enabled: false
+  enabled: true
   className: alb
 
   annotations:
     kubernetes.io/ingress.class: alb
     alb.ingress.kubernetes.io/scheme: internet-facing
     alb.ingress.kubernetes.io/target-type: ip
-    # ⚠️ HTTPS(443)는 AWS 콘솔에서 수동 관리! 여기서는 HTTP만!
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
-    # ssl-redirect는 AWS 콘솔에서 수동 설정 (여기서 설정하면 충돌 가능)
-    # 헬스체크 설정
+
+    # 🔥 HTTPS 고정 핵심
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+
+    # ALB 헬스체크
     alb.ingress.kubernetes.io/healthcheck-path: /
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/healthcheck-port: traffic-port
     alb.ingress.kubernetes.io/success-codes: "200"
 
-  # ⚠️ 인증서는 AWS 콘솔에서 443 리스너에 직접 연결!
-  # 여기에 ARN 넣으면 퍼블릭 레포에 노출되므로 비워둠
-  certificateArn: ""
-
-  # ⚠️ 임시: 도메인 연동 전까지 모든 호스트 허용 (와일드카드)
-  # 내일 도메인 연동 시 아래 주석을 해제하고 실제 도메인으로 변경
   hosts:
-    # - host: softwarecampus.co.kr
-    #   paths:
-    #     - path: /
-    #       pathType: Prefix
-    #       service:
-    #         name: sw-campus-client
-    #         port: 3000
-    #     - path: /api
-    #       pathType: Prefix
-    #       service:
-    #         name: sw-campus-server
-    #         port: 8080
-    # - host: www.softwarecampus.co.kr
-    #   paths:
-    #     - path: /
-    #       pathType: Prefix
-    #       service:
-    #         name: sw-campus-client
-    #         port: 3000
-    #     - path: /api
-    #       pathType: Prefix
-    #       service:
-    #         name: sw-campus-server
-    #         port: 8080
-    # 임시: 모든 호스트 허용 (host 필드 없음)
-    - host: ""
+    - host: softwarecampus.co.kr
       paths:
         - path: /
           pathType: Prefix
           service:
             name: sw-campus-client
             port: 3000
+
         - path: /api
           pathType: Prefix
           service:
             name: sw-campus-server
             port: 8080
+
         - path: /ocr
           pathType: Prefix
           service:
             name: sw-campus-ai
             port: 8000
+
+    - host: www.softwarecampus.co.kr
+      paths:
+        - path: /
+          pathType: Prefix
+          service:
+            name: sw-campus-client
+            port: 3000
+
+        - path: /api
+          pathType: Prefix
+          service:
+            name: sw-campus-server
+            port: 8080
+
+        - path: /ocr
+          pathType: Prefix
+          service:
+            name: sw-campus-ai
+            port: 8000
+

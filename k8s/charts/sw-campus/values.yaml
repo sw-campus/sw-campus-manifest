@@ -1,14 +1,11 @@
-# =========================
 # Global settings
-# =========================
 global:
   namespace: release
   imagePullSecrets:
     - name: ghcr-secret
 
-# =========================
+
 # Server settings
-# =========================
 server:
   enabled: true
   replicas: 2
@@ -118,9 +115,8 @@ server:
   #   timeoutSeconds: 2
   #   failureThreshold: 3
 
-# =========================
+
 # Client settings
-# =========================
 client:
   enabled: true
   replicas: 2
@@ -151,9 +147,8 @@ client:
       cpu: 500m
       memory: 512Mi
 
-# =========================
+
 # AI settings
-# =========================
 ai:
   enabled: true
   replicas: 2
@@ -175,9 +170,8 @@ ai:
       cpu: 1000m
       memory: 1Gi
 
-# =========================
+
 # Database configuration
-# =========================
 database:
   enabled: true
   externalService:
@@ -185,46 +179,16 @@ database:
     externalName: postgres
     port: 5432
 
-# =========================
+
 # Ingress settings (ALB)
-# =========================
 ingress:
-  enabled: true
+  enabled: false
   className: alb
+  annotations: {}
+  hosts: []
+  certificateArn: ""
 
-  annotations:
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip  # 🔥 EKS + Pod 직접 연결 표준 방식 (핵심)
-
-    # ✅ ALB 헬스체크 설정 (서버 타겟그룹용)
-    # - SecurityConfig에서 /actuator/health/**가 permitAll()로 허용됨
-    # - JwtAuthenticationFilter에서도 shouldNotFilter로 제외됨
-    # - management.health.db/redis/mail.enabled: false로 설정되어 DB/Redis/Mail 체크 제외
-    # - → /actuator/health는 항상 200 반환 (인증 불필요, DB/Redis/Mail 체크 없음)
-    # - ALB는 200~399 아니면 무조건 UNHEALTHY이므로 permitAll() 필수
-    alb.ingress.kubernetes.io/healthcheck-path: /
-    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
-    alb.ingress.kubernetes.io/healthcheck-port: traffic-port
-    alb.ingress.kubernetes.io/success-codes: "200"  # ⚠️ 반드시 명시 (기본값 200-399여도 401 에러 방지)
-
-  hosts:
-    - paths:
-        - path: /
-          pathType: Prefix
-          service:
-            name: sw-campus-client
-            port: 3000
-
-        - path: /api
-          pathType: Prefix
-          service:
-            name: sw-campus-server
-            port: 8080
-
-# =========================
 # Helm template guard
-# =========================
 configMaps:
   server:
     enabled: true
