@@ -76,7 +76,7 @@ client:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
-    tag: "v1.0.5"
+    tag: "v1.0.10"
     pullPolicy: IfNotPresent
 
   service:
