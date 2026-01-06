@@ -18,9 +18,18 @@ spec:
     server: eks-prod
     namespace: release
 
+  # Ingress는 AWS 콘솔에서 수동 관리하므로 ArgoCD가 무시하도록 설정
+  ignoreDifferences:
+    - group: networking.k8s.io
+      kind: Ingress
+      jsonPointers:
+        - /metadata/annotations
+        - /spec
+
   syncPolicy:
     automated:
-      prune: true
+      prune: false  # Ingress 삭제 방지!
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - RespectIgnoreDifferences=true
