@@ -15,7 +15,7 @@ spec:
         - ../../environments/release/values.yaml
 
   destination:
-    server: eks-prod
+    server: https://E5C1B1A4CA75AA202C5E45E84F5E69BC.gr7.ap-northeast-2.eks.amazonaws.com
     namespace: release
 
   # Ingress는 AWS 콘솔에서 수동 관리하므로 ArgoCD가 무시하도록 설정
