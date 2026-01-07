@@ -10,7 +10,7 @@ data:
     groups:
     - name: swcampus-k8s-basic
       rules:
-      # 테스트용: 적용되면 무조건 pending/firing 뜸
+      # 테스트용: 무조건 firing (규칙 로드 확인용)
       - alert: AlwaysFiringTest
         expr: vector(1)
         for: 1m
@@ -18,10 +18,10 @@ data:
           severity: info
           env: {{ .Values.global.env | default "dev" }}
         annotations:
-          summary: "Prometheus rule load test (should fire)"
-          description: "If you see this in Prometheus Alerts, rules are loaded OK."
+          summary: "Prometheus rule load test"
+          description: "If you see this alert, rules are loaded correctly."
 
-      # Pod 재시작 증가
+      # Pod 재시작
       - alert: PodRestarting
         expr: increase(kube_pod_container_status_restarts_total[5m]) > 0
         for: 2m
@@ -43,7 +43,7 @@ data:
           summary: "CrashLoopBackOff"
           description: "Pod is in CrashLoopBackOff."
 
-      # 노드 Down
+      # Node NotReady
       - alert: NodeNotReady
         expr: kube_node_status_condition{condition="Ready",status="true"} == 0
         for: 5m
