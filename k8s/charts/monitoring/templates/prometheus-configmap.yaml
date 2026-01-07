@@ -22,7 +22,7 @@ data:
         static_configs:
           - targets: ['{{ .Values.global.namespace }}-otel-collector:8889']
 
-      # kube-state-metrics (🔥 이게 없어서 다 안 떴음)
+      # kube-state-metrics
       - job_name: kube-state-metrics
         static_configs:
           - targets: ['kube-state-metrics.kube-system.svc.cluster.local:8080']
