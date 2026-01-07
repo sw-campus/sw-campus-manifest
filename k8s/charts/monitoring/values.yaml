@@ -18,6 +18,13 @@ grafana:
   service:
     type: ClusterIP
     port: 3000
+  datasources:
+    prometheus:
+      name: Prometheus
+      type: prometheus
+      url: http://monitoring-prometheus:9090
+      access: proxy
+      isDefault: true
 
 # Prometheus configuration
 prometheus:
