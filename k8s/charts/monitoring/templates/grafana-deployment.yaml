@@ -20,19 +20,19 @@ spec:
           imagePullPolicy: {{ .Values.grafana.image.pullPolicy }}
           ports:
             - containerPort: 3000
+
           volumeMounts:
             # Datasources
             - name: datasources
               mountPath: /etc/grafana/provisioning/datasources
 
-            # Dashboards provisioning yaml
+            # Dashboards provisioning (디렉터리로!)
             - name: dashboards-provisioning
-              mountPath: /etc/grafana/provisioning/dashboards.yaml
-              subPath: dashboards.yaml
-
-            # Dashboards JSON files
-            - name: dashboards
               mountPath: /etc/grafana/provisioning/dashboards
+
+            # Dashboards JSON (실제 파일 위치)
+            - name: dashboards
+              mountPath: /var/lib/grafana/dashboards
 
       volumes:
         # Datasources
@@ -40,7 +40,7 @@ spec:
           configMap:
             name: {{ .Values.global.namespace }}-grafana-datasources
 
-        # Dashboards provisioning
+        # Dashboards provisioning yaml
         - name: dashboards-provisioning
           configMap:
             name: {{ .Values.global.namespace }}-grafana-dashboard-provisioning
