@@ -21,11 +21,32 @@ spec:
           ports:
             - containerPort: 3000
           volumeMounts:
+            # Datasources
             - name: datasources
               mountPath: /etc/grafana/provisioning/datasources
+
+            # Dashboards provisioning yaml
+            - name: dashboards-provisioning
+              mountPath: /etc/grafana/provisioning/dashboards.yaml
+              subPath: dashboards.yaml
+
+            # Dashboards JSON files
+            - name: dashboards
+              mountPath: /etc/grafana/provisioning/dashboards
+
       volumes:
+        # Datasources
         - name: datasources
           configMap:
             name: {{ .Values.global.namespace }}-grafana-datasources
-{{- end }}
 
+        # Dashboards provisioning
+        - name: dashboards-provisioning
+          configMap:
+            name: {{ .Values.global.namespace }}-grafana-dashboard-provisioning
+
+        # Dashboards JSON
+        - name: dashboards
+          configMap:
+            name: {{ .Values.global.namespace }}-grafana-dashboards
+{{- end }}

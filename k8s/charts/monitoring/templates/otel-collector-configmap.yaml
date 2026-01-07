@@ -8,26 +8,52 @@ data:
     receivers:
       otlp:
         protocols:
-          http:
           grpc:
+          http:
 
     processors:
+      # 로그 묶어서 전송
       batch:
-        timeout: 5s                  # 최대 5초동안 모아서 전송
-        send_batch_size: 1024        # 최대 1024개의 로그를 모아서 전송
-      
-      # labels 처리를 위한 processor 추가
+        timeout: 5s
+        send_batch_size: 1024
+
+      # Kubernetes 메타데이터 추출
+      k8sattributes:
+        auth_type: serviceAccount
+        extract:
+          metadata:
+            - k8s.namespace.name
+            - k8s.pod.name
+            - k8s.container.name
+            - k8s.node.name
+
+      # 환경 정보 보강
+      attributes:
+        actions:
+          - key: deployment.environment
+            action: upsert
+            value: release
+
+      # Loki 라벨로 승격할 필드 정의
       resource:
         attributes:
           - action: insert
             key: loki.resource.labels
-            value: service.name, deployment.environment
+            value: >
+              service.name,
+              deployment.environment,
+              k8s.namespace.name,
+              k8s.pod.name,
+              k8s.container.name,
+              level,
+              trace_id
 
     exporters:
+      # Loki
       loki:
         endpoint: http://{{ .Values.global.namespace }}-loki:3100/loki/api/v1/push
-      
-      # prometheus exporter - OTel Collector에서 metrics를 수집하여 Prometheus로 전송
+
+      # Prometheus
       prometheus:
         endpoint: "0.0.0.0:8889"
         namespace: otel
@@ -37,23 +63,26 @@ data:
       {{- if .Values.otelCollector.debug }}
       logging:
         loglevel: info
-      {{- end }} 
+      {{- end }}
 
     service:
       pipelines:
         logs:
           receivers: [otlp]
-          processors: [batch, resource]
+          processors:
+            - k8sattributes
+            - attributes
+            - resource
+            - batch
           exporters:
             {{- if .Values.otelCollector.debug }}
             - logging
             {{- end }}
             - loki
-        
-        # 메트릭 파이프라인 - 애플리케이션 메트릭을 prometheus로 전송
+
         metrics:
           receivers: [otlp]
           processors: [batch]
           exporters:
             - prometheus
-{{- end }} 
+{{- end }}
