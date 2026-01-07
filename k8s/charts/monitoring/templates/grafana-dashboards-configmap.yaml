@@ -4,10 +4,15 @@ kind: ConfigMap
 metadata:
   name: {{ .Values.global.namespace }}-grafana-dashboards
   labels:
+    app: grafana
     grafana_dashboard: "1"
 data:
-{{- range $path, $_ := .Files.Glob "dashboards/*.json" }}
-  {{ base $path }}: |
-{{ $.Files.Get $path | indent 4 }}
-{{- end }}
+  application-metrics.json: |
+{{ .Files.Get "dashboards/application-metrics.json" | indent 4 }}
+
+  kubernetes-cluster.json: |
+{{ .Files.Get "dashboards/kubernetes-cluster.json" | indent 4 }}
+
+  node-exporter.json: |
+{{ .Files.Get "dashboards/node-exporter.json" | indent 4 }}
 {{- end }}
