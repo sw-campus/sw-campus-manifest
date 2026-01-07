@@ -1,0 +1,49 @@
+{{- if .Values.alertmanager.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.global.namespace }}-alertmanager-config
+data:
+  alertmanager.yml: |
+    global:
+      resolve_timeout: 5m
+
+    route:
+      receiver: "slack-dev"
+      group_by: ["alertname", "namespace", "pod", "severity", "env"]
+      group_wait: 30s
+      group_interval: 5m
+      repeat_interval: 2h
+
+      routes:
+        - matchers:
+            - env="prod"
+          receiver: "slack-prod"
+
+    receivers:
+      - name: "slack-dev"
+        slack_configs:
+          - api_url: {{ .Values.alertmanager.slack.webhookUrl | quote }}
+            channel: "#alert-dev"
+            send_resolved: true
+            title: "[DEV] {{`{{ .CommonLabels.alertname }}`}} ({{`{{ .CommonLabels.severity }}`}})"
+            text: >-
+              {{`{{ range .Alerts }}`}}
+              *Summary:* {{`{{ .Annotations.summary }}`}}
+              *Description:* {{`{{ .Annotations.description }}`}}
+              *Namespace:* {{`{{ .Labels.namespace }}`}}  *Pod:* {{`{{ .Labels.pod }}`}}
+              {{`{{ end }}`}}
+
+      - name: "slack-prod"
+        slack_configs:
+          - api_url: {{ .Values.alertmanager.slack.webhookUrl | quote }}
+            channel: "#alert-prod"
+            send_resolved: true
+            title: "[PROD] {{`{{ .CommonLabels.alertname }}`}} ({{`{{ .CommonLabels.severity }}`}})"
+            text: >-
+              {{`{{ range .Alerts }}`}}
+              *Summary:* {{`{{ .Annotations.summary }}`}}
+              *Description:* {{`{{ .Annotations.description }}`}}
+              *Namespace:* {{`{{ .Labels.namespace }}`}}  *Pod:* {{`{{ .Labels.pod }}`}}
+              {{`{{ end }}`}}
+{{- end }}
