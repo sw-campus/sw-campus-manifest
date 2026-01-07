@@ -84,3 +84,4 @@ configMaps:
     enabled: true
   otelCollectorConfig:
     enabled: true
+
