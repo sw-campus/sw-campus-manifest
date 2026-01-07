@@ -10,71 +10,64 @@ data:
     groups:
     - name: swcampus-k8s-basic
       rules:
-      # 테스트용: 적용되면 무조건 pending/firing 뜸
-      - alert: AlwaysFiringTest
-        expr: vector(1)
-        for: 1m
-        labels:
-          severity: info
-          env: {{ .Values.global.env | default "dev" }}
-        annotations:
-          summary: "Prometheus rule load test (should fire)"
-          description: "If you see this in Prometheus Alerts, rules are loaded OK."
-
-      # Pod 재시작 증가
+      # Pod 재시작 과다 (15분에 3회 초과)
       - alert: PodRestarting
-        expr: increase(kube_pod_container_status_restarts_total[5m]) > 0
+        expr: increase(kube_pod_container_status_restarts_total{job="kube-state-metrics"}[15m]) > 3
         for: 2m
         labels:
           severity: warning
           env: {{ .Values.global.env | default "dev" }}
         annotations:
-          summary: "Pod restarting detected"
-          description: "A container restarted in the last 5 minutes."
+          summary: "Pod restarting frequently"
+          description: "A pod restarted more than 3 times in the last 15 minutes."
 
-      # CrashLoopBackOff
+      # CrashLoopBackOff 상태
       - alert: PodCrashLoopBackOff
-        expr: kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"} == 1
+        expr: kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff", job="kube-state-metrics"} == 1
         for: 2m
         labels:
           severity: critical
           env: {{ .Values.global.env | default "dev" }}
         annotations:
-          summary: "CrashLoopBackOff"
-          description: "Pod is in CrashLoopBackOff."
+          summary: "CrashLoopBackOff detected"
+          description: "A pod is in CrashLoopBackOff state."
 
-      # 노드 Down
+      # Node Ready 상태 아님
       - alert: NodeNotReady
-        expr: kube_node_status_condition{condition="Ready",status="true"} == 0
+        expr: kube_node_status_condition{condition="Ready", status="true", job="kube-state-metrics"} == 0
         for: 5m
         labels:
           severity: critical
           env: {{ .Values.global.env | default "dev" }}
         annotations:
           summary: "Node not ready"
-          description: "A node is not Ready for 5 minutes."
+          description: "A node has been not Ready for more than 5 minutes."
 
     - name: swcampus-resource
       rules:
       # 컨테이너 CPU 과다
       - alert: HighContainerCPU
-        expr: sum by (namespace,pod) (rate(container_cpu_usage_seconds_total{container!="",pod!=""}[5m])) > 1
+        expr: sum by (namespace,pod) (
+                rate(container_cpu_usage_seconds_total{container!="",pod!=""}[5m])
+              ) > 1
         for: 5m
         labels:
           severity: warning
           env: {{ .Values.global.env | default "dev" }}
         annotations:
-          summary: "High container CPU"
-          description: "CPU usage is high for a pod."
+          summary: "High container CPU usage"
+          description: "CPU usage is high for a container."
 
       # 컨테이너 메모리 과다
       - alert: HighContainerMemory
-        expr: sum by (namespace,pod) (container_memory_working_set_bytes{container!="",pod!=""}) > 1500000000
+        expr: sum by (namespace,pod) (
+                container_memory_working_set_bytes{container!="",pod!=""}
+              ) > 1500000000
         for: 5m
         labels:
           severity: warning
           env: {{ .Values.global.env | default "dev" }}
         annotations:
-          summary: "High container memory"
-          description: "Memory working set is high for a pod."
+          summary: "High container memory usage"
+          description: "Memory working set is high for a container."
 {{- end }}

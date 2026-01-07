@@ -24,12 +24,23 @@ spec:
           ports:
             - containerPort: 9093
           volumeMounts:
+            # Alertmanager 설정
             - name: config
               mountPath: /etc/alertmanager
+
+            # Slack Webhook Secret
+            - name: secrets
+              mountPath: /etc/alertmanager/secrets
+              readOnly: true
       volumes:
         - name: config
           configMap:
             name: {{ .Values.global.namespace }}-alertmanager-config
+
+        # Slack Webhook Secret
+        - name: secrets
+          secret:
+            secretName: {{ .Release.Name }}-alertmanager-secrets
 ---
 apiVersion: v1
 kind: Service
