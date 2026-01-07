@@ -4,27 +4,75 @@ kind: ConfigMap
 metadata:
   name: {{ .Values.global.namespace }}-prometheus-rules
   labels:
-    prometheus: rules
+    app: prometheus
 data:
-  rules.yml: |
+  swcampus.rules.yml: |
     groups:
-      - name: kubernetes-alerts
-        rules:
-          - alert: PodCrashLooping
-            expr: rate(kube_pod_container_status_restarts_total[5m]) > 0
-            for: 2m
-            labels:
-              severity: warning
-            annotations:
-              summary: "Pod CrashLoop 발생"
-              description: "{{`{{ $labels.pod }}`}} 가 반복 재시작 중"
+    - name: swcampus-k8s-basic
+      rules:
+      # 테스트용: 무조건 firing (규칙 로드 확인용)
+      - alert: AlwaysFiringTest
+        expr: vector(1)
+        for: 1m
+        labels:
+          severity: info
+          env: {{ .Values.global.env | default "dev" }}
+        annotations:
+          summary: "Prometheus rule load test"
+          description: "If you see this alert, rules are loaded correctly."
 
-          - alert: PodNotReady
-            expr: kube_pod_status_ready{condition="true"} == 0
-            for: 3m
-            labels:
-              severity: critical
-            annotations:
-              summary: "Pod Ready 아님"
-              description: "{{`{{ $labels.pod }}`}} 이 Ready 상태가 아님"
+      # Pod 재시작
+      - alert: PodRestarting
+        expr: increase(kube_pod_container_status_restarts_total[5m]) > 0
+        for: 2m
+        labels:
+          severity: warning
+          env: {{ .Values.global.env | default "dev" }}
+        annotations:
+          summary: "Pod restarting detected"
+          description: "A container restarted in the last 5 minutes."
+
+      # CrashLoopBackOff
+      - alert: PodCrashLoopBackOff
+        expr: kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"} == 1
+        for: 2m
+        labels:
+          severity: critical
+          env: {{ .Values.global.env | default "dev" }}
+        annotations:
+          summary: "CrashLoopBackOff"
+          description: "Pod is in CrashLoopBackOff."
+
+      # Node NotReady
+      - alert: NodeNotReady
+        expr: kube_node_status_condition{condition="Ready",status="true"} == 0
+        for: 5m
+        labels:
+          severity: critical
+          env: {{ .Values.global.env | default "dev" }}
+        annotations:
+          summary: "Node not ready"
+          description: "A node is not Ready for 5 minutes."
+
+    - name: swcampus-resource
+      rules:
+      - alert: HighContainerCPU
+        expr: sum by (namespace,pod) (rate(container_cpu_usage_seconds_total{container!="",pod!=""}[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+          env: {{ .Values.global.env | default "dev" }}
+        annotations:
+          summary: "High container CPU"
+          description: "CPU usage is high for a pod."
+
+      - alert: HighContainerMemory
+        expr: sum by (namespace,pod) (container_memory_working_set_bytes{container!="",pod!=""}) > 1500000000
+        for: 5m
+        labels:
+          severity: warning
+          env: {{ .Values.global.env | default "dev" }}
+        annotations:
+          summary: "High container memory"
+          description: "Memory working set is high for a pod."
 {{- end }}
