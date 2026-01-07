@@ -31,7 +31,7 @@ data:
             - k8s.container.name
             - k8s.node.name
 
-      # Loki가 실제로 사용하는 라벨 정의 (정답)
+      # Loki가 실제로 사용하는 라벨 정의
       resource:
         attributes:
           - action: insert
