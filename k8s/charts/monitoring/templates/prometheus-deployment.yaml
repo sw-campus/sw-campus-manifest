@@ -29,16 +29,32 @@ spec:
               name: http
               protocol: TCP
           volumeMounts:
+            # Prometheus main config (prometheus.yml)
             - name: config
               mountPath: /etc/prometheus
               readOnly: true
+
+            # Alert rules (rules.yml)
+            - name: rules
+              mountPath: /etc/prometheus/rules
+              readOnly: true
+
+            # TSDB storage
             - name: storage
               mountPath: /prometheus
+
       volumes:
+        # prometheus.yml
         - name: config
           configMap:
             name: {{ .Values.global.namespace }}-prometheus-config
-        - name: storage
-          emptyDir: {}    # 개발 환경에서만 사용 - pod 재시작될 때마다 데이터 날아감
-{{- end }}
 
+        # alert rules ConfigMap
+        - name: rules
+          configMap:
+            name: {{ .Values.global.namespace }}-prometheus-rules
+
+        # local storage (dev only)
+        - name: storage
+          emptyDir: {}
+{{- end }}
