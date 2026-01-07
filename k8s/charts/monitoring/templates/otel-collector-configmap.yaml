@@ -7,13 +7,11 @@ metadata:
 data:
   otel-collector.yml: |
     receivers:
-      # 노드 로그 수집
       filelog:
         include:
           - /var/log/pods/*/*/*.log
         start_at: beginning
 
-      # 메트릭용 OTLP
       otlp:
         protocols:
           grpc:
@@ -35,23 +33,21 @@ data:
 
       attributes:
         actions:
-          - key: deployment.environment
+          - key: env
             from_attribute: k8s.namespace.name
             action: upsert
 
     exporters:
-      # Loki exporter 
       loki:
         endpoint: http://{{ .Values.global.namespace }}-loki:3100/loki/api/v1/push
         labels:
           exporter: otel
-          env: deployment.environment
+          env: env
           namespace: k8s.namespace.name
           pod: k8s.pod.name
           container: k8s.container.name
           node: k8s.node.name
 
-      # 메트릭용 Prometheus exporter
       prometheus:
         endpoint: "0.0.0.0:8889"
         namespace: otel
