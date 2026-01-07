@@ -14,7 +14,7 @@ spec:
         app: {{ .Values.global.namespace }}-prometheus
         cluster: {{ .Values.global.namespace }}
     spec:
-      serviceAccountName: prometheus
+      serviceAccountName: {{ .Release.Name }}-prometheus
       containers:
         - name: prometheus
           image: "{{ .Values.prometheus.image.repository }}:{{ .Values.prometheus.image.tag }}"

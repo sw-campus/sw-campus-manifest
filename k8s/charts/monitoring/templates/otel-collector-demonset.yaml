@@ -1,0 +1,53 @@
+{{- if .Values.otelCollector.daemonset.enabled }}
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ .Values.global.namespace }}-otel-collector
+  namespace: {{ .Values.global.namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: otel-collector
+  template:
+    metadata:
+      labels:
+        app: otel-collector
+    spec:
+      serviceAccountName: otel-collector
+      containers:
+        - name: otel-collector
+          image: otel/opentelemetry-collector-contrib:0.96.0
+          args:
+            - "--config=/etc/otel-collector/otel-collector.yml"
+          ports:
+            - containerPort: 4317
+            - containerPort: 4318
+            - containerPort: 8889
+          volumeMounts:
+            - name: config
+              mountPath: /etc/otel-collector
+              readOnly: true
+
+            # 노드 로그 마운트
+            - name: varlogpods
+              mountPath: /var/log/pods
+              readOnly: true
+            - name: varlogcontainers
+              mountPath: /var/log/containers
+              readOnly: true
+
+      volumes:
+        - name: config
+          configMap:
+            name: {{ .Values.global.namespace }}-otel-collector-config
+
+        - name: varlogpods
+          hostPath:
+            path: /var/log/pods
+            type: Directory
+
+        - name: varlogcontainers
+          hostPath:
+            path: /var/log/containers
+            type: Directory
+{{- end }}
