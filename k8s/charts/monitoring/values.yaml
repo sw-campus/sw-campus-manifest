@@ -18,13 +18,6 @@ grafana:
   service:
     type: ClusterIP
     port: 3000
-  datasources:
-    prometheus:
-      name: Prometheus
-      type: prometheus
-      url: http://monitoring-prometheus:9090
-      access: proxy
-      isDefault: true
 
 # Prometheus configuration
 prometheus:
@@ -46,7 +39,7 @@ alertmanager:
     repository: prom/alertmanager
     tag: v0.27.0
   slack:
-    webhookUrl: ""   # 실제 값은 Secret으로 주입  
+    webhookUrl: ""   
 
 # Loki configuration
 loki:
@@ -63,25 +56,22 @@ loki:
 # OpenTelemetry Collector configuration
 otelCollector:
   enabled: true
-  # Deployment 사용 안 함
   deployment:
-    enabled: false
-  # DaemonSet 사용
+    enabled: false  
   daemonset:
-    enabled: true
-  debug: false # 개발: true / 운영: false
+    enabled: true    
+  debug: false       # 개발: true / 운영: false
   image:
     repository: otel/opentelemetry-collector-contrib
     tag: "0.96.0"
     pullPolicy: IfNotPresent
-
 
 # ConfigMaps toggle
 configMaps:
   grafanaDashboards:
     enabled: true
   grafanaDatasources:
-    enabled: true
+    enabled: true    
   prometheusConfig:
     enabled: true
   prometheusRules:
