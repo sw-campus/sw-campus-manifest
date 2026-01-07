@@ -12,22 +12,6 @@ data:
           - /var/log/pods/*/*/*.log
         start_at: beginning
 
-      # OTLP 수신 (Spring Boot에서 push)
-      otlp:
-        protocols:
-          grpc:
-            endpoint: 0.0.0.0:4317
-          http:
-            endpoint: 0.0.0.0:4318
-
-      # OTel 자체 메트릭
-      prometheus:
-        config:
-          scrape_configs:
-            - job_name: otel-collector-self
-              static_configs:
-                - targets: ["127.0.0.1:8888"]
-
     processors:
       k8sattributes:
         auth_type: serviceAccount
@@ -43,18 +27,9 @@ data:
           - key: env
             from_attribute: k8s.namespace.name
             action: upsert
-<<<<<<< HEAD
-
-      resource:
-        attributes:
-          - action: insert
-            key: loki.resource.labels
-            value: k8s_namespace_name,k8s_pod_name,k8s_container_name
-=======
           - key: loki.attribute.labels
             action: insert
             value: k8s.namespace.name,k8s.pod.name,k8s.container.name
->>>>>>> da1cb30 (모니터링: OTel 로그 Loki 스트림 분산 라벨 수정)
 
       batch:
         timeout: 5s
@@ -62,22 +37,6 @@ data:
 
     exporters:
       loki:
-<<<<<<< HEAD
-        endpoint: http://{{ .Values.global.namespace }}-loki:{{ .Values.loki.service.port }}/loki/api/v1/push
-      prometheus:
-        endpoint: "0.0.0.0:8889" # 🔥 Prometheus가 scrape할 유일한 엔드포인트
-        
-    service: 
-      pipelines:
-        logs:
-          receivers: [filelog] # 파일에서 로그 수집
-          processors: [k8sattributes, attributes, resource, batch]
-          exporters: [loki] # Loki로 전송
-        metrics:
-          receivers: [otlp, prometheus] # OTLP + 자체 메트릭
-          processors: [k8sattributes, batch]
-          exporters: [prometheus] # Prometheus exporter로 노출
-=======
         endpoint: http://{{ .Values.global.namespace }}-loki:3100/loki/api/v1/push
 
     service:
@@ -89,5 +48,4 @@ data:
             - attributes
             - batch
           exporters: [loki]
->>>>>>> da1cb30 (모니터링: OTel 로그 Loki 스트림 분산 라벨 수정)
 {{- end }}
