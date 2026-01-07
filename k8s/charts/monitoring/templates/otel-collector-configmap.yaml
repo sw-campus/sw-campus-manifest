@@ -42,9 +42,6 @@ data:
       loki:
         endpoint: http://{{ .Values.global.namespace }}-loki:3100/loki/api/v1/push
 
-      prometheus:
-        endpoint: "0.0.0.0:8889"
-
     service:
       pipelines:
         logs:
@@ -55,9 +52,4 @@ data:
             - resource
             - batch
           exporters: [loki]
-
-        metrics:
-          receivers: []
-          processors: [batch]
-          exporters: [prometheus]
 {{- end }}
