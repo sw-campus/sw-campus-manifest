@@ -12,6 +12,7 @@ data:
           - /var/log/pods/*/*/*.log
         start_at: beginning
 
+      # 메트릭용 OTLP
       otlp:
         protocols:
           grpc:
@@ -38,6 +39,7 @@ data:
             action: upsert
 
     exporters:
+      # Loki exporter 
       loki:
         endpoint: http://{{ .Values.global.namespace }}-loki:3100/loki/api/v1/push
         labels:
