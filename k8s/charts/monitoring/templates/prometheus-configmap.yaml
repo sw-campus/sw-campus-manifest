@@ -9,7 +9,19 @@ data:
       scrape_interval: 15s
       evaluation_interval: 15s
       external_labels:
-        cluster: {{ .Values.global.namespace }}
+        cluster: {{ .Values.global.cluster | default .Values.global.namespace }}
+        env: {{ .Values.global.env | default "dev" }}
+
+    # Alertmanager로 알림 보내기
+    alerting:
+      alertmanagers:
+        - static_configs:
+            - targets:
+                - {{ .Values.global.namespace }}-alertmanager:9093
+
+    # Prometheus 룰 파일 조회
+    rule_files:
+      - /etc/prometheus/rules/*.yml
 
     scrape_configs:
       # Prometheus itself
@@ -27,7 +39,7 @@ data:
         static_configs:
           - targets: ['kube-state-metrics.kube-system.svc.cluster.local:8080']
 
-      # Kubernetes pods (Application 메트릭용)
+      # Kubernetes pods (Application 메트릭용: pod annotation 방식)
       - job_name: kubernetes-pods
         kubernetes_sd_configs:
           - role: pod
@@ -45,7 +57,7 @@ data:
             regex: (.+):(?:\d+);(\d+)
             replacement: $1:$2
 
-      # kubelet / cAdvisor (컨테이너 리소스 핵심)
+      # kubelet / cAdvisor (컨테이너 리소스)
       - job_name: kubelet
         kubernetes_sd_configs:
           - role: node
@@ -61,5 +73,4 @@ data:
           - source_labels: [__meta_kubernetes_node_name]
             target_label: __metrics_path__
             replacement: /api/v1/nodes/$1/proxy/metrics/cadvisor
-
 {{- end }}
