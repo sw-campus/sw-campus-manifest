@@ -51,7 +51,6 @@ otelCollector:
     tag: "0.96.0"
     pullPolicy: IfNotPresent
 
-# ConfigMaps
 configMaps:
   grafanaDashboards:
     enabled: true
@@ -59,7 +58,10 @@ configMaps:
     enabled: true
   prometheusConfig:
     enabled: true
+  prometheusRules:
+    enabled: true
   lokiConfig:
     enabled: true
   otelCollectorConfig:
     enabled: true
+
