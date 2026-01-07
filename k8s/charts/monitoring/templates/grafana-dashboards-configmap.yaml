@@ -13,3 +13,4 @@ data:
   kubernetes-cluster.json: |
 {{ .Files.Get "dashboards/kubernetes-cluster.json" | indent 4 }}
 
+{{- end }}
