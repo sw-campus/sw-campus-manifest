@@ -56,6 +56,7 @@ data:
 
     - name: swcampus-resource
       rules:
+      # 컨테이너 CPU 과다
       - alert: HighContainerCPU
         expr: sum by (namespace,pod) (rate(container_cpu_usage_seconds_total{container!="",pod!=""}[5m])) > 1
         for: 5m
@@ -66,6 +67,7 @@ data:
           summary: "High container CPU"
           description: "CPU usage is high for a pod."
 
+      # 컨테이너 메모리 과다
       - alert: HighContainerMemory
         expr: sum by (namespace,pod) (container_memory_working_set_bytes{container!="",pod!=""}) > 1500000000
         for: 5m
