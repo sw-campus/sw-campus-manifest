@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: {{ .Values.global.namespace }}-otel-collector
+  name: monitoring-otel-collector
   namespace: {{ .Values.global.namespace }}
 spec:
   selector:
