@@ -12,21 +12,36 @@ data:
         cluster: {{ .Values.global.namespace }}
 
     scrape_configs:
-      # Prometheus 자체 메트릭
-      - job_name: 'prometheus'
+      # Prometheus itself
+      - job_name: prometheus
         static_configs:
           - targets: ['localhost:9090']
 
-      # OTel Collector 메트릭
-      - job_name: 'otel-collector'
+      # OTel Collector
+      - job_name: otel-collector
         static_configs:
           - targets: ['{{ .Values.global.namespace }}-otel-collector:8889']
-            labels:
-              component: 'otel-collector'
 
-      # Kubernetes 상태 메트릭
-      - job_name: 'kube-state-metrics'
+      # kube-state-metrics
+      - job_name: kube-state-metrics
         static_configs:
-          - targets:
-              - 'kube-state-metrics.kube-system.svc.cluster.local:8080'
+          - targets: ['kube-state-metrics.kube-system.svc.cluster.local:8080']
+
+      # Kubernetes pods (Application 메트릭용)
+      - job_name: kubernetes-pods
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+            action: replace
+            target_label: __address__
+            regex: (.+):(?:\d+);(\d+)
+            replacement: $1:$2
 {{- end }}
