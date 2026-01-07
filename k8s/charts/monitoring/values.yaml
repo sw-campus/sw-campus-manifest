@@ -4,6 +4,8 @@
 # Global settings
 global:
   namespace: monitoring
+  env: dev
+  cluster: monitoring
 
 # Grafana configuration
 grafana:
@@ -12,10 +14,17 @@ grafana:
   image:
     repository: grafana/grafana
     tag: "10.4.2"
-    pullPolicy:
+    pullPolicy: IfNotPresent
   service:
     type: ClusterIP
     port: 3000
+  datasources:
+    prometheus:
+      name: Prometheus
+      type: prometheus
+      url: http://monitoring-prometheus:9090
+      access: proxy
+      isDefault: true
 
 # Prometheus configuration
 prometheus:
@@ -28,6 +37,16 @@ prometheus:
   service:
     type: ClusterIP
     port: 9090
+  kubeStateMetricsTarget: kube-state-metrics.kube-system.svc.cluster.local:8080
+
+# Alertmanager configuration
+alertmanager:
+  enabled: true
+  image:
+    repository: prom/alertmanager
+    tag: v0.27.0
+  slack:
+    webhookUrl: ""   # 실제 값은 Secret으로 주입  
 
 # Loki configuration
 loki:
@@ -45,12 +64,13 @@ loki:
 otelCollector:
   enabled: true
   replicas: 2
-  debug: false # logging exporter 활성화 여부 (개발: true, 프로덕션: false)
+  debug: false # 개발: true / 운영: false
   image:
     repository: otel/opentelemetry-collector-contrib
     tag: "0.96.0"
     pullPolicy: IfNotPresent
 
+# ConfigMaps toggle
 configMaps:
   grafanaDashboards:
     enabled: true
@@ -64,4 +84,3 @@ configMaps:
     enabled: true
   otelCollectorConfig:
     enabled: true
-
