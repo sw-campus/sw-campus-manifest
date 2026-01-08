@@ -50,6 +50,7 @@ data:
       prometheus:
         endpoint: "0.0.0.0:8889"
 
+    service:
       pipelines:
         logs:
           receivers: [filelog]
@@ -60,5 +61,4 @@ data:
           receivers: [otlp]
           processors: [batch]
           exporters: [prometheus]
-
 {{- end }}
