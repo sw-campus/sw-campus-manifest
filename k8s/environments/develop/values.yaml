@@ -18,7 +18,7 @@ server:
       cpu: 300m
       memory: 512Mi
 
-  # ✅ ConfigMap: profile 같은 비민감 정보만
+  # ConfigMap: profile 같은 비민감 정보만
   configMap:
     name: sw-campus-server-config-develop
     data:
@@ -26,37 +26,37 @@ server:
       GOOGLE_REDIRECT_URI: "https://localhost:8080/api/auth/oauth/google/callback"
       cors.allowed-origins: "http://localhost:3000,http://172.30.1.83:3000"
 
-  # ✅ Redis Sidecar (Server 파드에 포함)
+  # Redis Sidecar (Server 파드에 포함)
   redis:
     enabled: true
     image: redis:7-alpine
 
-  # ✅ Secret: JWT, MAIL 등
+  # Secret: JWT, MAIL 
   serverSecret:
     enabled: true
     name: sw-campus-server-secret-develop
 
-  # ✅ DB Secret
+  # DB Secret
   dbsecret:
     enabled: true
     name: sw-campus-db-secret-develop
 
-  # ✅ AWS Secret (S3)
+  # AWS Secret (S3)
   awsSecret:
     enabled: true
     name: sw-campus-aws-secret-develop
 
-  # ✅ OAuth Secret
+  # OAuth Secret
   oauth2Secret:
     enabled: true
     name: sw-campus-oauth-secret-develop
 
-  # ✅ Google Analytics Secret
+  # Google Analytics 
   gaSecret:
     enabled: true
     name: ga-credentials-develop
 
-  # ✅ InfraSecret: SSH 터널링용 (develop 환경에서는 비활성화)
+  # InfraSecret: SSH 터널링용 
   infraSecret:
     enabled: false
 
