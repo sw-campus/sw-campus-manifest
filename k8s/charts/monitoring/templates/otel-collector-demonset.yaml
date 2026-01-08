@@ -7,11 +7,11 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: monitoring-otel-collector
+      app: otel-collector
   template:
     metadata:
       labels:
-        app: monitoring-otel-collector
+        app: otel-collector
     spec:
       serviceAccountName: {{ .Values.global.namespace }}-otel-collector
       containers:
