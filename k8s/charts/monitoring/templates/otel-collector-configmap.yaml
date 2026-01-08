@@ -47,9 +47,6 @@ data:
       loki:
         endpoint: http://{{ .Values.global.namespace }}-loki:3100/loki/api/v1/push
 
-      prometheus:
-        endpoint: "0.0.0.0:8889"
-
     service:
       telemetry:
         metrics:
