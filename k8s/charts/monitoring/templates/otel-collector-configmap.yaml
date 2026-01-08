@@ -50,11 +50,6 @@ data:
       prometheus:
         endpoint: "0.0.0.0:8889"
 
-    service:
-      telemetry:
-        metrics:
-          address: 0.0.0.0:8889
-
       pipelines:
         logs:
           receivers: [filelog]
