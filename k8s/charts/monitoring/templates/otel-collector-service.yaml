@@ -3,12 +3,12 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.global.namespace }}-otel-collector
-  namespace: {{ .Values.global.namespace }}
+  namespace: {{ .Values.otelCollector.labels.app }}
   labels:
     app: {{ .Values.global.namespace }}-otel-collector
 spec:
   selector:
-    app: {{ .Values.global.namespace }}-otel-collector
+    app: {{ .Values.otelCollector.labels.app }}
   ports:
     - name: otlp-grpc
       port: 4317
