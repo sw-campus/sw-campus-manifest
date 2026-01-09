@@ -2,16 +2,16 @@
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: monitoring-otel-collector
+  name: {{ .Values.global.namespace }}-otel-collector
   namespace: {{ .Values.global.namespace }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.global.namespace }}-otel-collector
+      app: {{ .Values.otelCollector.labels.app }}
   template:
     metadata:
       labels:
-        app: monitoring-otel-collector
+        app: {{ .Values.otelCollector.labels.app }}
     spec:
       serviceAccountName: {{ .Values.global.namespace }}-otel-collector
       containers:
