@@ -47,6 +47,7 @@ data:
         metrics:
           address: 0.0.0.0:8889   # 🔥 Prometheus가 scrape할 유일한 엔드포인트
 
+    service:
       pipelines:
         logs:
           receivers: [filelog]
