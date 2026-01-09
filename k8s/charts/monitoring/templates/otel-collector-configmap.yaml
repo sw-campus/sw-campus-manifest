@@ -41,16 +41,17 @@ data:
     exporters:
       loki:
         endpoint: http://{{ .Values.global.namespace }}-loki:{{ .Values.loki.service.port }}/loki/api/v1/push
-
-    service:
-      telemetry:
-        metrics:
-          address: 0.0.0.0:8889   # 🔥 Prometheus가 scrape할 유일한 엔드포인트
-
-    service:
+      prometheus:
+        endpoint: "0.0.0.0:8889" # 🔥 Prometheus가 scrape할 유일한 엔드포인트
+        
+    service: 
       pipelines:
         logs:
           receivers: [filelog]
           processors: [k8sattributes, attributes, resource, batch]
           exporters: [loki]
+        metrics:
+          receivers: [prometheus]
+          processors: [k8sattributes, batch]
+          exporters: [prometheus]
 {{- end }}
