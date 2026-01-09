@@ -73,6 +73,8 @@ otelCollector:
     enabled: false  
   daemonset:
     enabled: true    
+  labels:
+    app: monitoring-otel-collector
   debug: false       # 개발: true / 운영: false
   image:
     repository: otel/opentelemetry-collector-contrib
