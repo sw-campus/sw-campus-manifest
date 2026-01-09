@@ -52,7 +52,9 @@ data:
 
     exporters:
       loki:
-        endpoint: http://monitoring-loki:3100/loki/api/v1/push
+        endpoint: http://{{ .Values.loki.serviceName }}:{{ .Values.loki.port }}/loki/api/v1/push
+
+
 
       prometheus:
         endpoint: "0.0.0.0:8889"

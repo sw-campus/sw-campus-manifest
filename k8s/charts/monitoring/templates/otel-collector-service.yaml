@@ -5,10 +5,10 @@ metadata:
   name: {{ .Values.global.namespace }}-otel-collector
   namespace: {{ .Values.global.namespace }}
   labels:
-    app: otel-collector
+    app: {{ .Values.global.namespace }}-otel-collector
 spec:
   selector:
-    app: otel-collector 
+    app: {{ .Values.global.namespace }}-otel-collector
   ports:
     - name: otlp-grpc
       port: 4317
