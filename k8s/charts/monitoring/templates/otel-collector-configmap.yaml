@@ -54,11 +54,10 @@ data:
       loki:
         endpoint: http://{{ .Values.loki.serviceName }}:{{ .Values.loki.port }}/loki/api/v1/push
 
-
-
       prometheus:
         endpoint: "0.0.0.0:8889"
 
+    service:
       pipelines:
         logs:
           receivers: [filelog]
@@ -66,9 +65,7 @@ data:
           exporters: [loki]
 
         metrics:
-          # receivers: [otlp]
-          receivers: [prometheus]
+          receivers: [prometheus]   # self-metrics 방식 유지
           processors: [k8sattributes, batch]
           exporters: [prometheus]
-
 {{- end }}
