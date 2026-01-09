@@ -12,6 +12,22 @@ data:
           - /var/log/pods/*/*/*.log
         start_at: beginning
 
+      # OTLP 수신 (Spring Boot에서 push)
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+
+      # OTel 자체 메트릭
+      prometheus:
+        config:
+          scrape_configs:
+            - job_name: otel-collector-self
+              static_configs:
+                - targets: ["127.0.0.1:8888"]
+
     processors:
       k8sattributes:
         auth_type: serviceAccount
@@ -47,11 +63,11 @@ data:
     service: 
       pipelines:
         logs:
-          receivers: [filelog]
+          receivers: [filelog] # 파일에서 로그 수집
           processors: [k8sattributes, attributes, resource, batch]
-          exporters: [loki]
+          exporters: [loki] # Loki로 전송
         metrics:
-          receivers: [prometheus]
+          receivers: [otlp, prometheus] # OTLP + 자체 메트릭
           processors: [k8sattributes, batch]
-          exporters: [prometheus]
+          exporters: [prometheus] # Prometheus exporter로 노출
 {{- end }}
