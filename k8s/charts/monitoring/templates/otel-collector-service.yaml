@@ -3,9 +3,10 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ .Values.global.namespace }}-otel-collector
-  namespace: {{ .Values.otelCollector.labels.app }}
+  metadata:
+  namespace: {{ .Values.global.namespace }}
   labels:
-    app: {{ .Values.global.namespace }}-otel-collector
+    app: {{ .Values.otelCollector.labels.app }}
 spec:
   selector:
     app: {{ .Values.otelCollector.labels.app }}
@@ -17,7 +18,7 @@ spec:
       port: 4318
       targetPort: 4318
     - name: prometheus
-      port: 8888
-      targetPort: 8888
+      port: 8889
+      targetPort: 8889
 {{- end }}
 
