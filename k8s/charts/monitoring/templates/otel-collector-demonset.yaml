@@ -20,6 +20,7 @@ spec:
            args:
              - "--config=/etc/otel-collector/otel-collector.yml"
            ports:
+             - containerPort: 8888            
              - containerPort: 4317
              - containerPort: 4318
            volumeMounts:

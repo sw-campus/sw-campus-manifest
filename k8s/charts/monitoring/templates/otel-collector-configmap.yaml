@@ -45,11 +45,13 @@ data:
     service:
       telemetry:
         metrics:
-          address: 0.0.0.0:8889   # 🔥 Prometheus가 scrape할 유일한 엔드포인트
+          address: 0.0.0.0:8888
 
       pipelines:
         logs:
           receivers: [filelog]
           processors: [k8sattributes, attributes, resource, batch]
           exporters: [loki]
+
+
 {{- end }}
