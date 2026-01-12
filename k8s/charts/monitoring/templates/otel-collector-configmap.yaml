@@ -77,11 +77,4 @@ data:
           receivers: [otlp, prometheus]
           processors: [k8sattributes, batch]
           exporters: [prometheus]
-
-        traces:
-          receivers: [otlp]
-          processors: [k8sattributes, batch]
-          exporters: [otlp/tempo]
-
-
 {{- end }}
