@@ -29,6 +29,13 @@ data:
                 - targets: ["127.0.0.1:8888"]
 
 
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+
     processors:
       k8sattributes:
         auth_type: serviceAccount
