@@ -11,6 +11,23 @@ data:
         include:
           - /var/log/pods/*/*/*.log
         start_at: beginning
+        include_file_path: true
+        include_file_name: true
+
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+
+      prometheus:
+        config:
+          scrape_configs:
+            - job_name: otel-collector
+              static_configs:
+                - targets: ["127.0.0.1:8888"]
+
 
       otlp:
         protocols:
@@ -69,7 +86,7 @@ data:
           exporters: [loki]
 
         metrics:
-          receivers: [otlp]
+          receivers: [otlp, prometheus]
           processors: [k8sattributes, batch]
           exporters: [prometheus]
 
