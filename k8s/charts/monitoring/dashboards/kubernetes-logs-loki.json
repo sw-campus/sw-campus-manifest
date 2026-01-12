@@ -65,7 +65,7 @@
       "targetBlank": true,
       "title": "View In Explore",
       "type": "link",
-      "url": "/explore?orgId=1&left=[\"now-1h\",\"now\",\"Loki\",{\"expr\":\"{job=\\\"$app\\\"}\"},{\"ui\":[true,true,true,\"none\"]}]"
+      "url": "/explore?left=[\"now-1h\",\"now\",\"Loki\",{\"expr\":\"{job=\\\"$app\\\"}\"},{\"ui\":[true,true,true,\"none\"]}]"
     },
     {
       "$$hashKey": "object:61",
