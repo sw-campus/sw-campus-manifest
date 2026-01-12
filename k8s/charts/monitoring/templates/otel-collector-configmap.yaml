@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ .Values.otelCollector.labels.app }}
+  name: {{ .Values.global.namespace }}-otel-collector-config
   namespace: {{ .Values.global.namespace }}
 data:
   otel-collector.yml: |
