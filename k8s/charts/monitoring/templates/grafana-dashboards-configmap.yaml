@@ -13,4 +13,8 @@ data:
   kubernetes-cluster.json: |
 {{ .Files.Get "dashboards/kubernetes-cluster.json" | indent 4 }}
 
+  kubernetes-logs-loki.json: |
+{{ .Files.Get "dashboards/kubernetes-logs-loki.json" | indent 4 }}
+
+
 {{- end }}

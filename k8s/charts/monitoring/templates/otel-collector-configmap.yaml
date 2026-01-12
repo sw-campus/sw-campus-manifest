@@ -49,7 +49,7 @@ data:
         attributes:
           - action: insert
             key: loki.resource.labels
-            value: k8s_namespace_name,k8s_pod_name,k8s_container_name
+            value: k8s_namespace_name,k8s_pod_name,k8s_container_name,service
 
       batch:
         timeout: 5s
