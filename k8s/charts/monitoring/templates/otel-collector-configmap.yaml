@@ -12,6 +12,13 @@ data:
           - /var/log/pods/*/*/*.log
         start_at: beginning
 
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+          http:
+            endpoint: 0.0.0.0:4318
+
     processors:
       k8sattributes:
         auth_type: serviceAccount
@@ -42,6 +49,14 @@ data:
       loki:
         endpoint: http://{{ .Values.global.namespace }}-loki:{{ .Values.loki.service.port }}/loki/api/v1/push
 
+      prometheus:
+        endpoint: "0.0.0.0:8889"
+
+      otlp/tempo:
+        endpoint: http://{{ .Values.global.namespace }}-tempo:4317
+        tls:
+          insecure: true
+
     service:
       telemetry:
         metrics:
@@ -52,6 +67,16 @@ data:
           receivers: [filelog]
           processors: [k8sattributes, attributes, resource, batch]
           exporters: [loki]
+
+        metrics:
+          receivers: [otlp]
+          processors: [k8sattributes, batch]
+          exporters: [prometheus]
+
+        traces:
+          receivers: [otlp]
+          processors: [k8sattributes, batch]
+          exporters: [otlp/tempo]
 
 
 {{- end }}
