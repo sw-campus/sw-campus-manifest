@@ -62,11 +62,6 @@ data:
       prometheus:
         endpoint: "0.0.0.0:8889"
 
-      otlp/tempo:
-        endpoint: http://{{ .Values.global.namespace }}-tempo:4317
-        tls:
-          insecure: true
-
     service:
       telemetry:
         metrics:
