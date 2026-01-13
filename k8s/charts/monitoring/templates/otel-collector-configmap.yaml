@@ -15,6 +15,7 @@ data:
         include_file_name: true
 
         operators:
+          - type: cri
           - type: add
             field: resource.attributes.log_file
             value: EXPR(attributes["log.file.path"])
