@@ -8,7 +8,7 @@ server:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: "RHSA-704b62076f2ebba7c6ca0da28ae55d1a71f9c6bc"
+    tag: "RHSA-58e80309751dd05f607ae87d9efe76f8d4f07ada"
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -65,7 +65,7 @@ client:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
-    tag: "RHSA-e05422f1507b6b59f5c8d9f91c34407e25eb33c9"
+    tag: "RHSA-b65baf17cf44a19a984e8afd553ddf6f4e5d5f96"
     pullPolicy: IfNotPresent
   configMap:
     name: sw-campus-client-config
