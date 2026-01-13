@@ -12,6 +12,7 @@ data:
           - /var/log/pods/*/*/*.log
         start_at: beginning
 
+      # OTLP 수신 (Spring Boot에서 push)
       otlp:
         protocols:
           grpc:
@@ -47,20 +48,19 @@ data:
         timeout: 5s
         send_batch_size: 1024
 
+
     exporters:
       loki:
         endpoint: http://{{ .Values.global.namespace }}-loki:{{ .Values.loki.service.port }}/loki/api/v1/push
-
       prometheus:
         endpoint: "0.0.0.0:8889"
 
     service:
       pipelines:
         logs:
-          receivers: [filelog]
-          processors: [k8sattributes, resource, batch]
-          exporters: [loki]
-
+          receivers: [filelog] # 파일에서 로그 수집
+          processors: [k8sattributes, attributes, resource, batch]
+          exporters: [loki] # Loki로 전송
         metrics:
           receivers: [otlp, prometheus]
           processors: [k8sattributes, batch]
