@@ -44,7 +44,7 @@ data:
         attributes:
           - action: insert
             key: loki.resource.labels
-            value: k8s_namespace_name, app
+            value: k8s.namespace.name, app
 
       batch:
         timeout: 5s
@@ -70,6 +70,6 @@ data:
 
         metrics:
           receivers: [otlp]
-          processors: [batch]
+          processors: [k8sattributes, batch]
           exporters: [prometheus]
 {{- end }}
