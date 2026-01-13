@@ -65,7 +65,7 @@
       "targetBlank": true,
       "title": "View In Explore",
       "type": "link",
-      "url": "/explore?left=[\"now-1h\",\"now\",\"Loki\",{\"expr\":\"{job=\\\"$app\\\"}\"},{\"ui\":[true,true,true,\"none\"]}]"
+      "url": "/explore?left=[\"now-1h\",\"now\",\"Loki\",{\"expr\":\"{app=\\\"$app\\\"}\"},{\"ui\":[true,true,true,\"none\"]}]"
     },
     {
       "$$hashKey": "object:61",
@@ -124,7 +124,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(count_over_time({job=\"$app\"} |= \"$search\" [$__interval]))",
+          "expr": "sum(count_over_time({app=\"$app\"} |= \"$search\" [$__interval]))",
           "legendFormat": "",
           "refId": "A"
         }
@@ -196,7 +196,7 @@
       },
       "targets": [
         {
-          "expr": "{job=\"$app\"} |= \"$search\" | logfmt",
+          "expr": "{app=\"$app\"} |= \"$search\" | logfmt",
           "hide": false,
           "legendFormat": "",
           "refId": "A"
@@ -219,14 +219,14 @@
         "allValue": null,
         "current": {},
         "datasource": "${DS_LOKI}",
-        "definition": "label_values(job)",
+        "definition": "label_values(app)",
         "hide": 0,
         "includeAll": false,
         "label": "App",
         "multi": false,
         "name": "app",
         "options": [],
-        "query": "label_values(job)",
+        "query": "label_values(app)",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
