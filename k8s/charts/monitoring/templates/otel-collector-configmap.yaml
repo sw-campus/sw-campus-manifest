@@ -26,14 +26,12 @@ data:
             - k8s.namespace.name
             - k8s.container.name
 
-      attributes:
-        actions:
-          - key: app
-            from_attribute: k8s.container.name
-            action: upsert
-
       resource:
         attributes:
+          - action: upsert
+            key: app
+            from_attribute: k8s.container.name
+
           - action: insert
             key: loki.resource.labels
             value: k8s.namespace.name,app
