@@ -11,15 +11,8 @@ data:
         include:
           - /var/log/pods/*/*/*.log
         start_at: beginning
-        include_file_path: true
-        include_file_name: true
 
-        operators:
-          - type: cri
-          - type: add
-            field: resource.attributes.log_file
-            value: EXPR(attributes["log.file.path"])
-
+      # OTLP 수신 (Spring Boot에서 push)
       otlp:
         protocols:
           grpc:
@@ -27,14 +20,27 @@ data:
           http:
             endpoint: 0.0.0.0:4318
 
+      # OTel 자체 메트릭
+      prometheus:
+        config:
+          scrape_configs:
+            - job_name: otel-collector-self
+              static_configs:
+                - targets: ["127.0.0.1:8888"]
+
     processors:
       k8sattributes:
-        auth_type: serviceAccount
         extract:
           metadata:
             - k8s.namespace.name
-          labels:
-            - app
+            - k8s.pod.name
+            - k8s.container.name
+
+      attributes:
+        actions:
+          - key: app
+            from_attribute: k8s.container.name
+            action: upsert
 
       resource:
         attributes:
@@ -46,26 +52,21 @@ data:
         timeout: 5s
         send_batch_size: 1024
 
+
     exporters:
       loki:
         endpoint: http://{{ .Values.global.namespace }}-loki:{{ .Values.loki.service.port }}/loki/api/v1/push
-
       prometheus:
-        endpoint: "0.0.0.0:8889"
-
-    service:
-      telemetry:
-        metrics:
-          address: 0.0.0.0:8888
-
+        endpoint: "0.0.0.0:8889" # 🔥 Prometheus가 scrape할 유일한 엔드포인트
+        
+    service: 
       pipelines:
         logs:
-          receivers: [filelog]
-          processors: [k8sattributes, resource, batch]
-          exporters: [loki]
-
+          receivers: [filelog] # 파일에서 로그 수집
+          processors: [k8sattributes, attributes, resource, batch]
+          exporters: [loki] # Loki로 전송
         metrics:
-          receivers: [otlp]
-          processors: [batch]
-          exporters: [prometheus]
+          receivers: [otlp, prometheus] # OTLP + 자체 메트릭
+          processors: [k8sattributes, batch]
+          exporters: [prometheus] # Prometheus exporter로 노출
 {{- end }}

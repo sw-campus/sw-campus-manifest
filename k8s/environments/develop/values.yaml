@@ -82,7 +82,7 @@ ai:
 database:
   enabled: false
 
-# Ingress (develop: 로컬 환경이라 비활성화, 포트포워딩 사용)
+# Ingress 
 ingress:
   enabled: false
 
