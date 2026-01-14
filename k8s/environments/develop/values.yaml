@@ -65,7 +65,7 @@ client:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
-    tag: "RHSA-3f48ccf01d2f086c9d0f1f57b8376b2bd17f5692"
+    tag: "RHSA-8b7d3b8bd4c250b6ebfbddf81c79342dc825bd1e"
     pullPolicy: IfNotPresent
   configMap:
     name: sw-campus-client-config
