@@ -24,7 +24,7 @@ server:
     data:
       GITHUB_REDIRECT_URI: "https://api-dev.softwarecampus.co.kr/api/auth/oauth/github/callback"
       GOOGLE_REDIRECT_URI: "https://api-dev.softwarecampus.co.kr/api/auth/oauth/google/callback"
-      KAKAO_REDIRECT_URI: "https://api-dev.softwarecampus.co.kr/api/auth/oauth/kakao/callback"
+      KAKAO_REDIRECT_URI: "https://api-dev.softwarecampus.co.kr/api/auth/oauth/callback/kakao"
       cors.allowed-origins: "https://api-dev.softwarecampus.co.kr"
 
   # Redis Sidecar (Server 파드에 포함)
@@ -32,7 +32,7 @@ server:
     enabled: true
     image: redis:7-alpine
 
-  # Secret: JWT, MAIL 
+  # Secret: JWT, MAIL
   serverSecret:
     enabled: true
     name: sw-campus-server-secret-develop
@@ -52,12 +52,12 @@ server:
     enabled: true
     name: sw-campus-oauth-secret-develop
 
-  # Google Analytics 
+  # Google Analytics
   gaSecret:
     enabled: true
     name: ga-credentials-develop
-    
-  # InfraSecret: SSH 터널링용 
+
+  # InfraSecret: SSH 터널링용
   infraSecret:
     enabled: false
 
@@ -83,7 +83,7 @@ ai:
 database:
   enabled: false
 
-# Ingress 
+# Ingress
 ingress:
   enabled: true
   className: nginx
@@ -117,4 +117,3 @@ ingress:
           service:
             name: sw-campus-ai
             port: 8000
-

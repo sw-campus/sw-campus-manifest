@@ -36,11 +36,11 @@ server:
   secret:
     enabled: true
     name: sw-campus-server-secret-release
-  
+
   # DB / 외부 연동 Secret
   dbSecret:
-   enabled: true
-   name: sw-campus-db-secret-release
+    enabled: true
+    name: sw-campus-db-secret-release
 
   # AWS
   awsSecret:
@@ -60,12 +60,6 @@ server:
   # SSH 터널링용 Secret
   infraSecret:
     enabled: false
-
-  # 환경변수 설정
-  env:
-    - name: MANAGEMENT_METRICS_EXPORT_OTLP_ENABLED
-      value: "false"  # ❌ OTLP 메트릭스 export 비활성화 (연결 실패 에러 방지)
-
 
 # =========================
 # Client (React)
@@ -99,7 +93,6 @@ client:
     enabled: true
     name: sw-campus-client-secret-release
 
-
 # =========================
 # AI Service
 # =========================
@@ -123,7 +116,6 @@ ai:
     limits:
       cpu: 300m
       memory: 512Mi
-
 
 # =========================
 # Database (External)
@@ -193,4 +185,3 @@ ingress:
           service:
             name: sw-campus-ai
             port: 8000
-
