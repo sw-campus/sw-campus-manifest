@@ -81,10 +81,10 @@ data:
           processors: [k8sattributes, resource, batch]
           exporters: [loki]
 
-        traces:
-          receivers: [otlp]
-          processors: [k8sattributes, resource, batch]
-          exporters: []  # 나중에 Tempo
+        # traces:
+        #   receivers: [otlp]
+        #   processors: [k8sattributes, resource, batch]
+        #   exporters: []  # 나중에 Tempo
 
         metrics:
           receivers: [otlp]
