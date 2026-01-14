@@ -45,11 +45,7 @@ data:
           - role: pod
             namespaces:
               names:
-                - {{ if .Values.monitoring.targetNamespace }}
-                    {{ .Values.monitoring.targetNamespace }}
-                  {{ else }}
-                    {{ .Values.global.namespace }}
-                  {{ end }}
+                - {{ if .Values.monitoring.targetNamespace }}{{ .Values.monitoring.targetNamespace }}{{ else }}{{ .Values.global.namespace }}{{ end }}
         relabel_configs:
           # annotation으로 스크랩 활성화된 Pod만
           - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
