@@ -66,13 +66,6 @@ data:
     exporters:
       loki:
         endpoint: http://{{ .Values.global.namespace }}-loki:{{ .Values.loki.service.port }}/loki/api/v1/push
-        labels:
-          resource:
-            namespace: "namespace"
-            container: "container"
-            pod: "pod"
-          attributes:
-            level: "level"
 
       prometheus:
         endpoint: "0.0.0.0:8889"
