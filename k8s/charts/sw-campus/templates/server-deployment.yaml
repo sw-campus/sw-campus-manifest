@@ -20,11 +20,14 @@ spec:
     metadata:
       labels:
         app: sw-campus-server
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/actuator/prometheus"
     spec:
       imagePullSecrets:
 {{ toYaml .Values.global.imagePullSecrets | nindent 8 }}
       containers:
-        # Redis Sidecar Container
         {{- if and .Values.server.redis .Values.server.redis.enabled }}
         - name: redis
           image: "{{ .Values.server.redis.image | default "redis:7-alpine" }}"
@@ -38,7 +41,6 @@ spec:
               cpu: 100m
               memory: 128Mi
         {{- end }}
-        # Server Container
         - name: server
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
@@ -46,17 +48,14 @@ spec:
             - name: JAVA_TOOL_OPTIONS
               value: "-Djava.net.preferIPv4Stack=true"
             {{- if and .Values.server.redis .Values.server.redis.enabled }}
-            # Redis 사이드카 사용 시 localhost로 연결
             - name: REDIS_HOST
               value: "localhost"
             - name: REDIS_PORT
               value: "6379"
             {{- end }}
-{{- if .Values.server.env }}
-{{- with .Values.server.env }}
-{{- toYaml . | nindent 12 }}
-{{- end }}
-{{- end }}
+            {{- if .Values.server.env }}
+            {{- toYaml .Values.server.env | nindent 12 }}
+            {{- end }}
           ports:
             - containerPort: 8080
           envFrom:
@@ -88,16 +87,6 @@ spec:
               mountPath: /app/config/ga-credentials.json
               subPath: ga-credentials.json
               readOnly: true
-{{- end }}
-{{- if .Values.server.livenessProbe }}
-          # livenessProbe 주석 처리 (Pod 재시작 문제 방지)
-          # livenessProbe:
-          # {{ toYaml .Values.server.livenessProbe | nindent 12 }}
-{{- end }}
-{{- if .Values.server.readinessProbe }}
-          # readinessProbe 주석 처리 (현실적인 추천)
-          # readinessProbe:
-          # {{ toYaml .Values.server.readinessProbe | nindent 12 }}
 {{- end }}
 {{- if .Values.server.gaSecret.enabled }}
       volumes:

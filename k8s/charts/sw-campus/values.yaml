@@ -4,7 +4,6 @@ global:
   imagePullSecrets:
     - name: ghcr-secret
 
-
 # Server settings
 server:
   enabled: true
@@ -12,11 +11,11 @@ server:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: v1.0.0  
+    tag: v1.0.0
     pullPolicy: Always
 
   service:
-    type: NodePort 
+    type: NodePort
     port: 8080
     targetPort: 8080
 
@@ -35,14 +34,16 @@ server:
       # - application.yml의 기본 base-path(/actuator) 사용
       # - Spring Boot는 환경변수에서 점(.)을 언더스코어(_)로 변환하여 인식
       # - probes.enabled: true는 application.yml에 이미 설정되어 있음
-      management.endpoints.web.exposure.include: health
+      management.endpoints.web.exposure.include: health,prometheus
       management.endpoint.health.probes.enabled: "true"
+
       # ✅ readiness probe에서 DB/Redis/Mail 제외 (운영 정석)
       # DB/Redis/Mail 연결 문제가 있어도 웹 서버 준비되면 트래픽 수신 가능
       # readiness = 웹서버 준비 여부만 체크
       management.health.db.enabled: "false"
       management.health.redis.enabled: "false"
-      management.health.mail.enabled: "false"   # ⭐ Mail health check 비활성화 (130초 블로킹 방지)
+      management.health.mail.enabled: "false" # ⭐ Mail health check 비활성화 (130초 블로킹 방지)
+
       # ⭐ Spring Batch 자동 실행 비활성화 (JobExecutionAlreadyRunningException 방지)
       # - 운영 환경에서는 Batch Job을 API/스케줄러/별도 Pod로 실행하는 것이 정석
       # - 서버 기동 시 자동 실행 시 중복 실행으로 인한 예외 발생 → 서버 셧다운 방지
@@ -90,7 +91,7 @@ server:
       memory: 1.5Gi
 
   # ✅ 헬스체크 설정 (HTTP 기반 - Spring 진짜 준비 상태 확인)
-  
+
   # ❌ readinessProbe 주석 처리 (현실적인 추천)
   # - readinessProbe 제거 후 merge → Argo Sync → 상태 확인
   # - kubectl get pod -n release → 1/1 Running 확인
@@ -114,7 +115,6 @@ server:
   #   periodSeconds: 20  # readiness보다 덜 자주 체크
   #   timeoutSeconds: 2
   #   failureThreshold: 3
-
 
 # Client settings
 client:
@@ -147,7 +147,6 @@ client:
       cpu: 500m
       memory: 512Mi
 
-
 # AI settings
 ai:
   enabled: true
@@ -170,7 +169,6 @@ ai:
       cpu: 1000m
       memory: 1Gi
 
-
 # Database configuration
 database:
   enabled: true
@@ -178,7 +176,6 @@ database:
     name: postgres-service
     externalName: postgres
     port: 5432
-
 
 # Ingress settings (ALB)
 ingress:
