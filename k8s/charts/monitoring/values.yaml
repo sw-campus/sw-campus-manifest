@@ -52,7 +52,7 @@ alertmanager:
     repository: prom/alertmanager
     tag: v0.27.0
   slack:
-    webhookUrl: ""   
+    webhookUrl: ""
 
 # Loki configuration
 loki:
@@ -70,12 +70,12 @@ loki:
 otelCollector:
   enabled: true
   deployment:
-    enabled: false  
+    enabled: false
   daemonset:
-    enabled: true    
+    enabled: true
   labels:
     app: otel-collector
-  debug: false       # 개발: true / 운영: false
+  debug: false # 개발: true / 운영: false
   image:
     repository: otel/opentelemetry-collector-contrib
     tag: "0.96.0"
@@ -86,7 +86,7 @@ configMaps:
   grafanaDashboards:
     enabled: true
   grafanaDatasources:
-    enabled: true    
+    enabled: true
   prometheusConfig:
     enabled: true
   prometheusRules:

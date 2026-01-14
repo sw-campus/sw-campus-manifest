@@ -13,6 +13,9 @@ spec:
     helm:
       valueFiles:
         - ../../environments/release-monitoring/values.yaml
+      parameters:
+        - name: monitoring.targetNamespace
+          value: release
 
   destination:
     server: eks-prod

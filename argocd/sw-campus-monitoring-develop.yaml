@@ -13,6 +13,9 @@ spec:
     helm:
       valueFiles:
         - ../../environments/develop-monitoring/values.yaml
+      parameters:
+        - name: monitoring.targetNamespace
+          value: develop
 
   destination:
     server: in-cluster
