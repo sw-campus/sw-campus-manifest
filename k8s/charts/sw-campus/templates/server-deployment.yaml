@@ -22,7 +22,11 @@ spec:
         app: sw-campus-server
     spec:
       imagePullSecrets:
-{{ toYaml .Values.global.imagePullSecrets | nindent 8 }}
+        {{ toYaml .Values.global.imagePullSecrets | nindent 8 }}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/actuator/prometheus"
       containers:
         # Redis Sidecar Container
         {{- if and .Values.server.redis .Values.server.redis.enabled }}
@@ -38,6 +42,7 @@ spec:
               cpu: 100m
               memory: 128Mi
         {{- end }}
+        
         # Server Container
         - name: server
           image: "{{ .Values.server.image.repository }}:{{ .Values.server.image.tag }}"
@@ -62,46 +67,47 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Values.server.configMap.name }}
-{{- if .Values.server.serverSecret.enabled }}
+            {{- if .Values.server.serverSecret.enabled }}
             - secretRef:
                 name: {{ .Values.server.serverSecret.name }}
-{{- end }}
-{{- if .Values.server.dbsecret.enabled }}
+            {{- end }}
+            {{- if .Values.server.dbsecret.enabled }}
             - secretRef:
                 name: {{ .Values.server.dbsecret.name }}
-{{- end }}
-{{- if .Values.server.awsSecret.enabled }}
+            {{- end }}
+            {{- if .Values.server.awsSecret.enabled }}
             - secretRef:
                 name: {{ .Values.server.awsSecret.name }}
-{{- end }}
-{{- if .Values.server.oauth2Secret.enabled }}
+            {{- end }}
+            {{- if .Values.server.oauth2Secret.enabled }}
             - secretRef:
                 name: {{ .Values.server.oauth2Secret.name }}
-{{- end }}
-{{- if .Values.server.resources }}
-          resources:
-{{ toYaml .Values.server.resources | nindent 12 }}
-{{- end }}
-{{- if .Values.server.gaSecret.enabled }}
-          volumeMounts:
+            {{- end }}
+            {{- if .Values.server.resources }}
+            resources:
+              {{ toYaml .Values.server.resources | nindent 12 }}
+            {{- end }}
+            {{- if .Values.server.gaSecret.enabled }}
+            volumeMounts:
             - name: ga-credentials
               mountPath: /app/config/ga-credentials.json
               subPath: ga-credentials.json
               readOnly: true
-{{- end }}
-{{- if .Values.server.livenessProbe }}
+            {{- end }}
+            
+          # {{- if .Values.server.livenessProbe }}
           # livenessProbe 주석 처리 (Pod 재시작 문제 방지)
           # livenessProbe:
           # {{ toYaml .Values.server.livenessProbe | nindent 12 }}
-{{- end }}
-{{- if .Values.server.readinessProbe }}
+          # {{- end }}
+          # {{- if .Values.server.readinessProbe }}
           # readinessProbe 주석 처리 (현실적인 추천)
           # readinessProbe:
           # {{ toYaml .Values.server.readinessProbe | nindent 12 }}
-{{- end }}
-{{- if .Values.server.gaSecret.enabled }}
+          # {{- end }}
+      {{- if .Values.server.gaSecret.enabled }}
       volumes:
         - name: ga-credentials
           secret:
             secretName: {{ .Values.server.gaSecret.name }}
-{{- end }}
+      {{- end }}
