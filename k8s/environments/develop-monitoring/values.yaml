@@ -5,45 +5,11 @@ global:
 monitoring:
   targetNamespace: develop
 
-grafana:
-  enabled: true
-  replicas: 2
-  image:
-    repository: grafana/grafana
-    tag: "10.4.2"
-    pullPolicy: IfNotPresent
-
 prometheus:
-  enabled: true
   replicas: 2
-  image:
-    repository: prom/prometheus
-    tag: "v2.52.0"
-    pullPolicy: IfNotPresent
 
 loki:
-  enabled: true
   replicas: 2
-  image:
-    repository: grafana/loki
-    tag: "2.9.6"
-    pullPolicy: IfNotPresent
 
 otelCollector:
-  enabled: true
-  replicas: 2
-  debug: true # 개발 환경에서는 디버깅을 위해 logging exporter 활성화
-  image:
-    repository: otel/opentelemetry-collector-contrib
-    tag: "0.96.0"
-    pullPolicy: IfNotPresent
-
-configMaps:
-  grafanaDashboards:
-    enabled: true
-  grafanaDatasources:
-    enabled: true
-  lokiConfig:
-    enabled: true
-  otelCollectorConfig:
-    enabled: true
+  debug: true # 개발: 디버깅을 위해 logging exporter 활성화

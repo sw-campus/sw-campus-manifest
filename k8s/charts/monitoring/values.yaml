@@ -7,9 +7,6 @@ global:
   env: dev
   cluster: monitoring
 
-monitoring:
-  targetNamespace: develop # 기본값
-
 # Grafana configuration
 grafana:
   enabled: true
