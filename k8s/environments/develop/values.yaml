@@ -24,8 +24,9 @@ server:
     data:
       GITHUB_REDIRECT_URI: "https://api-dev.softwarecampus.co.kr/api/auth/oauth/github/callback"
       GOOGLE_REDIRECT_URI: "https://api-dev.softwarecampus.co.kr/api/auth/oauth/google/callback"
+      KAKAO_REDIRECT_URI: "https://api-dev.softwarecampus.co.kr/api/auth/oauth/kakao/callback"
       cors.allowed-origins: "https://api-dev.softwarecampus.co.kr"
-      
+
   # Redis Sidecar (Server 파드에 포함)
   redis:
     enabled: true
@@ -55,7 +56,7 @@ server:
   gaSecret:
     enabled: true
     name: ga-credentials-develop
-
+    
   # InfraSecret: SSH 터널링용 
   infraSecret:
     enabled: false
@@ -90,6 +91,11 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
+
+  tls:
+    - hosts:
+        - api-dev.softwarecampus.co.kr
+      secretName: sw-campus-client-tls-secret
 
   hosts:
     - host: api-dev.softwarecampus.co.kr
