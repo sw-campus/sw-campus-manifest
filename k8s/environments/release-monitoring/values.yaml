@@ -2,6 +2,9 @@
 global:
   namespace: monitoring
 
+monitoring:
+  targetNamespace: release
+
 grafana:
   enabled: true
   replicas: 1

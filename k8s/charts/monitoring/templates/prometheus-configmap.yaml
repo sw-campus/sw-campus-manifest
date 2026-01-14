@@ -39,18 +39,41 @@ data:
         static_configs:
           - targets: ['kube-state-metrics.kube-system.svc.cluster.local:8080']
 
-      # Kubernetes pods (Application 메트릭용: pod annotation 방식)
+      # Kubernetes pods (Application 메트릭)
       - job_name: kubernetes-pods
         kubernetes_sd_configs:
           - role: pod
+            namespaces:
+              names:
+                - {{ .Values.monitoring.targetNamespace | default .Values.global.namespace }}
         relabel_configs:
+          # annotation으로 스크랩 활성화된 Pod만
           - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
             action: keep
             regex: true
+            
+          # namespace 레이블 추가
+          - source_labels: [__meta_kubernetes_namespace]
+            action: replace
+            target_label: namespace
+          
+          # pod name 레이블 추가
+          - source_labels: [__meta_kubernetes_pod_name]
+            action: replace
+            target_label: pod
+          
+          # container name 레이블 추가
+          - source_labels: [__meta_kubernetes_pod_container_name]
+            action: replace
+            target_label: container
+
+          # metrics path 설정
           - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
             action: replace
             target_label: __metrics_path__
             regex: (.+)
+
+          # port 설정
           - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
             action: replace
             target_label: __address__
