@@ -72,4 +72,19 @@ data:
       
       # 카디널리티 보호
       cardinality_limit: 100000               # 라벨 조합 최대값
+
+      # OTLP 레이블 매핑 추가
+      otlp_config:
+        resource_attributes:
+          attributes_config:
+            - action: index_label
+              attributes: 
+                - service.name
+                - namespace              # OTel에서 매핑한 namespace
+                - deployment.environment # develop/release
+        log_attributes:
+          - action: index_label
+            attributes:
+              - level                    # INFO, WARN, ERROR
+              - severity                 # 1-24 (이론상, 실제로는 4-5개만 사용)
 {{- end }}
