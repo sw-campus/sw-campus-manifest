@@ -10,7 +10,7 @@ data:
       evaluation_interval: 15s
       external_labels:
         cluster: {{ .Values.global.cluster | default .Values.global.namespace }}
-        env: {{ .Values.global.env | default "dev" }}
+        env: {{ .Values.global.env | default "develop" }}
 
     # Alertmanager로 알림 보내기
     alerting:

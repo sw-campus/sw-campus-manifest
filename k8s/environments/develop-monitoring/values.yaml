@@ -1,6 +1,7 @@
 # Develop monitoring environment values
 global:
   namespace: monitoring
+  env: develop
 
 monitoring:
   targetNamespace: develop

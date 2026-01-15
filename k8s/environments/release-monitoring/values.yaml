@@ -1,6 +1,7 @@
 # Release monitoring environment values
 global:
   namespace: monitoring
+  env: release
 
 monitoring:
   targetNamespace: release
