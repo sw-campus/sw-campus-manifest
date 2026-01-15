@@ -42,6 +42,11 @@ data:
             endpoint: 0.0.0.0:4318
 
     processors:
+      filter/namespace:
+        logs:
+          log_record:
+            - 'attributes["k8s.namespace.name"] == "develop" or attributes["k8s.namespace.name"] == "release"'
+      
       k8sattributes:
         extract:
           metadata:
@@ -60,6 +65,9 @@ data:
           - action: upsert   # pod는 label이 아니고 attributes
             key: pod
             from_attribute: k8s.pod.name
+          - action: upsert
+            key: deployment.environment
+            from_attribute: deployment.environment
 
       batch:
         timeout: 10s
@@ -81,7 +89,7 @@ data:
       pipelines:
         logs:
           receivers: [filelog, otlp]
-          processors: [k8sattributes, resource, batch]
+          processors: [filter/namespace,k8sattributes, resource, batch]
           exporters: [otlphttp/loki]
 
         # traces:
