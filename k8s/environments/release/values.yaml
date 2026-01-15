@@ -12,7 +12,7 @@ server:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: "v1.0.17"
+    tag: "v1.0.18"
     pullPolicy: IfNotPresent
 
   resources:

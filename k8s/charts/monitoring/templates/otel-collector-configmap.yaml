@@ -11,6 +11,24 @@ data:
         include:
           - /var/log/pods/*/*/*.log
         start_at: beginning
+      
+        operators:
+          # 로그 레벨 추출
+          - type: regex_parser
+            regex: '^\S+\s+\S+\s+\[.*?\]\s+(?P<level>TRACE|DEBUG|INFO|WARN|ERROR|FATAL)'
+            parse_from: body
+            parse_to: attributes
+        
+          # severity 매핑
+          - type: severity_parser
+            parse_from: attributes.level
+            mapping:
+              trace: trace
+              debug: debug
+              info: info
+              warn: warning
+              error: error
+              fatal: fatal
 
       otlp:
         protocols:
@@ -30,12 +48,16 @@ data:
 
       resource:
         attributes:
+          # 짧은 레이블명으로 매핑 (insert = 키가 없을 때만 추가, 이미 있으면 무시. upsert = 키가 없으면 추가, 이미 있으면 덮어쓰기
           - action: upsert
-            key: app
+            key: namespace
+            from_attribute: k8s.namespace.name
+          - action: upsert
+            key: container
             from_attribute: k8s.container.name
-          - action: insert
-            key: loki.resource.labels
-            value: k8s.namespace.name,app
+          - action: upsert
+            key: pod
+            from_attribute: k8s.pod.name
 
       batch:
         timeout: 5s
@@ -58,6 +80,11 @@ data:
           receivers: [filelog, otlp]
           processors: [k8sattributes, resource, batch]
           exporters: [loki]
+
+        # traces:
+        #   receivers: [otlp]
+        #   processors: [k8sattributes, resource, batch]
+        #   exporters: []  # 나중에 Tempo
 
         metrics:
           receivers: [otlp]
