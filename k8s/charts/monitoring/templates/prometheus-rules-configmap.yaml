@@ -42,6 +42,32 @@ data:
         annotations:
           summary: "Node not ready"
           description: "A node has been not Ready for more than 5 minutes."
+      
+      # 로그 에러율 급증
+    - alert: HighErrorLogRate
+      expr: |
+        sum by (namespace, app) (
+          rate(logback_events_total{level="error"}[5m])
+        ) > 10
+      for: 5m
+      labels:
+        severity: warning
+        env: {{ .Values.global.env }}
+      annotations:
+        summary: "High error log rate detected"
+        description: "{{ $labels.app }} in {{ $labels.namespace }} is logging errors rapidly"
+
+    # JVM 메모리 부족
+    - alert: HighHeapMemoryUsage
+      expr: |
+        (jvm_memory_used_bytes{area="heap"} / jvm_memory_max_bytes{area="heap"}) > 0.85
+      for: 10m
+      labels:
+        severity: warning
+        env: {{ .Values.global.env }}
+      annotations:
+        summary: "JVM heap memory usage is high"
+        description: "{{ $labels.app }} heap usage is above 85%"
 
     - name: swcampus-resource
       rules:
