@@ -35,7 +35,7 @@ data:
             period: 24h
 
     ruler:
-      alertmanager_url: http://localhost:9093
+      alertmanager_url: http://{{ .Values.global.namespace }}-alertmanager:9093
 
     compactor:
       working_directory: /loki/compactor
@@ -46,18 +46,30 @@ data:
       reject_old_samples_max_age: 168h
 
       # ingestion rate 완화
-      ingestion_rate_mb: 20
-      ingestion_burst_size_mb: 40
+      ingestion_rate_mb: {{ .Values.loki.config.limits.ingestion_rate_mb | default 50 }}
+      ingestion_burst_size_mb: {{ .Values.loki.config.limits.ingestion_burst_size_mb | default 100 }}
 
       # per-stream 제한 완화
-      per_stream_rate_limit: 10MB
-      per_stream_rate_limit_burst: 20MB
+      per_stream_rate_limit: 30MB
+      per_stream_rate_limit_burst: 60MB
 
       # stream 개수 제한 (운영 환경에서는 제한해야 함!)
-      max_streams_per_user: 10000
-
+      max_streams_per_user: {{ .Values.loki.config.limits.max_streams_per_user | default 5000 }}
+      
       # 레이블 제한 추가
       max_label_names_per_series: 20
       max_label_name_length: 1024
       max_label_value_length: 2048
+
+      # 쿼리 제한
+      max_line_size: 256KB                    # 한 줄 최대 크기
+      max_entries_limit_per_query: 5000       # 쿼리당 최대 엔트리
+      max_query_length: 721h                  # 최대 쿼리 시간 범위 (30일)
+      max_query_parallelism: 32               # 쿼리 병렬 처리
+      
+      # 청크 제한
+      max_chunks_per_query: 2000000           # 쿼리당 최대 청크
+      
+      # 카디널리티 보호
+      cardinality_limit: 100000               # 라벨 조합 최대값
 {{- end }}
