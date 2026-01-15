@@ -13,6 +13,7 @@ data:
         exclude:
           - /var/log/pods/monitoring*/*otel*/*.log  # 모든 otel 관련 로그는 제외
         start_at: beginning
+        
         operators:
           # k8s 로그 형식 파싱
           - type: regex_parser
@@ -84,7 +85,7 @@ data:
     service:
       telemetry:
         metrics:
-          address: 0.0.0.0:8888
+          level: detailed
 
       pipelines:
         logs:
