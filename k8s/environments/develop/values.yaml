@@ -98,7 +98,6 @@ ingress:
       secretName: sw-campus-client-tls-secret
 
   hosts:
-    - host: api-dev.softwarecampus.co.kr
       paths:
         - path: /
           pathType: Prefix
