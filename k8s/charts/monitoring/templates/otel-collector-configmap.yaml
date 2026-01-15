@@ -66,21 +66,10 @@ data:
         send_batch_size: 1024
 
     exporters:
-      loki:
-        endpoint: http://{{ .Values.global.namespace }}-loki:{{ .Values.loki.service.port }}/loki/api/v1/push
-        
-        # 기본 라벨 비활성화
-        default_labels_enabled:
-          exporter: false
-          job: false
-        
-        # Resource attributes를 라벨로
-        resource_attributes:
-          namespace:
-            enabled: true
-          app:
-            enabled: true
-        
+      otlphttp/loki:
+        endpoint: http://{{ .Values.global.namespace }}-loki:{{ .Values.loki.service.port }}/otlp
+        tls:
+          insecure: true  
       prometheus:
         endpoint: "0.0.0.0:8889"
 
@@ -93,11 +82,11 @@ data:
         logs:
           receivers: [filelog, otlp]
           processors: [k8sattributes, resource, batch]
-          exporters: [loki]
+          exporters: [otlphttp/loki]
 
         # traces:
         #   receivers: [otlp]
-        #   processors: [k8sattributes, resource, batch]
+        #   processors: [k8sattributes, batch]
         #   exporters: []  # 나중에 Tempo
 
         metrics:

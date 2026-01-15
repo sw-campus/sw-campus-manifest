@@ -64,7 +64,7 @@ loki:
   replicas: 1
   image:
     repository: grafana/loki
-    tag: "2.9.6"
+    tag: "3.3.2"
     pullPolicy: IfNotPresent
   service:
     type: ClusterIP
