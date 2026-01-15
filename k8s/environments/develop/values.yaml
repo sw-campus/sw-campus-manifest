@@ -83,7 +83,7 @@ ai:
 database:
   enabled: false
 
-# Ingress(tailscale proxy 사용) 
+# Ingress
 ingress:
   enabled: true
   className: nginx
