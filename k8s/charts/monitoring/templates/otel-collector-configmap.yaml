@@ -11,7 +11,7 @@ data:
         include:
           - /var/log/pods/*/*/*.log
         exclude:
-          - /var/log/pods/monitoring_*otel-collector*/*.log
+          - /var/log/pods/monitoring*/*otel*/*.log  # 모든 otel 관련 로그는 제외
         start_at: beginning
         operators:
           # k8s 로그 형식 파싱
@@ -68,11 +68,18 @@ data:
     exporters:
       loki:
         endpoint: http://{{ .Values.global.namespace }}-loki:{{ .Values.loki.service.port }}/loki/api/v1/push
-        # 명시적 라벨 설정
-        # labels:
-        #   resource:
-        #     namespace: namespace
-        #     app: app
+        
+        # 기본 라벨 비활성화
+        default_labels_enabled:
+          exporter: false
+          job: false
+        
+        # Resource attributes를 라벨로
+        resource_attributes:
+          namespace:
+            enabled: true
+          app:
+            enabled: true
         
       prometheus:
         endpoint: "0.0.0.0:8889"
