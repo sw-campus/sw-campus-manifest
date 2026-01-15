@@ -80,7 +80,7 @@ otelCollector:
   debug: false # 개발: true / 운영: false
   image:
     repository: otel/opentelemetry-collector-contrib
-    tag: "0.143.0"
+    tag: "0.143.1"
     pullPolicy: IfNotPresent
 
 # ConfigMaps toggle
