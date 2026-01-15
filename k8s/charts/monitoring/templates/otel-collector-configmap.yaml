@@ -11,24 +11,11 @@ data:
         include:
           - /var/log/pods/*/*/*.log
         start_at: beginning
-      
         operators:
-          # 로그 레벨 추출
-          - type: regex_parser
-            regex: '^\S+\s+\S+\s+\[.*?\]\s+(?P<level>TRACE|DEBUG|INFO|WARN|ERROR|FATAL)'
+          - type: json_parser
             parse_from: body
             parse_to: attributes
-        
-          # severity 매핑
-          - type: severity_parser
-            parse_from: attributes.level
-            mapping:
-              trace: trace
-              debug: debug
-              info: info
-              warn: warning
-              error: error
-              fatal: fatal
+            on_error: send  # JSON 아니면 그냥 보냄 (평문도 수집)
 
       otlp:
         protocols:
@@ -47,27 +34,41 @@ data:
 
       resource:
         attributes:
-          # loki 레이블: namespace, app
           - action: upsert
             key: namespace
             from_attribute: k8s.namespace.name
           - action: upsert
             key: app
             from_attribute: k8s.container.name
-          
-          # pod는 attribute로만 (레이블 아님!)
           - action: upsert
             key: pod
             from_attribute: k8s.pod.name
+      
+      # Transform: OTLP LogRecord → 구조화
+      transform:
+        log_statements:
+          - context: log
+            statements:
+              # Body를 message로
+              - set(attributes["message"], body)
+              
+              # Severity를 level로
+              - set(attributes["level"], severity_text)
+              
+              # Logger 이름
+              - set(attributes["logger"], instrumentation_scope.name)
+              
+              # Trace context
+              - set(attributes["trace_id"], trace_id.string) where trace_id.string != nil
+              - set(attributes["span_id"], span_id.string) where span_id.string != nil
 
       batch:
         timeout: 10s
-        send_batch_size: 2000
+        send_batch_size: 1024
 
     exporters:
       loki:
         endpoint: http://{{ .Values.global.namespace }}-loki:{{ .Values.loki.service.port }}/loki/api/v1/push
-
       prometheus:
         endpoint: "0.0.0.0:8889"
 
@@ -79,7 +80,7 @@ data:
       pipelines:
         logs:
           receivers: [filelog, otlp]
-          processors: [k8sattributes, resource, batch]
+          processors: [k8sattributes, resource, transform, batch]
           exporters: [loki]
 
         # traces:
