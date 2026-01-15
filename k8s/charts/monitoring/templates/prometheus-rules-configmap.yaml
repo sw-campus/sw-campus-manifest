@@ -16,10 +16,10 @@ data:
         for: 2m
         labels:
           severity: warning
-          env: {{ .Values.global.env | default "dev" }}
+          env: {{ .Values.global.env }}
         annotations:
-          summary: "Pod restarting frequently"
-          description: "A pod restarted more than 3 times in the last 15 minutes."
+          summary: "Pod 재시작 빈번"
+          description: "Pod가 15분 동안 3회 이상 재시작했습니다."
 
       # CrashLoopBackOff 상태
       - alert: PodCrashLoopBackOff
@@ -27,10 +27,10 @@ data:
         for: 2m
         labels:
           severity: critical
-          env: {{ .Values.global.env | default "dev" }}
+          env: {{ .Values.global.env }}
         annotations:
-          summary: "CrashLoopBackOff detected"
-          description: "A pod is in CrashLoopBackOff state."
+          summary: "Pod CrashLoopBackOff 발생"
+          description: "Pod가 CrashLoopBackOff 상태입니다."
 
       # Node Ready 상태 아님
       - alert: NodeNotReady
@@ -38,11 +38,42 @@ data:
         for: 5m
         labels:
           severity: critical
-          env: {{ .Values.global.env | default "dev" }}
+          env: {{ .Values.global.env }}
         annotations:
-          summary: "Node not ready"
-          description: "A node has been not Ready for more than 5 minutes."
+          summary: "노드 준비 안됨"
+          description: "노드가 5분 이상 Ready 상태가 아닙니다."
 
+    # 애플리케이션 메트릭
+    - name: swcampus-application
+      rules:
+      # 로그 에러율 급증
+      - alert: HighErrorLogRate
+        expr: |
+          sum by (namespace, app) (
+            rate(logback_events_total{namespace="{{ .Values.monitoring.targetNamespace }}", level="error"}[5m])
+          ) > 10
+        for: 5m
+        labels:
+          severity: warning
+          env: {{ .Values.global.env }}
+        annotations:
+          summary: "에러 로그 급증 감지"
+          description: "{{ $labels.namespace }}의 {{ $labels.app }}에서 초당 {{ $value }}개의 에러 로그 발생 중"
+
+      # JVM 메모리 부족
+      - alert: HighHeapMemoryUsage
+        expr: |
+          (jvm_memory_used_bytes{namespace="{{ .Values.monitoring.targetNamespace }}", area="heap"} 
+          / jvm_memory_max_bytes{area="heap"}) > 0.85
+        for: 10m
+        labels:
+          severity: warning
+          env: {{ .Values.global.env }}
+        annotations:
+          summary: "JVM Heap 메모리 사용량 높음"
+          description: "{{ $labels.app }}의 Heap 메모리 사용률이 {{ $value | humanizePercentage }}입니다"
+
+    # 리소스 사용량
     - name: swcampus-resource
       rules:
       # 컨테이너 CPU 과다
@@ -53,10 +84,10 @@ data:
         for: 5m
         labels:
           severity: warning
-          env: {{ .Values.global.env | default "dev" }}
+          env: {{ .Values.global.env }}
         annotations:
-          summary: "High container CPU usage"
-          description: "CPU usage is high for a container."
+          summary: "컨테이너 CPU 사용량 높음"
+          description: "{{ $labels.namespace }}의 {{ $labels.pod }} CPU 사용량이 높습니다."
 
       # 컨테이너 메모리 과다
       - alert: HighContainerMemory
@@ -66,8 +97,35 @@ data:
         for: 5m
         labels:
           severity: warning
-          env: {{ .Values.global.env | default "dev" }}
+          env: {{ .Values.global.env }}
         annotations:
-          summary: "High container memory usage"
-          description: "Memory working set is high for a container."
+          summary: "컨테이너 메모리 사용량 높음"
+          description: "{{ $labels.namespace }}의 {{ $labels.pod }} 메모리 사용량이 높습니다."
+
+    # Loki 헬스체크
+    - name: loki-health
+      rules:
+      # 스트림 개수 경고
+      - alert: HighLokiStreamCount
+        expr: |
+          loki_ingester_streams > 8000
+        for: 10m
+        labels:
+          severity: warning
+          env: {{ .Values.global.env }}
+        annotations:
+          summary: "Loki 스트림 개수 높음"
+          description: "Loki 스트림이 {{ $value }}개입니다 (제한: 10000)"
+
+      # Ingestion rate 초과
+      - alert: LokiIngestionRateLimitHit
+        expr: |
+          rate(loki_discarded_samples_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+          env: {{ .Values.global.env }}
+        annotations:
+          summary: "Loki 로그 유입 제한 초과"
+          description: "Loki가 초당 {{ $value }}개의 로그를 버리고 있습니다"
 {{- end }}

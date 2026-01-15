@@ -4,7 +4,7 @@
 # Global settings
 global:
   namespace: monitoring
-  env: dev
+  env: develop
   cluster: monitoring
 
 # Monitoring target namespace (ArgoCD parameters로 오버라이드됨)
