@@ -6,13 +6,19 @@ monitoring:
   targetNamespace: release
 
 grafana:
-  replicas: 1
+  replicas: 2
 
 prometheus:
   replicas: 2
 
 loki:
   replicas: 2
+  config:
+    limits:
+      max_streams_per_user: 5000 # 운영: 실제 Pod 수 기반
+      ingestion_rate_mb: 50
+      ingestion_burst_size_mb: 100
+      cardinality_limit: 100000
 
 otelCollector:
   replicas: 2

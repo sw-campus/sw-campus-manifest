@@ -6,10 +6,16 @@ monitoring:
   targetNamespace: develop
 
 prometheus:
-  replicas: 2
+  replicas: 1
 
 loki:
-  replicas: 2
+  replicas: 1
+  config:
+    limits:
+      max_streams_per_user: 1000 # 개발: 여유있게
+      ingestion_rate_mb: 30
+      ingestion_burst_size_mb: 60
+      cardinality_limit: 50000
 
 otelCollector:
   debug: true # 개발: 디버깅을 위해 logging exporter 활성화
