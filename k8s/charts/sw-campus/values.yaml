@@ -4,6 +4,9 @@ global:
   imagePullSecrets:
     - name: ghcr-secret
 
+monitoring:
+  namespace: monitoring
+
 # Server settings
 server:
   enabled: true
@@ -79,8 +82,6 @@ server:
       value: "false"
     - name: SPRING_BATCH_JOB_NAMES
       value: "NONE"
-    - name: JAVA_TOOL_OPTIONS
-      value: "-Djava.net.preferIPv4Stack=true"
 
   resources:
     requests:
