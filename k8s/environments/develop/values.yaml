@@ -66,10 +66,12 @@ client:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
-    tag: "RHSA-93c1bc85312dab1efc8550c61e7d6042c820cd9d"
+    tag: "RHSA-18657c3dee6d134c0e05d75729725afa2db7f03f"
     pullPolicy: IfNotPresent
   configMap:
     name: sw-campus-client-config
+    data:
+      NODE_ENV: "production"
 
 ai:
   enabled: true
