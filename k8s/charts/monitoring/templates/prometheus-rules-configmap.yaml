@@ -58,7 +58,7 @@ data:
           env: {{ .Values.global.env }}
         annotations:
           summary: "에러 로그 급증 감지"
-          description: "{{ $labels.namespace }}의 {{ $labels.app }}에서 초당 {{ $value }}개의 에러 로그 발생 중"
+          description: "에러 로그가 초당 10개 이상 발생 중입니다."
 
       # JVM 메모리 부족
       - alert: HighHeapMemoryUsage
@@ -71,7 +71,7 @@ data:
           env: {{ .Values.global.env }}
         annotations:
           summary: "JVM Heap 메모리 사용량 높음"
-          description: "{{ $labels.app }}의 Heap 메모리 사용률이 {{ $value | humanizePercentage }}입니다"
+          description: "JVM Heap 메모리 사용률이 85% 이상입니다."
 
     # 리소스 사용량
     - name: swcampus-resource
@@ -87,7 +87,7 @@ data:
           env: {{ .Values.global.env }}
         annotations:
           summary: "컨테이너 CPU 사용량 높음"
-          description: "{{ $labels.namespace }}의 {{ $labels.pod }} CPU 사용량이 높습니다."
+          description: "컨테이너 CPU 사용량이 높습니다."
 
       # 컨테이너 메모리 과다
       - alert: HighContainerMemory
@@ -100,7 +100,7 @@ data:
           env: {{ .Values.global.env }}
         annotations:
           summary: "컨테이너 메모리 사용량 높음"
-          description: "{{ $labels.namespace }}의 {{ $labels.pod }} 메모리 사용량이 높습니다."
+          description: "컨테이너 메모리 사용량이 높습니다."
 
     # Loki 헬스체크
     - name: loki-health
@@ -115,7 +115,7 @@ data:
           env: {{ .Values.global.env }}
         annotations:
           summary: "Loki 스트림 개수 높음"
-          description: "Loki 스트림이 {{ $value }}개입니다 (제한: 10000)"
+          description: "Loki 스트림이 8000개를 초과했습니다 (제한: 10000)"
 
       # Ingestion rate 초과
       - alert: LokiIngestionRateLimitHit
@@ -127,5 +127,5 @@ data:
           env: {{ .Values.global.env }}
         annotations:
           summary: "Loki 로그 유입 제한 초과"
-          description: "Loki가 초당 {{ $value }}개의 로그를 버리고 있습니다"
+          description: "Loki가 로그를 버리고 있습니다"
 {{- end }}
