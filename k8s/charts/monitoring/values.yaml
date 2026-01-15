@@ -73,8 +73,6 @@ loki:
 # OpenTelemetry Collector configuration
 otelCollector:
   enabled: true
-  deployment:
-    enabled: false
   daemonset:
     enabled: true
   labels:
@@ -82,7 +80,7 @@ otelCollector:
   debug: false # 개발: true / 운영: false
   image:
     repository: otel/opentelemetry-collector-contrib
-    tag: "0.96.0"
+    tag: "0.143.0"
     pullPolicy: IfNotPresent
 
 # ConfigMaps toggle
