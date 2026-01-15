@@ -47,6 +47,10 @@ spec:
           env:
             - name: JAVA_TOOL_OPTIONS
               value: "-Djava.net.preferIPv4Stack=true"
+            - name: OTEL_SERVICE_NAME
+              value: "sw-campus-api"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://{{ .Values.monitoring.namespace }}-otel-collector.{{ .Values.monitoring.namespace }}:4318"
             {{- if and .Values.server.redis .Values.server.redis.enabled }}
             - name: REDIS_HOST
               value: "localhost"
