@@ -10,7 +10,7 @@ data:
       evaluation_interval: 15s
       external_labels:
         cluster: {{ .Values.global.cluster | default .Values.global.namespace }}
-        env: {{ .Values.global.env | default "dev" }}
+        env: {{ .Values.global.env | default "develop" }}
 
     # Alertmanager로 알림 보내기
     alerting:
@@ -45,7 +45,8 @@ data:
           - role: pod
             namespaces:
               names:
-                - {{ if .Values.monitoring.targetNamespace }}{{ .Values.monitoring.targetNamespace }}{{ else }}{{ .Values.global.namespace }}{{ end }}
+                - {{ .Values.monitoring.targetNamespace }} # develop or release
+        
         relabel_configs:
           # annotation으로 스크랩 활성화된 Pod만
           - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
@@ -62,10 +63,10 @@ data:
             action: replace
             target_label: pod
           
-          # container name 레이블 추가
-          - source_labels: [__meta_kubernetes_pod_container_name]
+          # app 레이블 추가 (pod label app에서)
+          - source_labels: [__meta_kubernetes_pod_label_app]
             action: replace
-            target_label: container
+            target_label: app
 
           # metrics path 설정
           - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
