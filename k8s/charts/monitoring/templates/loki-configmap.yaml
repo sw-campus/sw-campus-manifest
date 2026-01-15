@@ -80,10 +80,11 @@ data:
             - action: index_label
               attributes: 
                 - service.name
-                - deployment.environment
+                - namespace              # OTel에서 매핑한 namespace
+                - deployment.environment # develop/release
         log_attributes:
           - action: index_label
             attributes:
-              - level
-              - severity
+              - level                    # INFO, WARN, ERROR
+              - severity                 # 1-24 (이론상, 실제로는 4-5개만 사용)
 {{- end }}
