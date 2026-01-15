@@ -69,10 +69,10 @@ data:
       loki:
         endpoint: http://{{ .Values.global.namespace }}-loki:{{ .Values.loki.service.port }}/loki/api/v1/push
         # 명시적 라벨 설정
-        labels:
-          resource:
-            namespace: namespace
-            app: app
+        # labels:
+        #   resource:
+        #     namespace: namespace
+        #     app: app
         
       prometheus:
         endpoint: "0.0.0.0:8889"
