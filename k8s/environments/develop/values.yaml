@@ -8,7 +8,7 @@ server:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: "RHSA-5bcd304afb9e4c49b7a3461e6699d9f8854f9d17"
+    tag: "RHSA-b92e5d64e10a3b1bc4f0eec4828a95257af5be56"
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -17,11 +17,6 @@ server:
     limits:
       cpu: 300m
       memory: 512Mi
-  service:
-    type: NodePort
-    port: 8080
-    targetPort: 8080
-    nodePort: 30081
     
   # ConfigMap: profile 같은 비민감 정보만
   configMap:
@@ -75,11 +70,6 @@ client:
     pullPolicy: IfNotPresent
   configMap:
     name: sw-campus-client-config
-  service:
-    type: NodePort
-    port: 3000
-    targetPort: 3000
-    nodePort: 30080
 
 ai:
   enabled: true
@@ -88,11 +78,6 @@ ai:
     repository: ghcr.io/sw-campus/sw-campus-ai
     tag: "RHSA-fcceaaf00a185dbed1af703c42b56cffc587a82d"
     pullPolicy: IfNotPresent
-  service:
-    type: NodePort
-    port: 8000
-    targetPort: 8000
-    nodePort: 30082
 
 # Database configuration (develop: 로컬 DB 사용)
 database:
@@ -100,4 +85,19 @@ database:
 
 # Ingress
 ingress:
-  enabled: false
+  enabled: true
+  className: nginx
+  annotations: {}
+  hosts:
+    - host: sw-campus-dev.tail0ffc99.ts.net
+      paths:
+        - path: /
+          pathType: Prefix
+          service:
+            name: sw-campus-client
+            port: 3000
+        - path: /api
+          pathType: Prefix
+          service:
+            name: sw-campus-server
+            port: 8080
