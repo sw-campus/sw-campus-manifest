@@ -89,7 +89,7 @@ data:
       pipelines:
         logs:
           receivers: [filelog, otlp]
-          processors: [filter/namespace,k8sattributes, resource, batch]
+          processors: [k8sattributes, filter/namespace, resource, batch]
           exporters: [otlphttp/loki]
 
         # traces:
