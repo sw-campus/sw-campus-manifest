@@ -80,11 +80,10 @@ data:
             - action: index_label
               attributes: 
                 - service.name
-                - service.namespace
                 - deployment.environment
-          log_attributes:
-            - action: index_label
-              attributes:
-                - level
-                - severity
+        log_attributes:
+          - action: index_label
+            attributes:
+              - level
+              - severity
 {{- end }}
