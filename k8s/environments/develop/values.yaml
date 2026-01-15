@@ -83,19 +83,13 @@ ai:
 database:
   enabled: false
 
-# Ingress(tailscale proxy 사용) 
+# Ingress
 ingress:
   enabled: true
   className: nginx
 
   annotations:
     kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-
-  tls:
-    - hosts:
-        - api-dev.softwarecampus.co.kr
-      secretName: sw-campus-client-tls-secret
 
   hosts:
       paths:
