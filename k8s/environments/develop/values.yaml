@@ -90,15 +90,8 @@ ingress:
 
   annotations:
     kubernetes.io/ingress.class: nginx
-    cert-manager.io/cluster-issuer: letsencrypt-prod
-
-  tls:
-    - hosts:
-        - api-dev.softwarecampus.co.kr
-      secretName: sw-campus-client-tls-secret
 
   hosts:
-    - host: api-dev.softwarecampus.co.kr
       paths:
         - path: /
           pathType: Prefix
