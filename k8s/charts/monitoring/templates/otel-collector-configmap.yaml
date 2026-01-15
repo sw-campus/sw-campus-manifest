@@ -10,8 +10,25 @@ data:
       filelog:
         include:
           - /var/log/pods/*/*/*.log
+        exclude:
+          - /var/log/pods/monitoring_*otel-collector*/*.log
         start_at: beginning
         operators:
+          # k8s 로그 형식 파싱
+          - type: regex_parser
+            regex: '^(?P<time>[^ ]+) (?P<stream>stdout|stderr) (?P<logtag>[^ ]*) ?(?P<log>.*)$'
+            parse_from: body
+            parse_to: attributes
+            timestamp:
+              parse_from: attributes.time
+              layout: '%Y-%m-%dT%H:%M:%S.%LZ'
+          
+          # 실제 로그 내용을 body로 이동
+          - type: move
+            from: attributes.log
+            to: body
+
+          # JSON 파싱
           - type: json_parser
             parse_from: body
             parse_to: attributes
@@ -43,24 +60,6 @@ data:
           - action: upsert
             key: pod
             from_attribute: k8s.pod.name
-      
-      # Transform: OTLP LogRecord → 구조화
-      transform:
-        log_statements:
-          - context: log
-            statements:
-              # Body를 message로
-              - set(attributes["message"], body)
-              
-              # Severity를 level로
-              - set(attributes["level"], severity_text)
-              
-              # Logger 이름
-              - set(attributes["logger"], instrumentation_scope.name)
-              
-              # Trace context
-              - set(attributes["trace_id"], trace_id.string) where trace_id.string != nil
-              - set(attributes["span_id"], span_id.string) where span_id.string != nil
 
       batch:
         timeout: 10s
@@ -69,6 +68,12 @@ data:
     exporters:
       loki:
         endpoint: http://{{ .Values.global.namespace }}-loki:{{ .Values.loki.service.port }}/loki/api/v1/push
+        # 명시적 라벨 설정
+        labels:
+          resource:
+            namespace: namespace
+            app: app
+        
       prometheus:
         endpoint: "0.0.0.0:8889"
 
@@ -80,7 +85,7 @@ data:
       pipelines:
         logs:
           receivers: [filelog, otlp]
-          processors: [k8sattributes, resource, transform, batch]
+          processors: [k8sattributes, resource, batch]
           exporters: [loki]
 
         # traces:
