@@ -8,7 +8,7 @@ server:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: "RHSA-d915bfe53ebf5fdc180c574e2eaeb19c68960976"
+    tag: "RHSA-15a67af89aed9320e4f9309ff32b907aca67f767"
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -66,10 +66,12 @@ client:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
-    tag: "RHSA-93c1bc85312dab1efc8550c61e7d6042c820cd9d"
+    tag: "RHSA-18657c3dee6d134c0e05d75729725afa2db7f03f"
     pullPolicy: IfNotPresent
   configMap:
     name: sw-campus-client-config
+    data:
+      NODE_ENV: "production"
 
 ai:
   enabled: true
@@ -87,7 +89,9 @@ database:
 ingress:
   enabled: true
   className: nginx
-  annotations: {}
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
   hosts:
     - host: sw-campus-dev.tail0ffc99.ts.net
       paths:
