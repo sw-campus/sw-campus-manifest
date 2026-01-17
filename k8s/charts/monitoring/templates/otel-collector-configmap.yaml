@@ -9,11 +9,12 @@ data:
     receivers:
       filelog:
         include:
-          - /var/log/pods/*/*/*.log
+          - /var/log/pods/develop_*/*/*.log
+          - /var/log/pods/release_*/*/*.log
         exclude:
-          - /var/log/pods/monitoring*/*otel*/*.log  # 모든 otel 관련 로그는 제외
+          - /var/log/pods/monitoring_*/*/*.log        # 모든 모니터링 로그는 제외
+          - /var/log/pods/*sw-campus-server*/*/*.log  # 중복 방지를 위해 server 로그는 제외
         start_at: beginning
-        
         operators:
           # k8s 로그 형식 파싱
           - type: regex_parser
