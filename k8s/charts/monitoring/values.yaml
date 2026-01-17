@@ -11,7 +11,6 @@ global:
 monitoring:
   targetNamespace: develop # 기본값: develop, 운영환경에서는 ArgoCD parameters로 release 설정
 
-# Grafana configuration
 grafana:
   enabled: true
   replicas: 2
@@ -30,7 +29,6 @@ grafana:
       access: proxy
       isDefault: true
 
-# Prometheus configuration
 prometheus:
   enabled: true
   replicas: 1
@@ -49,7 +47,6 @@ prometheus:
           - targets:
               - monitoring-otel-collector.monitoring:8889
 
-# Alertmanager configuration
 alertmanager:
   enabled: true
   image:
@@ -58,7 +55,6 @@ alertmanager:
   slack:
     webhookUrl: ""
 
-# Loki configuration
 loki:
   enabled: true
   replicas: 1
@@ -70,7 +66,18 @@ loki:
     type: ClusterIP
     port: 3100
 
-# OpenTelemetry Collector configuration
+tempo:
+  enabled: true
+  replicas: 1
+  image:
+    repository: grafana/tempo
+    tag: "2.9.1"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 3200 # HTTP
+    otlpGrpcPort: 4317 # OTLP gRPC
+
 otelCollector:
   enabled: true
   daemonset:
