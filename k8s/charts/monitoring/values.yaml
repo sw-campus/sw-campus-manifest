@@ -76,6 +76,7 @@ loki:
 
 tempo:
   enabled: true
+  fullnameOverride: monitoring-tempo # Pod/Service 이름 고정
   tempo:
     repository: grafana/tempo
     tag: "2.9.1"
