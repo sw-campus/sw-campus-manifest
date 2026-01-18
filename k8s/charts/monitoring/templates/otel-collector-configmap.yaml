@@ -9,10 +9,13 @@ data:
     receivers:
       filelog:
         include:
-          - /var/log/pods/*/*/*.log
+          - /var/log/pods/develop_*/*/*.log
+          - /var/log/pods/release_*/*/*.log
         exclude:
-          - /var/log/pods/monitoring_*otel-collector*/*.log
+          - /var/log/pods/monitoring_*/*/*.log        # 모든 모니터링 로그는 제외
+          - /var/log/pods/*sw-campus-server*/*/*.log  # 중복 방지를 위해 server 로그는 제외
         start_at: beginning
+
         operators:
           # k8s 로그 형식 파싱
           - type: regex_parser
@@ -42,6 +45,7 @@ data:
             endpoint: 0.0.0.0:4318
 
     processors:
+      # 1. k8s metadata 추가
       k8sattributes:
         extract:
           metadata:
@@ -49,6 +53,16 @@ data:
             - k8s.container.name
             - k8s.pod.name
 
+      # 2. namespace 필터링 (develop/release만)
+      filter/namespace:
+        logs:
+          log_record:
+            - 'attributes["k8s.namespace.name"] == "develop" or attributes["k8s.namespace.name"] == "release"'
+        traces:
+          span:
+            - 'attributes["k8s.namespace.name"] == "develop" or attributes["k8s.namespace.name"] == "release"'
+
+      # 3. 리소스 속성 변환
       resource:
         attributes:
           - action: upsert
@@ -61,37 +75,40 @@ data:
             key: pod
             from_attribute: k8s.pod.name
 
+      # 4. 배치 처리
       batch:
         timeout: 10s
         send_batch_size: 1024
 
     exporters:
-      loki:
-        endpoint: http://{{ .Values.global.namespace }}-loki:{{ .Values.loki.service.port }}/loki/api/v1/push
-        # 명시적 라벨 설정
-        # labels:
-        #   resource:
-        #     namespace: namespace
-        #     app: app
-        
+      otlphttp/loki:
+        endpoint: http://{{ .Values.global.namespace }}-loki:3100/otlp
+        tls:
+          insecure: true
+      
+      otlp/tempo:
+        endpoint: {{ .Values.global.namespace }}-tempo:4317
+        tls:
+          insecure: true
+      
       prometheus:
         endpoint: "0.0.0.0:8889"
 
     service:
       telemetry:
         metrics:
-          address: 0.0.0.0:8888
+          level: detailed
 
       pipelines:
         logs:
           receivers: [filelog, otlp]
-          processors: [k8sattributes, resource, batch]
-          exporters: [loki]
+          processors: [k8sattributes, filter/namespace, resource, batch]
+          exporters: [otlphttp/loki]
 
-        # traces:
-        #   receivers: [otlp]
-        #   processors: [k8sattributes, resource, batch]
-        #   exporters: []  # 나중에 Tempo
+        traces:
+          receivers: [otlp]
+          processors: [k8sattributes, filter/namespace, batch]
+          exporters: [otlp/tempo]
 
         metrics:
           receivers: [otlp]

@@ -4,6 +4,9 @@ global:
   imagePullSecrets:
     - name: ghcr-secret
 
+monitoring:
+  namespace: monitoring
+
 # Server settings
 server:
   enabled: true
@@ -79,8 +82,20 @@ server:
       value: "false"
     - name: SPRING_BATCH_JOB_NAMES
       value: "NONE"
-    - name: JAVA_TOOL_OPTIONS
-      value: "-Djava.net.preferIPv4Stack=true"
+
+    # OpenTelemetry 설정
+    - name: OTEL_SERVICE_NAME
+      value: "sw-campus"
+    - name: OTEL_EXPORTER_OTLP_ENDPOINT
+      value: "http://monitoring-otel-collector.monitoring:4318"
+    - name: OTEL_EXPORTER_OTLP_PROTOCOL
+      value: "http/protobuf"
+    - name: OTEL_LOGS_EXPORTER
+      value: "otlp"
+    - name: OTEL_METRICS_EXPORTER # prometheus로 직접 보내기 때문에 none 명시 (기본값=otlp)
+      value: "none"
+    - name: OTEL_TRACES_EXPORTER
+      value: "otlp"
 
   resources:
     requests:
