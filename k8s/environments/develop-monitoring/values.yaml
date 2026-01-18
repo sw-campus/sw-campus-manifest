@@ -1,10 +1,15 @@
 # Develop monitoring environment values
+# 운영 기본값을 개발 환경에 맞게 다운그레이드
+
 global:
   namespace: monitoring
   env: develop
 
 monitoring:
   targetNamespace: develop
+
+grafana:
+  replicas: 1
 
 prometheus:
   replicas: 1
@@ -13,10 +18,38 @@ loki:
   replicas: 1
   config:
     limits:
-      max_streams_per_user: 1000 # 개발: 여유있게
-      ingestion_rate_mb: 30
-      ingestion_burst_size_mb: 60
-      cardinality_limit: 50000
+      max_streams_per_user: 1000 # 운영: 5000 → 개발: 1000
+      ingestion_rate_mb: 30 # 운영: 50 → 개발: 30
+      ingestion_burst_size_mb: 60 # 운영: 100 → 개발: 60
+      cardinality_limit: 50000 # 운영: 100000 → 개발: 50000
+
+tempo:
+  tempo:
+    resources:
+      requests:
+        cpu: 100m # 운영: 200m → 개발: 100m
+        memory: 256Mi # 운영: 512Mi → 개발: 256Mi
+      limits:
+        cpu: 500m # 운영: 1000m → 개발: 500m
+        memory: 1Gi # 운영: 2Gi → 개발: 1Gi
+
+  singleBinary:
+    persistence:
+      enabled: false # 운영: true → 개발: false (로컬 스토리지)
+
+  global_overrides:
+    max_bytes_per_trace: 5000000 # 운영: 10MB → 개발: 5MB
+    ingestion_rate_limit_bytes: 15000000 # 운영: 30MB/s → 개발: 15MB/s
+    ingestion_burst_size_bytes: 20000000 # 운영: 50MB → 개발: 20MB
+
+  compactor:
+    config:
+      compaction:
+        block_retention: 48h # 운영: 168h(7일) → 개발: 48h(2일)
 
 otelCollector:
-  debug: true # 개발: 디버깅을 위해 logging exporter 활성화
+  debug: true # 운영: false → 개발: true
+
+alertmanager:
+  slack:
+    webhookUrl: "" # 개발: 알림 끔 (또는 개발용 채널)

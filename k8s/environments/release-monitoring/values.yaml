@@ -1,4 +1,6 @@
 # Release monitoring environment values
+# 기본값이 이미 운영 환경 기준이므로 거의 변경 없음
+
 global:
   namespace: monitoring
   env: release
@@ -6,21 +8,12 @@ global:
 monitoring:
   targetNamespace: release
 
-grafana:
-  replicas: 2
-
-prometheus:
-  replicas: 2
-
-loki:
-  replicas: 2
-  config:
-    limits:
-      max_streams_per_user: 5000 # 운영: 실제 Pod 수 기반
-      ingestion_rate_mb: 50
-      ingestion_burst_size_mb: 100
-      cardinality_limit: 100000
-
-otelCollector:
-  replicas: 2
-  debug: false # 운영: 성능을 위해 logging exporter 비활성화
+# Tempo - S3 백엔드로 전환 시 (선택사항)
+# tempo:
+#   storage:
+#     trace:
+#       backend: s3
+#       s3:
+#         bucket: sw-campus-tempo-traces
+#         endpoint: s3.ap-northeast-2.amazonaws.com
+#         region: ap-northeast-2
