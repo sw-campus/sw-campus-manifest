@@ -89,9 +89,20 @@ tempo:
       limits:
         cpu: 1000m
         memory: 2Gi
+
     metricsGenerator:
       enabled: true
       remoteWriteUrl: "http://monitoring-prometheus:9090/api/v1/write"
+      processor:
+        spanMetrics:
+          dimensions:
+            - name: http.method
+            - name: http.status_code
+            - name: service.name
+        serviceGraphs:
+          dimensions:
+            - name: http.method
+            - name: http.status_code
 
   singleBinary:
     replicas: 1
