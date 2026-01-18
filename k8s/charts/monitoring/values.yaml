@@ -1,17 +1,18 @@
 # Default values for monitoring
 # 환경별 values 파일에서 오버라이드됨
 
+# 운영 환경 기준 설정 (안전한 기본값)
+# 개발 환경에서는 environments/develop-monitoring/values.yaml로 다운그레이드
+
 # Global settings
 global:
   namespace: monitoring
-  env: develop
+  env: release
   cluster: monitoring
 
-# Monitoring target namespace (ArgoCD parameters로 오버라이드됨)
 monitoring:
-  targetNamespace: develop # 기본값: develop, 운영환경에서는 ArgoCD parameters로 release 설정
+  targetNamespace: release
 
-# Grafana configuration
 grafana:
   enabled: true
   replicas: 2
@@ -30,10 +31,9 @@ grafana:
       access: proxy
       isDefault: true
 
-# Prometheus configuration
 prometheus:
   enabled: true
-  replicas: 1
+  replicas: 2
   image:
     repository: prom/prometheus
     tag: "v2.52.0"
@@ -49,7 +49,6 @@ prometheus:
           - targets:
               - monitoring-otel-collector.monitoring:8889
 
-# Alertmanager configuration
 alertmanager:
   enabled: true
   image:
@@ -58,10 +57,9 @@ alertmanager:
   slack:
     webhookUrl: ""
 
-# Loki configuration
 loki:
   enabled: true
-  replicas: 1
+  replicas: 2
   image:
     repository: grafana/loki
     tag: "3.3.2"
@@ -69,15 +67,66 @@ loki:
   service:
     type: ClusterIP
     port: 3100
+  config:
+    limits:
+      max_streams_per_user: 5000 # 운영: 더 많은 스트림
+      ingestion_rate_mb: 50
+      ingestion_burst_size_mb: 100
+      cardinality_limit: 100000
 
-# OpenTelemetry Collector configuration
+tempo:
+  enabled: true
+  tempo:
+    repository: grafana/tempo
+    tag: "2.9.1"
+    pullPolicy: IfNotPresent
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+  singleBinary:
+    replicas: 1
+    persistence:
+      enabled: true # 운영: 영구 스토리지
+      size: 50Gi
+      storageClassName: gp3
+  service:
+    type: ClusterIP
+  storage:
+    trace:
+      backend: local
+      local:
+        path: /var/tempo/traces
+      wal:
+        path: /var/tempo/wal
+  global_overrides:
+    max_bytes_per_trace: 10000000 # 10MB
+    ingestion_rate_limit_bytes: 30000000 # 30MB/s
+    ingestion_burst_size_bytes: 50000000 # 50MB
+  traces:
+    otlp:
+      grpc:
+        enabled: true
+      http:
+        enabled: true
+  metricsGenerator:
+    enabled: true
+    remoteWriteUrl: "http://monitoring-prometheus:9090/api/v1/write"
+  compactor:
+    config:
+      compaction:
+        block_retention: 168h # 7일 보관
+
 otelCollector:
   enabled: true
   daemonset:
     enabled: true
   labels:
     app: otel-collector
-  debug: false # 개발: true / 운영: false
+  debug: false # 운영: 디버그 끔
   image:
     repository: otel/opentelemetry-collector-contrib
     tag: "0.143.1"

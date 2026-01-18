@@ -10,13 +10,65 @@ data:
       - name: Prometheus
         type: prometheus
         access: proxy
-        url: http://{{ .Values.global.namespace }}-prometheus.monitoring:9090
+        url: http://{{ .Values.global.namespace }}-prometheus:9090
         isDefault: true
+        editable: false
+        jsonData:
+          timeInterval: 15s
 
       - name: Loki
         type: loki
         access: proxy
-        url: http://{{ .Values.global.namespace }}-loki.monitoring:3100
+        url: http://{{ .Values.global.namespace }}-loki:3100
+        editable: false
+        jsonData:
+          # Loki → Tempo 연결 (traceID로 점프)
+          derivedFields:
+            - datasourceUid: tempo
+              matcherRegex: "traceID=(\\w+)"
+              name: TraceID
+              url: "$${__value.raw}"
+      
+      - name: Tempo
+        type: tempo
+        access: proxy
+        url: http://{{ .Values.global.namespace }}-tempo:3200
+        uid: tempo
+        editable: false
+        jsonData:
+          # Tempo → Loki 연결 (trace에서 로그 보기)
+          tracesToLogsV2:
+            datasourceUid: loki
+            spanStartTimeShift: '-1h'
+            spanEndTimeShift: '1h'
+            filterByTraceID: true
+            filterBySpanID: false
+            tags:
+              - key: service.name
+                value: app
+          
+          # Tempo → Prometheus 연결 (trace에서 메트릭 보기)
+          tracesToMetrics:
+            datasourceUid: prometheus
+            queries:
+              - name: 'Request Rate'
+                query: 'sum(rate(traces_spanmetrics_calls_total{$$__tags}[5m]))'
+          
+          # Service Graph (서비스 간 관계도)
+          serviceMap:
+            datasourceUid: prometheus
+          
+          # Node Graph 활성화
+          nodeGraph:
+            enabled: true
+          
+          # TraceQL 검색
+          search:
+            hide: false
+          
+          # Loki 검색 연동
+          lokiSearch:
+            datasourceUid: loki
 
 {{- end }}
 
