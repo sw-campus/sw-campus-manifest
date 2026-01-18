@@ -94,12 +94,12 @@ tempo:
       enabled: true
       remoteWriteUrl: "http://monitoring-prometheus:9090/api/v1/write"
       processor:
-        spanMetrics:
+        span_metrics:
           dimensions:
             - name: http.method
             - name: http.status_code
             - name: service.name
-        serviceGraphs:
+        service_graphs:
           dimensions:
             - name: http.method
             - name: http.status_code
