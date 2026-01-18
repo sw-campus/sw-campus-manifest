@@ -94,15 +94,15 @@ tempo:
       enabled: true
       remoteWriteUrl: "http://monitoring-prometheus:9090/api/v1/write"
       processor:
-        span_metrics:
-          dimensions:
-            - name: http.method
-            - name: http.status_code
-            - name: service.name
         service_graphs:
-          dimensions:
-            - name: http.method
-            - name: http.status_code
+          wait: 10s
+          max_items: 10000
+        span_metrics:
+          enable_target_info: true
+      storage:
+        path: "/var/tempo/metrics"
+      traces_storage:
+        path: "/var/tempo/wal"
 
   singleBinary:
     replicas: 1
