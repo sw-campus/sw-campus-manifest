@@ -11,6 +11,7 @@ data:
         type: prometheus
         access: proxy
         url: http://{{ .Values.global.namespace }}-prometheus:9090
+        uid: prometheus
         isDefault: true
         editable: false
         jsonData:
@@ -20,6 +21,7 @@ data:
         type: loki
         access: proxy
         url: http://{{ .Values.global.namespace }}-loki:3100
+        uid: loki
         editable: false
         jsonData:
           # Loki → Tempo 연결 (traceID로 점프)
