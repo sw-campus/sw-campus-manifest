@@ -78,7 +78,7 @@ ai:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-ai
-    tag: "RHSA-fcceaaf00a185dbed1af703c42b56cffc587a82d"
+    tag: "RHSA-9503351043a8eab5e2019288f0a70cc3d1d7057d"
     pullPolicy: IfNotPresent
 
 # Database configuration (develop: 로컬 DB 사용)
