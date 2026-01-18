@@ -104,6 +104,13 @@ tempo:
       traces_storage:
         path: "/var/tempo/wal"
 
+    overrides:
+      defaults:
+        metrics_generator:
+          processors:
+            - service-graphs
+            - span-metrics
+
   singleBinary:
     replicas: 1
     persistence:
@@ -126,9 +133,6 @@ tempo:
     max_bytes_per_trace: 10000000 # 10MB
     ingestion_rate_limit_bytes: 30000000 # 30MB/s
     ingestion_burst_size_bytes: 50000000 # 50MB
-    metrics_generator_processors:
-      - service-graphs
-      - span-metrics
 
   traces:
     otlp:
