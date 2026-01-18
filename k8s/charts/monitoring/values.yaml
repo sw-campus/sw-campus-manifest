@@ -79,7 +79,7 @@ tempo:
   fullnameOverride: monitoring-tempo # Pod/Service 이름 고정
   tempo:
     repository: grafana/tempo
-    tag: "2.9.1"
+    tag: "" # 비워두면 Chart.appVersion 사용
     pullPolicy: IfNotPresent
     resources:
       requests:
