@@ -8,7 +8,7 @@ server:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: "RHSA-7ad34e7164f12123a9a5bf2ea7b445c9d8c3f7ea"
+    tag: "RHSA-4d5a1bca3811c16037960d463ce0465c37fccfd0"
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -66,7 +66,7 @@ client:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
-    tag: "RHSA-ced25a059f14b13678d2e19aa057f954b5986890"
+    tag: "RHSA-37662bf264962c0d57f162748e0cc934a4fec43b"
     pullPolicy: IfNotPresent
   configMap:
     name: sw-campus-client-config
@@ -78,7 +78,7 @@ ai:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-ai
-    tag: "RHSA-fcceaaf00a185dbed1af703c42b56cffc587a82d"
+    tag: "RHSA-9503351043a8eab5e2019288f0a70cc3d1d7057d"
     pullPolicy: IfNotPresent
 
 # Database configuration (develop: 로컬 DB 사용)
