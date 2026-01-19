@@ -25,6 +25,8 @@ spec:
               value: "http"
             - name: GF_SERVER_DOMAIN
               value: "grafana.monitoring.softwarecampus.co.kr"
+            - name: GF_SERVER_ROOT_URL
+              value: "http://grafana.monitoring.softwarecampus.co.kr/"
             - name: GF_SERVER_TRUSTED_PROXIES
               value: "*"
 {{- if and .Values.grafana.ingress.enabled .Values.grafana.ingress.host }}
