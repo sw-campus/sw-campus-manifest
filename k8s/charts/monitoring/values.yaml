@@ -23,6 +23,13 @@ grafana:
   service:
     type: ClusterIP
     port: 3000
+  grafana.ini:
+    server:
+      protocol: http
+      http_port: 3000
+      domain: grafana.monitoring.softwarecampus.co.kr
+      root_url: https://grafana.monitoring.softwarecampus.co.kr
+      serve_from_sub_path: false
   ingress:
     enabled: false
     # 예: grafana.example.com
