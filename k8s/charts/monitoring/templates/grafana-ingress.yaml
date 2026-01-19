@@ -20,7 +20,6 @@ metadata:
 
 {{- if ne .Values.grafana.ingress.certificateArn "" }}
     alb.ingress.kubernetes.io/certificate-arn: {{ .Values.grafana.ingress.certificateArn | quote }}
-    alb.ingress.kubernetes.io/ssl-redirect: "443"
 {{- end }}
 
 spec:
