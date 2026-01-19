@@ -10,11 +10,7 @@ metadata:
     alb.ingress.kubernetes.io/backend-protocol: "HTTP"
     alb.ingress.kubernetes.io/healthcheck-path: "/api/health"
     alb.ingress.kubernetes.io/success-codes: "200"
-    alb.ingress.kubernetes.io/listen-ports: {{- if .Values.grafana.ingress.certificateArn -}}
-      '[{"HTTPS":443}]'
-      {{- else -}}
-      '[{"HTTP":80}]'
-      {{- end }}
+    alb.ingress.kubernetes.io/listen-ports: {{ ternary "[{\"HTTPS\":443}]" "[{\"HTTP\":80}]" .Values.grafana.ingress.certificateArn | quote }}
 
 {{- if .Values.grafana.ingress.certificateArn }}
     alb.ingress.kubernetes.io/certificate-arn: {{ .Values.grafana.ingress.certificateArn | quote }}
