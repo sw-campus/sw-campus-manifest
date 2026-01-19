@@ -18,10 +18,6 @@ metadata:
     alb.ingress.kubernetes.io/ssl-redirect: "443"
 {{- end }}
 
-{{- if and .Values.grafana.ingress.inboundCidrs (gt (len .Values.grafana.ingress.inboundCidrs) 0) }}
-    alb.ingress.kubernetes.io/inbound-cidrs: {{ join "," .Values.grafana.ingress.inboundCidrs | quote }}
-{{- end }}
-
 spec:
   ingressClassName: alb
   rules:
