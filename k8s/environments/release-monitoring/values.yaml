@@ -12,7 +12,8 @@ grafana:
   ingress:
     enabled: true
     host: grafana.monitoring.softwarecampus.co.kr
-    certificateArn: arn:aws:acm:ap-northeast-2:xxxx:certificate/xxxx
+    scheme: internet-facing
+    certificateArn: arn:aws:acm:ap-northeast-2:991243792313:certificate/497c06da-5c46-45f6-8adf-cfd0ec28ec9c
 
 # Tempo - S3 백엔드로 전환 시 (선택사항)
 # tempo:
