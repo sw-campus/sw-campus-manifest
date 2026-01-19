@@ -86,12 +86,10 @@ server:
     # OpenTelemetry 설정
     - name: OTEL_SERVICE_NAME
       value: "sw-campus"
-    - name: OTEL_RESOURCE_ATTRIBUTES
-      value: "service.namespace={{ .Values.global.namespace }},deployment.environment={{ .Values.global.env }}"
     - name: OTEL_EXPORTER_OTLP_ENDPOINT
-      value: "http://{{ .Values.monitoring.namespace }}-otel-collector.{{ .Values.monitoring.namespace }}:4318"
+      value: "http://monitoring-otel-collector.monitoring:4318"
     - name: OTEL_EXPORTER_OTLP_PROTOCOL
-    value: "http/protobuf"
+      value: "http/protobuf"
     - name: OTEL_LOGS_EXPORTER
       value: "otlp"
     - name: OTEL_METRICS_EXPORTER # prometheus로 직접 보내기 때문에 none 명시 (기본값=otlp)

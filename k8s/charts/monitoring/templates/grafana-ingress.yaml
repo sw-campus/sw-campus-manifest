@@ -1,0 +1,35 @@
+{{- if and .Values.grafana.enabled .Values.grafana.ingress.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.global.namespace }}-grafana
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.grafana.ingress.ingressClassName | quote }}
+    alb.ingress.kubernetes.io/scheme: {{ .Values.grafana.ingress.scheme | quote }}
+    alb.ingress.kubernetes.io/target-type: {{ .Values.grafana.ingress.targetType | quote }}
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}{{- if .Values.grafana.ingress.certificateArn }}, {"HTTPS":443}{{- end }}]'
+{{- if .Values.grafana.ingress.certificateArn }}
+    alb.ingress.kubernetes.io/certificate-arn: {{ .Values.grafana.ingress.certificateArn | quote }}
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+{{- end }}
+{{- if .Values.grafana.ingress.inboundCidrs }}
+    alb.ingress.kubernetes.io/inbound-cidrs: {{ join "," .Values.grafana.ingress.inboundCidrs | quote }}
+{{- end }}
+{{- with .Values.grafana.ingress.extraAnnotations }}
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  ingressClassName: {{ .Values.grafana.ingress.ingressClassName | quote }}
+  rules:
+    - host: {{ required "grafana.ingress.host is required when grafana.ingress.enabled=true" .Values.grafana.ingress.host | quote }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.global.namespace }}-grafana
+                port:
+                  number: {{ .Values.grafana.service.port }}
+{{- end }}
+

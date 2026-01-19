@@ -47,6 +47,8 @@ spec:
           env:
             - name: JAVA_TOOL_OPTIONS
               value: "-Djava.net.preferIPv4Stack=true"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.namespace={{ .Values.global.namespace }}"
             {{- if and .Values.server.redis .Values.server.redis.enabled }}
             - name: REDIS_HOST
               value: "localhost"
@@ -61,36 +63,36 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ .Values.server.configMap.name }}
-{{- if .Values.server.serverSecret.enabled }}
+            {{- if .Values.server.serverSecret.enabled }}
             - secretRef:
                 name: {{ .Values.server.serverSecret.name }}
-{{- end }}
-{{- if .Values.server.dbsecret.enabled }}
+            {{- end }}
+            {{- if .Values.server.dbsecret.enabled }}
             - secretRef:
                 name: {{ .Values.server.dbsecret.name }}
-{{- end }}
-{{- if .Values.server.awsSecret.enabled }}
+            {{- end }}
+            {{- if .Values.server.awsSecret.enabled }}
             - secretRef:
                 name: {{ .Values.server.awsSecret.name }}
-{{- end }}
-{{- if .Values.server.oauth2Secret.enabled }}
+            {{- end }}
+            {{- if .Values.server.oauth2Secret.enabled }}
             - secretRef:
                 name: {{ .Values.server.oauth2Secret.name }}
-{{- end }}
-{{- if .Values.server.resources }}
-          resources:
+            {{- end }}
+          {{- if .Values.server.resources }}
+          resources: 
 {{ toYaml .Values.server.resources | nindent 12 }}
-{{- end }}
-{{- if .Values.server.gaSecret.enabled }}
+          {{- end }}
+          {{- if .Values.server.gaSecret.enabled }}
           volumeMounts:
             - name: ga-credentials
               mountPath: /app/config/ga-credentials.json
               subPath: ga-credentials.json
               readOnly: true
-{{- end }}
-{{- if .Values.server.gaSecret.enabled }}
+          {{- end }}
+      {{- if .Values.server.gaSecret.enabled }}
       volumes:
         - name: ga-credentials
           secret:
             secretName: {{ .Values.server.gaSecret.name }}
-{{- end }}
+      {{- end }}

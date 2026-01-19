@@ -8,7 +8,7 @@ server:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: "RHSA-bcb2822a024128e077e16207a8c6c9e9501f41f4"
+    tag: "RHSA-d45a04793dd7e29110bf28cb4d00e07b85c7ba34"
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -17,15 +17,14 @@ server:
     limits:
       cpu: 300m
       memory: 512Mi
-    
+
   # ConfigMap: profile 같은 비민감 정보만
   configMap:
     name: sw-campus-server-config-develop
     data:
-      GITHUB_REDIRECT_URI: "https://sw-campus-dev.tail0ffc99.ts.net/api/auth/oauth/github/callback"
-      GOOGLE_REDIRECT_URI: "https://sw-campus-dev.tail0ffc99.ts.net/api/auth/oauth/google/callback"
-      KAKAO_REDIRECT_URI: "https://sw-campus-dev.tail0ffc99.ts.net/api/auth/oauth/kakao/callback"
-      cors.allowed-origins: "https://sw-campus-dev.tail0ffc99.ts.net"
+      GITHUB_REDIRECT_URI: "https://localhost:8080/api/auth/oauth/github/callback"
+      GOOGLE_REDIRECT_URI: "https://localhost:8080/api/auth/oauth/google/callback"
+      cors.allowed-origins: "http://localhost:3000,http://172.30.1.83:3000"
 
   # Redis Sidecar (Server 파드에 포함)
   redis:
@@ -56,7 +55,7 @@ server:
   gaSecret:
     enabled: true
     name: ga-credentials-develop
-    
+
   # InfraSecret: SSH 터널링용 
   infraSecret:
     enabled: false
@@ -66,15 +65,10 @@ client:
   replicas: 2
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
-    tag: "RHSA-04fea66f664fb990f4bb601ca5ff6e47062b0422"
-    tag: "RHSA-b44b7669d59f09772194bfccf747798946e69a87"
+    tag: "RHSA-a3b2a3a2cc04767ce3e685931eb7a9b27e930dd0"
     pullPolicy: IfNotPresent
   configMap:
     name: sw-campus-client-config
-    data:
-      NODE_ENV: "production"
-    data:
-      NODE_ENV: "production"
 
 ai:
   enabled: true
@@ -88,26 +82,12 @@ ai:
 database:
   enabled: false
 
-# Ingress
+# Ingress 
 ingress:
-  enabled: true
-  className: nginx
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-  annotations:
-    nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
-  hosts:
-    - host: sw-campus-dev.tail0ffc99.ts.net
-      paths:
-        - path: /
-          pathType: Prefix
-          service:
-            name: sw-campus-client
-            port: 3000
-        - path: /api
-          pathType: Prefix
-          service:
-            name: sw-campus-server
-            port: 8080
+  enabled: false
+
+configMaps:
+  server:
+    enabled: true
+  client:
+    enabled: true
