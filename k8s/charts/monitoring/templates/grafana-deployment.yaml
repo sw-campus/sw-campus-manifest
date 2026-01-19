@@ -20,6 +20,20 @@ spec:
           imagePullPolicy: {{ .Values.grafana.image.pullPolicy }}
           ports:
             - containerPort: 3000
+          env:
+            - name: GF_SERVER_ROOT_URL
+              value: "https://grafana.monitoring.softwarecampus.co.kr/"
+            - name: GF_SERVER_DOMAIN
+              value: "grafana.monitoring.softwarecampus.co.kr"
+            - name: GF_SERVER_PROTOCOL
+              value: "http"
+            - name: GF_SERVER_SERVE_FROM_SUB_PATH
+              value: "false"
+            - name: GF_SECURITY_COOKIE_SECURE
+              value: "true"
+            - name: GF_SERVER_ROUTER_LOGGING
+              value: "true"
+
 {{- if and .Values.grafana.ingress.enabled .Values.grafana.ingress.host }}
 {{- end }}
 
