@@ -12,6 +12,7 @@ grafana:
   ingress:
     enabled: true
     host: grafana.monitoring.softwarecampus.co.kr
+    ingressClassName: alb
     scheme: internet-facing
     targetType: ip
     inboundCidrs: []
