@@ -23,12 +23,19 @@ spec:
           env:
             - name: GF_SERVER_PROTOCOL
               value: "http"
+{{- if and .Values.grafana.ingress.enabled .Values.grafana.ingress.host }}
             - name: GF_SERVER_DOMAIN
-              value: "grafana.monitoring.softwarecampus.co.kr"
+              value: "{{ .Values.grafana.ingress.host }}"
+  {{- if ne .Values.grafana.ingress.certificateArn "" }}
+            - name: GF_SERVER_ROOT_URL
+              value: "https://{{ .Values.grafana.ingress.host }}/"
+  {{- else }}
+            - name: GF_SERVER_ROOT_URL
+              value: "http://{{ .Values.grafana.ingress.host }}/"
+  {{- end }}
+{{- end }}
             - name: GF_SERVER_TRUSTED_PROXIES
               value: "*"
-{{- if and .Values.grafana.ingress.enabled .Values.grafana.ingress.host }}
-{{- end }}
 
           volumeMounts:
             # Datasources
