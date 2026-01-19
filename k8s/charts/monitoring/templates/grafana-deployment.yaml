@@ -40,11 +40,6 @@ spec:
 {{- end }}
 
           volumeMounts:
-            # Grafana config
-            - name: grafana-config
-              mountPath: /etc/grafana/grafana.ini
-              subPath: grafana.ini
-
             # Datasources
             - name: datasources
               mountPath: /etc/grafana/provisioning/datasources
@@ -58,11 +53,6 @@ spec:
               mountPath: /var/lib/grafana/dashboards
             
       volumes:
-        # Grafana config
-        - name: grafana-config
-          configMap:
-            name: {{ .Values.global.namespace }}-grafana-config
-
         # Datasources
         - name: datasources
           configMap:
