@@ -67,9 +67,12 @@ client:
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
     tag: "RHSA-04fea66f664fb990f4bb601ca5ff6e47062b0422"
+    tag: "RHSA-b44b7669d59f09772194bfccf747798946e69a87"
     pullPolicy: IfNotPresent
   configMap:
     name: sw-campus-client-config
+    data:
+      NODE_ENV: "production"
     data:
       NODE_ENV: "production"
 
@@ -89,6 +92,9 @@ database:
 ingress:
   enabled: true
   className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
