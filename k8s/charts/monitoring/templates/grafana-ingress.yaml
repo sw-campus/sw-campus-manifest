@@ -7,6 +7,8 @@ metadata:
     kubernetes.io/ingress.class: {{ .Values.grafana.ingress.ingressClassName | quote }}
     alb.ingress.kubernetes.io/scheme: {{ .Values.grafana.ingress.scheme | quote }}
     alb.ingress.kubernetes.io/target-type: {{ .Values.grafana.ingress.targetType | quote }}
+    alb.ingress.kubernetes.io/backend-protocol: "HTTP"
+    alb.ingress.kubernetes.io/healthcheck-path: "/api/health"
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}{{- if .Values.grafana.ingress.certificateArn }}, {"HTTPS":443}{{- end }}]'
 {{- if .Values.grafana.ingress.certificateArn }}
     alb.ingress.kubernetes.io/certificate-arn: {{ .Values.grafana.ingress.certificateArn | quote }}
