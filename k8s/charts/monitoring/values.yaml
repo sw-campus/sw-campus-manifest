@@ -23,27 +23,8 @@ grafana:
   service:
     type: ClusterIP
     port: 3000
-  grafana.ini:
-    server:
-      protocol: http
-      http_port: 3000
-      domain: grafana.monitoring.softwarecampus.co.kr
-      root_url: https://grafana.monitoring.softwarecampus.co.kr
-      serve_from_sub_path: false
   ingress:
     enabled: false
-    # 예: grafana.example.com
-    host: ""
-    # AWS Load Balancer Controller (ALB) 기준 기본값
-    ingressClassName: alb
-    scheme: internet-facing # 또는 internal
-    targetType: ip
-    # 팀만 접근 허용: 회사/팀 IP CIDR만 넣기 (예: ["1.2.3.4/32","5.6.7.0/24"])
-    inboundCidrs: []
-    # HTTPS 쓰려면 ACM 인증서 ARN 설정 (예: arn:aws:acm:ap-northeast-2:xxxx:certificate/...)
-    certificateArn: ""
-    # 필요하면 추가로 ALB annotation 넣기
-    extraAnnotations: {}
   datasources:
     prometheus:
       name: Prometheus

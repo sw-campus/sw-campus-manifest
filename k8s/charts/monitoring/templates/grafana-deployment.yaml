@@ -21,17 +21,14 @@ spec:
           ports:
             - containerPort: 3000
 {{- if and .Values.grafana.ingress.enabled .Values.grafana.ingress.host }}
-          # ALB(HTTPS) 뒤에서 http↔https 리다이렉트 루프 방지용
-          env:
-            - name: GF_SERVER_DOMAIN
-              value: "{{ .Values.grafana.ingress.host }}"
-            - name: GF_SERVER_ROOT_URL
-              value: "{{- if .Values.grafana.ingress.certificateArn -}}https{{- else -}}http{{- end -}}://{{ .Values.grafana.ingress.host }}/"
-            - name: GF_SERVER_SERVE_FROM_SUB_PATH
-              value: "false"
 {{- end }}
 
           volumeMounts:
+            # Grafana config
+            - name: grafana-config
+              mountPath: /etc/grafana/grafana.ini
+              subPath: grafana.ini
+
             # Datasources
             - name: datasources
               mountPath: /etc/grafana/provisioning/datasources
@@ -43,8 +40,13 @@ spec:
             # Dashboards JSON (실제 파일 위치)
             - name: dashboards
               mountPath: /var/lib/grafana/dashboards
-
+            
       volumes:
+        # Grafana config
+        - name: grafana-config
+          configMap:
+            name: {{ .Values.global.namespace }}-grafana-config
+
         # Datasources
         - name: datasources
           configMap:
