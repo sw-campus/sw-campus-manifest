@@ -25,6 +25,8 @@ spec:
               value: "https://grafana.monitoring.softwarecampus.co.kr/"
             - name: GF_SERVER_DOMAIN
               value: "grafana.monitoring.softwarecampus.co.kr"
+            - name: GF_SERVER_DOMAIN
+              value: "grafana.monitoring.softwarecampus.co.kr"
             - name: GF_SERVER_PROTOCOL
               value: "http"
             - name: GF_SERVER_SERVE_FROM_SUB_PATH
