@@ -33,7 +33,8 @@ spec:
               value: "true"
             - name: GF_SERVER_ROUTER_LOGGING
               value: "true"
-
+            - name: GF_SERVER_TRUSTED_PROXIES
+              value: "0.0.0.0/0"
 {{- if and .Values.grafana.ingress.enabled .Values.grafana.ingress.host }}
 {{- end }}
 
