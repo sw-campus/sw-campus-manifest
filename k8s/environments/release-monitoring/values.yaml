@@ -15,7 +15,7 @@ grafana:
     ingressClassName: alb
     scheme: internet-facing
     targetType: ip
-    certificateArn: "arn:aws:acm:ap-northeast-2:991243792313:certificate/497c06da-5c46-45f6-8adf-cfd0ec28ec9c"
+    certificateArn: "arn:aws:acm:ap-northeast-2:991243792313:certificate/5a351676-52e6-4d0e-88a9-2687ebbeb103"
 
 # Tempo - S3 백엔드로 전환 시 (선택사항)
 # tempo:
