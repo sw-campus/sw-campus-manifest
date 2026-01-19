@@ -4,7 +4,6 @@ kind: Ingress
 metadata:
   name: {{ .Values.global.namespace }}-grafana
   annotations:
-    kubernetes.io/ingress.class: "alb"
     alb.ingress.kubernetes.io/scheme: {{ default "internet-facing" .Values.grafana.ingress.scheme | quote }}
     alb.ingress.kubernetes.io/target-type: {{ default "ip" .Values.grafana.ingress.targetType | quote }}
     alb.ingress.kubernetes.io/backend-protocol: "HTTP"
@@ -20,6 +19,7 @@ metadata:
 
 {{- if ne .Values.grafana.ingress.certificateArn "" }}
     alb.ingress.kubernetes.io/certificate-arn: {{ .Values.grafana.ingress.certificateArn | quote }}
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
 {{- end }}
 
 spec:
