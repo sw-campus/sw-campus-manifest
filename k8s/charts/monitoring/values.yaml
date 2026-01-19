@@ -106,7 +106,6 @@ tempo:
 
     metricsGenerator:
       enabled: true
-      remoteWriteUrl: "http://monitoring-prometheus:9090/api/v1/write"
       processor:
         service_graphs:
           wait: 10s
@@ -117,6 +116,8 @@ tempo:
         path: "/var/tempo/metrics"
       traces_storage:
         path: "/var/tempo/wal"
+      registry:
+        collection_interval: 15s
 
     overrides:
       defaults:
