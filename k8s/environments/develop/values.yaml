@@ -72,8 +72,6 @@ client:
     name: sw-campus-client-config
     data:
       NODE_ENV: "production"
-    data:
-      NODE_ENV: "production"
 
 ai:
   enabled: true
