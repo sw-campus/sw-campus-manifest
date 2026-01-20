@@ -85,7 +85,7 @@ server:
 
     # OpenTelemetry 설정
     - name: OTEL_SERVICE_NAME
-      value: "sw-campus"
+      value: "sw-campus-server"
     - name: OTEL_EXPORTER_OTLP_ENDPOINT
       value: "http://monitoring-otel-collector.monitoring:4318"
     - name: OTEL_EXPORTER_OTLP_PROTOCOL

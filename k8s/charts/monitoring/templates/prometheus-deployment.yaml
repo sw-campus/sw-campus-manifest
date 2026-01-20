@@ -5,6 +5,11 @@ metadata:
   name: {{ .Values.global.namespace }}-prometheus
 spec:
   replicas: {{ .Values.prometheus.replicas }}
+  {{- if and .Values.prometheus.persistence .Values.prometheus.persistence.enabled }}
+  # RWO PVC는 동시에 하나의 Pod만 마운트 가능 - Recreate 필수
+  strategy:
+    type: Recreate
+  {{- end }}
   selector:
     matchLabels:
       app: {{ .Values.global.namespace }}-prometheus
@@ -15,6 +20,11 @@ spec:
         cluster: {{ .Values.global.namespace }}
     spec:
       serviceAccountName: {{ .Release.Name }}-prometheus
+      # 보안 설정 강화
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534  # nobody user
+        fsGroup: 65534
       containers:
         - name: prometheus
           image: "{{ .Values.prometheus.image.repository }}:{{ .Values.prometheus.image.tag }}"
@@ -24,10 +34,43 @@ spec:
             - "--storage.tsdb.path=/prometheus"
             - "--web.console.libraries=/usr/share/prometheus/console_libraries"
             - "--web.console.templates=/usr/share/prometheus/consoles"
+            {{- if .Values.prometheus.retention }}
+            - "--storage.tsdb.retention.time={{ .Values.prometheus.retention.time | default "15d" }}"
+            - "--storage.tsdb.retention.size={{ .Values.prometheus.retention.size | default "45GB" }}"
+            {{- end }}
           ports:
             - containerPort: 9090
               name: http
               protocol: TCP
+          # 헬스체크
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: 9090
+            initialDelaySeconds: 30
+            periodSeconds: 15
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: 9090
+            initialDelaySeconds: 30
+            periodSeconds: 5
+            timeoutSeconds: 5
+            failureThreshold: 3
+          # 리소스 제한
+          resources:
+            {{- if .Values.prometheus.resources }}
+            {{- toYaml .Values.prometheus.resources | nindent 12 }}
+            {{- else }}
+            requests:
+              cpu: 500m
+              memory: 2Gi
+            limits:
+              cpu: 2000m
+              memory: 4Gi
+            {{- end }}
           volumeMounts:
             # Prometheus main config (prometheus.yml)
             - name: config
@@ -54,7 +97,12 @@ spec:
           configMap:
             name: {{ .Values.global.namespace }}-prometheus-rules
 
-        # local storage (dev only)
+        # TSDB storage (로컬은 emptyDir, 운영은 PVC)
         - name: storage
+          {{- if and .Values.prometheus.persistence .Values.prometheus.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.global.namespace }}-prometheus-storage
+          {{- else }}
           emptyDir: {}
+          {{- end }}
 {{- end }}

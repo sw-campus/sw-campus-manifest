@@ -13,6 +13,8 @@ grafana:
 
 prometheus:
   replicas: 1
+  persistence:
+    enabled: false # 운영: true → 개발: false (emptyDir 사용)
 
 loki:
   replicas: 1
