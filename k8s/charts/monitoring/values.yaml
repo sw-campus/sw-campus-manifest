@@ -104,6 +104,15 @@ grafana:
     readOnlyRootFilesystem: true
     allowPrivilegeEscalation: false
 
+  # Resource limits
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+
 prometheus:
   enabled: true
   # PVC 사용 시 replicas: 1 권장 (ReadWriteOnce 제한)
