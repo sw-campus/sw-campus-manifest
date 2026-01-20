@@ -17,11 +17,14 @@ server:
 
   resources:
     requests:
-      cpu: 100m
-      memory: 384Mi
-    limits:
-      cpu: 300m
+      cpu: 200m
       memory: 768Mi
+    limits:
+      cpu: 1000m
+      memory: 1280Mi
+
+  # JVM 메모리 최적화 설정
+  javaToolOptions: "-XX:MaxRAMPercentage=75.0 -XX:InitialRAMPercentage=50.0 -XX:+ExitOnOutOfMemoryError -Djava.net.preferIPv4Stack=true"
 
   # Spring profile
   configMap:
