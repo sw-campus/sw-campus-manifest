@@ -106,6 +106,7 @@ tempo:
 
     metricsGenerator:
       enabled: true
+      remoteWriteUrl: "http://monitoring-prometheus:9090/api/v1/write"
       processor:
         service_graphs:
           wait: 10s

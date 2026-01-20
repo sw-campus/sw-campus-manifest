@@ -71,6 +71,8 @@ data:
           # Loki 검색 연동
           lokiSearch:
             datasourceUid: loki
+          spanBar:
+            type: 'None'
 
 {{- end }}
 
