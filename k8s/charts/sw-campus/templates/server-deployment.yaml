@@ -46,7 +46,7 @@ spec:
           imagePullPolicy: {{ .Values.server.image.pullPolicy }}
           env:
             - name: JAVA_TOOL_OPTIONS
-              value: "-Djava.net.preferIPv4Stack=true"
+              value: {{ .Values.server.javaToolOptions | default "-Djava.net.preferIPv4Stack=true" | quote }}
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: "service.namespace={{ .Values.global.namespace }}"
             {{- if and .Values.server.redis .Values.server.redis.enabled }}
