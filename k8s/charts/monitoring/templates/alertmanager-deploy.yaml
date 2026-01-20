@@ -15,15 +15,25 @@ spec:
       labels:
         app: alertmanager
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        fsGroup: 65534
       containers:
         - name: alertmanager
           image: prom/alertmanager:v0.27.0
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
           args:
             - "--config.file=/etc/alertmanager/alertmanager.yml"
             - "--storage.path=/alertmanager"
           ports:
             - containerPort: 9093
           volumeMounts:
+            # Writable storage for alertmanager data
+            - name: storage
+              mountPath: /alertmanager
             # Alertmanager 설정
             - name: config
               mountPath: /etc/alertmanager
@@ -33,6 +43,8 @@ spec:
               mountPath: /etc/alertmanager/secrets
               readOnly: true
       volumes:
+        - name: storage
+          emptyDir: {}
         - name: config
           configMap:
             name: {{ .Values.global.namespace }}-alertmanager-config
