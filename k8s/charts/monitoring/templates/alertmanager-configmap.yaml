@@ -23,7 +23,7 @@ data:
     receivers:
       - name: "slack-dev"
         slack_configs:
-          - api_url_file: /etc/alertmanager/secrets/slack_webhook_url
+          - api_url_file: /etc/alertmanager/secrets/slack_webhook_url_dev
             channel: "#alert-dev"
             send_resolved: true
             title: "[개발] {{`{{ .CommonLabels.alertname }}`}} ({{`{{ .CommonLabels.severity }}`}})"
@@ -36,7 +36,7 @@ data:
 
       - name: "slack-prod"
         slack_configs:
-          - api_url_file: /etc/alertmanager/secrets/slack_webhook_url
+          - api_url_file: /etc/alertmanager/secrets/slack_webhook_url_prod
             channel: "#alert-prod"
             send_resolved: true
             title: "[운영] {{`{{ .CommonLabels.alertname }}`}} ({{`{{ .CommonLabels.severity }}`}})"
