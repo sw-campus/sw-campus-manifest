@@ -124,7 +124,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(count_over_time({app=\"$app\"} |= \"$search\" [$__interval]))",
+          "expr": "sum(count_over_time({service_name=\"$service_name\"} |= \"$search\" [$__interval]))",
           "legendFormat": "",
           "refId": "A"
         }
@@ -196,7 +196,7 @@
       },
       "targets": [
         {
-          "expr": "{app=\"$app\"} |= \"$search\" | logfmt",
+          "expr": "{service_name=\"$service_name\"} |= \"$search\" | logfmt",
           "hide": false,
           "legendFormat": "",
           "refId": "A"
@@ -219,14 +219,14 @@
         "allValue": null,
         "current": {},
         "datasource": "${DS_LOKI}",
-        "definition": "label_values(app)",
+        "definition": "label_values(service_name)",
         "hide": 0,
         "includeAll": false,
-        "label": "App",
+        "label": "Service",
         "multi": false,
-        "name": "app",
+        "name": "service_name",
         "options": [],
-        "query": "label_values(app)",
+        "query": "label_values(service_name)",
         "refresh": 1,
         "regex": "",
         "skipUrlSync": false,
@@ -278,7 +278,7 @@
     ]
   },
   "timezone": "",
-  "title": "Logs / App",
+  "title": "Logs / Service",
   "uid": "liz0yRCZz",
   "version": 13
 }
