@@ -27,8 +27,8 @@
       "keepTime": true,
       "tags": [],
       "targetBlank": true,
-      "title": "Service APM",
-      "tooltip": "View APM metrics",
+      "title": "서비스 APM",
+      "tooltip": "APM 메트릭 보기",
       "type": "link",
       "url": "/d/service-apm-overview/service-apm-overview"
     },
@@ -39,8 +39,8 @@
       "keepTime": true,
       "tags": [],
       "targetBlank": true,
-      "title": "Application Logs",
-      "tooltip": "View application logs",
+      "title": "애플리케이션 로그",
+      "tooltip": "애플리케이션 로그 보기",
       "type": "link",
       "url": "/d/app-logs-enhanced/application-logs-enhanced"
     }
@@ -56,7 +56,7 @@
       },
       "id": 100,
       "panels": [],
-      "title": "Overview",
+      "title": "개요",
       "type": "row"
     },
     {
@@ -64,7 +64,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Number of running pods",
+      "description": "실행 중인 Pod 수",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -119,7 +119,7 @@
           "refId": "A"
         }
       ],
-      "title": "Running Pods",
+      "title": "실행 중인 Pod",
       "type": "stat"
     },
     {
@@ -127,7 +127,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Total pod restarts in the last hour",
+      "description": "최근 1시간 내 총 Pod 재시작 횟수",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -190,7 +190,7 @@
           "refId": "A"
         }
       ],
-      "title": "Pod Restarts (1h)",
+      "title": "Pod 재시작 (1시간)",
       "type": "stat"
     },
     {
@@ -198,7 +198,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Average CPU usage across all pods",
+      "description": "전체 Pod의 평균 CPU 사용량",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -263,7 +263,7 @@
           "refId": "A"
         }
       ],
-      "title": "Avg CPU Usage",
+      "title": "평균 CPU 사용량",
       "type": "stat"
     },
     {
@@ -271,7 +271,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Average memory usage across all pods",
+      "description": "전체 Pod의 평균 메모리 사용량",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -336,7 +336,7 @@
           "refId": "A"
         }
       ],
-      "title": "Avg Memory Usage",
+      "title": "평균 메모리 사용량",
       "type": "stat"
     },
     {
@@ -349,7 +349,7 @@
       },
       "id": 101,
       "panels": [],
-      "title": "CPU Usage",
+      "title": "CPU 사용량",
       "type": "row"
     },
     {
@@ -357,7 +357,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "CPU usage per pod over time",
+      "description": "시간대별 Pod CPU 사용량",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -445,7 +445,7 @@
           "refId": "A"
         }
       ],
-      "title": "CPU Usage by Pod",
+      "title": "Pod별 CPU 사용량",
       "type": "timeseries"
     },
     {
@@ -453,7 +453,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "CPU usage vs limits per pod",
+      "description": "Pod별 CPU 사용량 대비 제한",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -515,7 +515,7 @@
           "refId": "A"
         }
       ],
-      "title": "CPU Usage % of Limit",
+      "title": "CPU 제한 대비 사용률",
       "type": "bargauge"
     },
     {
@@ -528,7 +528,7 @@
       },
       "id": 102,
       "panels": [],
-      "title": "Memory Usage",
+      "title": "메모리 사용량",
       "type": "row"
     },
     {
@@ -536,7 +536,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Memory working set per pod over time",
+      "description": "시간대별 Pod 메모리 워킹셋",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -624,7 +624,7 @@
           "refId": "A"
         }
       ],
-      "title": "Memory Usage by Pod",
+      "title": "Pod별 메모리 사용량",
       "type": "timeseries"
     },
     {
@@ -632,7 +632,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Memory usage vs limits per pod",
+      "description": "Pod별 메모리 사용량 대비 제한",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -694,7 +694,7 @@
           "refId": "A"
         }
       ],
-      "title": "Memory Usage % of Limit",
+      "title": "메모리 제한 대비 사용률",
       "type": "bargauge"
     },
     {
@@ -707,7 +707,7 @@
       },
       "id": 103,
       "panels": [],
-      "title": "Network & Restarts",
+      "title": "네트워크 및 재시작",
       "type": "row"
     },
     {
@@ -715,7 +715,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Network receive bytes per pod",
+      "description": "Pod별 네트워크 수신 바이트",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -802,7 +802,7 @@
           "refId": "A"
         }
       ],
-      "title": "Network Receive",
+      "title": "네트워크 수신",
       "type": "timeseries"
     },
     {
@@ -810,7 +810,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Network transmit bytes per pod",
+      "description": "Pod별 네트워크 송신 바이트",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -897,7 +897,7 @@
           "refId": "A"
         }
       ],
-      "title": "Network Transmit",
+      "title": "네트워크 송신",
       "type": "timeseries"
     },
     {
@@ -905,7 +905,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Container restarts over time",
+      "description": "시간대별 컨테이너 재시작",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -992,7 +992,7 @@
           "refId": "A"
         }
       ],
-      "title": "Container Restarts",
+      "title": "컨테이너 재시작",
       "type": "timeseries"
     },
     {
@@ -1005,7 +1005,7 @@
       },
       "id": 104,
       "panels": [],
-      "title": "Pod Status",
+      "title": "Pod 상태",
       "type": "row"
     },
     {
@@ -1013,7 +1013,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Current pod status by phase",
+      "description": "단계별 현재 Pod 상태",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1177,7 +1177,7 @@
           "refId": "Restarts"
         }
       ],
-      "title": "Pod Status Table",
+      "title": "Pod 상태 테이블",
       "transformations": [
         {
           "id": "seriesToColumns",
@@ -1236,7 +1236,7 @@
         "definition": "label_values(kube_pod_info, namespace)",
         "hide": 0,
         "includeAll": true,
-        "label": "Namespace",
+        "label": "네임스페이스",
         "multi": true,
         "name": "namespace",
         "options": [],
@@ -1259,7 +1259,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Application Infrastructure",
+  "title": "애플리케이션 인프라",
   "uid": "app-infrastructure",
   "version": 1,
   "weekStart": ""
