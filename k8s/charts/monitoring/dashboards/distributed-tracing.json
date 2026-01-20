@@ -84,28 +84,7 @@
           "queryType": "traceqlSearch",
           "refId": "A",
           "tableType": "traces",
-          "filters": [
-            {
-              "id": "service-name",
-              "tag": "service.name",
-              "operator": "=~",
-              "scope": "resource",
-              "value": [
-                "$service"
-              ],
-              "valueType": "string"
-            },
-            {
-              "id": "min-duration",
-              "tag": "duration",
-              "operator": ">",
-              "scope": "span",
-              "value": [
-                "$min_duration"
-              ],
-              "valueType": "duration"
-            }
-          ]
+          "filters": []
         }
       ],
       "title": "Trace Search",
@@ -154,7 +133,7 @@
           },
           "queryType": "serviceMap",
           "refId": "A",
-          "serviceMapQuery": "{resource.service.name=~\"$service\"}"
+          "serviceMapQuery": ""
         }
       ],
       "title": "Service Dependency Map",
@@ -667,9 +646,9 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "100ms",
-          "value": "100ms"
+          "selected": true,
+          "text": "0ms",
+          "value": "0ms"
         },
         "hide": 0,
         "includeAll": false,
@@ -678,7 +657,7 @@
         "name": "min_duration",
         "options": [
           {
-            "selected": false,
+            "selected": true,
             "text": "0ms",
             "value": "0ms"
           },
@@ -693,7 +672,7 @@
             "value": "50ms"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "100ms",
             "value": "100ms"
           },
