@@ -14,9 +14,16 @@ spec:
         app: {{ .Values.otelCollector.labels.app }}
     spec:
       serviceAccountName: {{ .Values.global.namespace }}-otel-collector
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        fsGroup: 10001
       containers:
         - name: otel-collector
           image: otel/opentelemetry-collector-contrib:0.143.1
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
           args:
             - "--config=/etc/otel-collector/otel-collector.yml"
           ports:
@@ -28,6 +35,8 @@ spec:
             - name: config
               mountPath: /etc/otel-collector
               readOnly: true
+            - name: tmp
+              mountPath: /tmp
 
             # 노드 로그 마운트
             - name: varlogpods
@@ -40,6 +49,8 @@ spec:
         - name: config
           configMap:
             name: {{ .Values.global.namespace }}-otel-collector-config
+        - name: tmp
+          emptyDir: {}
 
         - name: varlogpods
           hostPath:
