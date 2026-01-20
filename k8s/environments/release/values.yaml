@@ -12,7 +12,7 @@ server:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-server
-    tag: "v1.0.25"
+    tag: "v1.0.27"
     pullPolicy: IfNotPresent
 
   resources:
@@ -70,7 +70,7 @@ client:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-client
-    tag: "v1.0.27"
+    tag: "v1.0.29"
     pullPolicy: IfNotPresent
 
   service:
@@ -102,7 +102,7 @@ ai:
 
   image:
     repository: ghcr.io/sw-campus/sw-campus-ai
-    tag: "v1.0.8"
+    tag: "v1.0.10"
     pullPolicy: IfNotPresent
 
   service:
