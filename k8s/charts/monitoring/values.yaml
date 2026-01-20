@@ -66,6 +66,9 @@ grafana:
           access: proxy
           editable: true
           jsonData:
+            httpMethod: GET
+            streamingEnabled:
+              search: false  # gRPC 스트리밍 비활성화 (포트 이슈 회피)
             tracesToLogsV2:
               datasourceUid: loki
               spanStartTimeShift: "-1h"
@@ -74,7 +77,7 @@ grafana:
               filterBySpanID: false
               tags:
                 - key: service.name
-                  value: app
+                  value: service_name
             tracesToMetrics:
               datasourceUid: prometheus
               queries:
