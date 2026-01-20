@@ -41,6 +41,10 @@ grafana:
           editable: true
           jsonData:
             timeInterval: 15s
+            timeout: 60
+            cacheLevel: medium # 60초 캐싱
+            incrementalQuerying: true
+            incrementalQueryOverlapWindow: 10m
 
         - name: Loki
           type: loki
@@ -64,8 +68,8 @@ grafana:
           jsonData:
             tracesToLogsV2:
               datasourceUid: loki
-              spanStartTimeShift: '-1h'
-              spanEndTimeShift: '1h'
+              spanStartTimeShift: "-1h"
+              spanEndTimeShift: "1h"
               filterByTraceID: true
               filterBySpanID: false
               tags:
@@ -74,8 +78,8 @@ grafana:
             tracesToMetrics:
               datasourceUid: prometheus
               queries:
-                - name: 'Request Rate'
-                  query: 'sum(rate(traces_spanmetrics_calls_total{$$__tags}[5m]))'
+                - name: "Request Rate"
+                  query: "sum(rate(traces_spanmetrics_calls_total{$$__tags}[5m]))"
             serviceMap:
               datasourceUid: prometheus
             nodeGraph:
@@ -85,7 +89,8 @@ grafana:
             lokiSearch:
               datasourceUid: loki
 
-  # Sidecar for dashboards (auto-load from ConfigMaps with label)
+  # 대시보드 사이드카 (auto-load from ConfigMaps with label)
+  # Grafana chart 는 자동으로 emptyDir을 /tmp/dashboards에 마운트하여 readOnlyRootFilesystem과 호환
   sidecar:
     dashboards:
       enabled: true
@@ -257,7 +262,7 @@ otelCollector:
 # ConfigMaps toggle
 configMaps:
   grafanaDashboards:
-    enabled: true  # Grafana 공식 chart에서 dashboardsConfigMaps로 참조
+    enabled: true # Grafana 공식 chart에서 dashboardsConfigMaps로 참조
   prometheusConfig:
     enabled: true
   prometheusRules:
