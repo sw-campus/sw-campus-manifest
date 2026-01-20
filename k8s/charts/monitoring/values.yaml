@@ -49,7 +49,7 @@ prometheus:
   persistence:
     enabled: true
     size: 10Gi
-    storageClassName: gp3 # EKS: gp3, k3s: local-path
+    storageClassName: gp2 # EKS: gp2/gp3 (gp3는 EBS CSI Driver 필요)
     accessModes:
       - ReadWriteOnce
   # 데이터 보관 기간
@@ -132,7 +132,7 @@ tempo:
     persistence:
       enabled: true # 운영: 영구 스토리지
       size: 10Gi
-      storageClassName: gp3
+      storageClassName: gp2 # EKS: gp2/gp3 (gp3는 EBS CSI Driver 필요)
 
   service:
     type: ClusterIP
