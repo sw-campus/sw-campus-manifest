@@ -16,6 +16,9 @@ grafana:
     scheme: internet-facing
     targetType: ip
 
+loki:
+  replicas: 1
+
 # Tempo - S3 백엔드로 전환 시 (선택사항)
 # tempo:
 #   storage:
