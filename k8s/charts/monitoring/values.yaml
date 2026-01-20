@@ -68,7 +68,7 @@ grafana:
           jsonData:
             httpMethod: GET
             streamingEnabled:
-              search: false  # gRPC 스트리밍 비활성화 (포트 이슈 회피)
+              search: false # gRPC 스트리밍 비활성화 (포트 이슈 회피)
             tracesToLogsV2:
               datasourceUid: loki
               spanStartTimeShift: "-1h"
@@ -111,6 +111,14 @@ grafana:
   containerSecurityContext:
     readOnlyRootFilesystem: true
     allowPrivilegeEscalation: false
+
+  extraVolumes:
+    - name: tmp-volume
+      emptyDir: {}
+
+  extraVolumeMounts:
+    - name: tmp-volume
+      mountPath: /tmp
 
   # Resource limits
   resources:
