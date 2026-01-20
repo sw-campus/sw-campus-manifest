@@ -25,6 +25,8 @@ spec:
           securityContext:
             readOnlyRootFilesystem: true
             allowPrivilegeEscalation: false
+          resources:
+            {{- toYaml .Values.loki.resources | nindent 12 }}
           args:
             - "-config.file=/etc/loki/loki.yml"
           ports:

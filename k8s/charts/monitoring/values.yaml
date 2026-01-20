@@ -166,6 +166,13 @@ loki:
   service:
     type: ClusterIP
     port: 3100
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
   config:
     limits:
       max_streams_per_user: 5000
