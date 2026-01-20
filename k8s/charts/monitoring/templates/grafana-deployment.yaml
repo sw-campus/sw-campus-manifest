@@ -14,10 +14,17 @@ spec:
         app: {{ .Values.global.namespace }}-grafana
         cluster: {{ .Values.global.namespace }}
     spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 472
+        fsGroup: 472
       containers:
         - name: grafana
           image: "{{ .Values.grafana.image.repository }}:{{ .Values.grafana.image.tag }}"
           imagePullPolicy: {{ .Values.grafana.image.pullPolicy }}
+          securityContext:
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
           ports:
             - containerPort: 3000
           env:
@@ -43,6 +50,11 @@ spec:
               value: "*"
 
           volumeMounts:
+            # Writable directories for read-only filesystem
+            - name: tmp
+              mountPath: /tmp
+            - name: grafana-data
+              mountPath: /var/lib/grafana
             # Datasources
             - name: datasources
               mountPath: /etc/grafana/provisioning/datasources
@@ -56,6 +68,11 @@ spec:
               mountPath: /var/lib/grafana/dashboards
             
       volumes:
+        # Writable directories for read-only filesystem
+        - name: tmp
+          emptyDir: {}
+        - name: grafana-data
+          emptyDir: {}
         # Datasources
         - name: datasources
           configMap:
