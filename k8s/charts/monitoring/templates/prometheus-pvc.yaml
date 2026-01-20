@@ -1,0 +1,15 @@
+{{- if and .Values.prometheus.enabled .Values.prometheus.persistence.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.global.namespace }}-prometheus-storage
+  labels:
+    app: {{ .Values.global.namespace }}-prometheus
+spec:
+  accessModes:
+    {{- toYaml .Values.prometheus.persistence.accessModes | nindent 4 }}
+  storageClassName: {{ .Values.prometheus.persistence.storageClassName }}
+  resources:
+    requests:
+      storage: {{ .Values.prometheus.persistence.size }}
+{{- end }}
