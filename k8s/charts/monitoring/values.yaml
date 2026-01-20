@@ -15,23 +15,108 @@ monitoring:
 
 grafana:
   enabled: true
+  fullnameOverride: monitoring-grafana
   replicas: 2
   image:
-    repository: grafana/grafana
-    tag: "10.4.2"
-    pullPolicy: IfNotPresent
+    tag: "11.4.0"
+
   service:
     type: ClusterIP
     port: 3000
+
   ingress:
     enabled: false
+
+  # Datasources provisioning
   datasources:
-    prometheus:
-      name: Prometheus
-      type: prometheus
-      url: http://monitoring-prometheus:9090
-      access: proxy
-      isDefault: true
+    datasources.yaml:
+      apiVersion: 1
+      datasources:
+        - name: Prometheus
+          type: prometheus
+          uid: prometheus
+          url: http://monitoring-prometheus:9090
+          access: proxy
+          isDefault: true
+          editable: true
+          jsonData:
+            timeInterval: 15s
+            timeout: 60
+            cacheLevel: medium # 60초 캐싱
+            incrementalQuerying: true
+            incrementalQueryOverlapWindow: 10m
+
+        - name: Loki
+          type: loki
+          uid: loki
+          url: http://monitoring-loki:3100
+          access: proxy
+          editable: true
+          jsonData:
+            derivedFields:
+              - datasourceUid: tempo
+                matcherRegex: "\"traceId\"\\s*:\\s*\"([a-f0-9]+)\""
+                name: TraceID
+                url: "$${__value.raw}"
+
+        - name: Tempo
+          type: tempo
+          uid: tempo
+          url: http://monitoring-tempo:3200
+          access: proxy
+          editable: true
+          jsonData:
+            tracesToLogsV2:
+              datasourceUid: loki
+              spanStartTimeShift: "-1h"
+              spanEndTimeShift: "1h"
+              filterByTraceID: true
+              filterBySpanID: false
+              tags:
+                - key: service.name
+                  value: app
+            tracesToMetrics:
+              datasourceUid: prometheus
+              queries:
+                - name: "Request Rate"
+                  query: "sum(rate(traces_spanmetrics_calls_total{$$__tags}[5m]))"
+            serviceMap:
+              datasourceUid: prometheus
+            nodeGraph:
+              enabled: true
+            search:
+              hide: false
+            lokiSearch:
+              datasourceUid: loki
+
+  # 대시보드 사이드카 (auto-load from ConfigMaps with label)
+  # Grafana chart 는 자동으로 emptyDir을 /tmp/dashboards에 마운트하여 readOnlyRootFilesystem과 호환
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+      folder: /tmp/dashboards
+      searchNamespace: monitoring
+
+  # Security context
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 472
+    fsGroup: 472
+
+  containerSecurityContext:
+    readOnlyRootFilesystem: true
+    allowPrivilegeEscalation: false
+
+  # Resource limits
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 2Gi
 
 prometheus:
   enabled: true
@@ -81,6 +166,13 @@ loki:
   service:
     type: ClusterIP
     port: 3100
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
   config:
     limits:
       max_streams_per_user: 5000
@@ -177,9 +269,7 @@ otelCollector:
 # ConfigMaps toggle
 configMaps:
   grafanaDashboards:
-    enabled: true
-  grafanaDatasources:
-    enabled: true
+    enabled: true # Grafana 공식 chart에서 dashboardsConfigMaps로 참조
   prometheusConfig:
     enabled: true
   prometheusRules:
