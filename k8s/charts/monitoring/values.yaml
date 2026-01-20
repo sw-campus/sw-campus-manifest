@@ -130,7 +130,7 @@ tempo:
     replicas: 1
     persistence:
       enabled: true # 운영: 영구 스토리지
-      size: 50Gi
+      size: 10Gi
       storageClassName: gp3
 
   service:
