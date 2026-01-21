@@ -78,13 +78,19 @@ data:
 
       # OTLP 레이블 매핑 추가
       otlp_config:
+        # resource attributes → Loki 레이블
         resource_attributes:
           attributes_config:
             - action: index_label
               attributes:
                 - service.name
-                - namespace              # OTel에서 매핑한 namespace
-                - deployment.environment # develop/release
-                - trace_id               # Tempo 연동용
-                - span_id                # Tempo 연동용      
+                - namespace
+                - deployment.environment
+        # log record attributes → Loki 레이블 (Tempo 연동용)
+        log_attributes:
+          attributes_config:
+            - action: index_label
+              attributes:
+                - trace_id
+                - span_id      
 {{- end }}
