@@ -27,8 +27,8 @@
       "keepTime": true,
       "tags": [],
       "targetBlank": true,
-      "title": "Service APM",
-      "tooltip": "View APM metrics",
+      "title": "서비스 APM",
+      "tooltip": "APM 메트릭 보기",
       "type": "link",
       "url": "/d/service-apm-overview/service-apm-overview"
     },
@@ -39,8 +39,8 @@
       "keepTime": true,
       "tags": [],
       "targetBlank": true,
-      "title": "Distributed Tracing",
-      "tooltip": "View traces in Tempo",
+      "title": "분산 추적",
+      "tooltip": "Tempo에서 트레이스 보기",
       "type": "link",
       "url": "/d/distributed-tracing/distributed-tracing"
     }
@@ -56,7 +56,7 @@
       },
       "id": 100,
       "panels": [],
-      "title": "Log Overview",
+      "title": "로그 개요",
       "type": "row"
     },
     {
@@ -64,7 +64,7 @@
         "type": "loki",
         "uid": "loki"
       },
-      "description": "Total log volume over time",
+      "description": "시간대별 총 로그 볼륨",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -186,9 +186,7 @@
       "id": 1,
       "options": {
         "legend": {
-          "calcs": [
-            "sum"
-          ],
+          "calcs": ["sum"],
           "displayMode": "table",
           "placement": "right",
           "showLegend": true
@@ -206,13 +204,13 @@
             "uid": "loki"
           },
           "editorMode": "code",
-          "expr": "sum by (level) (count_over_time({namespace=~\"$namespace\", service_name=~\"$service_name\"} | json | level=~\"$level\" [$__interval]))",
+          "expr": "sum by (level) (count_over_time({namespace=~\"$namespace\", service_name=~\"$service_name\"} | pattern `<_> <level>: <_>` | level=~\"(?i)$level\" [$__interval]))",
           "legendFormat": "{{level}}",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Log Volume by Level",
+      "title": "레벨별 로그 볼륨",
       "type": "timeseries"
     },
     {
@@ -220,7 +218,7 @@
         "type": "loki",
         "uid": "loki"
       },
-      "description": "Total error logs in selected time range",
+      "description": "선택 기간 내 총 에러 로그 수",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -261,9 +259,7 @@
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": [
-            "sum"
-          ],
+          "calcs": ["sum"],
           "fields": "",
           "values": false
         },
@@ -277,13 +273,13 @@
             "uid": "loki"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({namespace=~\"$namespace\", service_name=~\"$service_name\"} | json | level=\"error\" [$__range]))",
+          "expr": "sum(count_over_time({namespace=~\"$namespace\", service_name=~\"$service_name\"} |~ \"(?i)error:\" [$__range]))",
           "legendFormat": "Errors",
           "queryType": "instant",
           "refId": "A"
         }
       ],
-      "title": "Error Count",
+      "title": "에러 수",
       "type": "stat"
     },
     {
@@ -291,7 +287,7 @@
         "type": "loki",
         "uid": "loki"
       },
-      "description": "Total warning logs in selected time range",
+      "description": "선택 기간 내 총 경고 로그 수",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -332,9 +328,7 @@
         "justifyMode": "auto",
         "orientation": "auto",
         "reduceOptions": {
-          "calcs": [
-            "sum"
-          ],
+          "calcs": ["sum"],
           "fields": "",
           "values": false
         },
@@ -348,13 +342,13 @@
             "uid": "loki"
           },
           "editorMode": "code",
-          "expr": "sum(count_over_time({namespace=~\"$namespace\", service_name=~\"$service_name\"} | json | level=\"warn\" [$__range]))",
+          "expr": "sum(count_over_time({namespace=~\"$namespace\", service_name=~\"$service_name\"} |~ \"(?i)(warn|warning):\" [$__range]))",
           "legendFormat": "Warnings",
           "queryType": "instant",
           "refId": "A"
         }
       ],
-      "title": "Warning Count",
+      "title": "경고 수",
       "type": "stat"
     },
     {
@@ -362,7 +356,7 @@
         "type": "loki",
         "uid": "loki"
       },
-      "description": "Log rate per application",
+      "description": "애플리케이션별 로그 발생률",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -447,7 +441,7 @@
           "refId": "A"
         }
       ],
-      "title": "Log Rate by Service",
+      "title": "서비스별 로그 발생률",
       "type": "timeseries"
     },
     {
@@ -460,7 +454,7 @@
       },
       "id": 101,
       "panels": [],
-      "title": "Error Analysis",
+      "title": "에러 분석",
       "type": "row"
     },
     {
@@ -468,7 +462,7 @@
         "type": "loki",
         "uid": "loki"
       },
-      "description": "Top error messages aggregated by pattern",
+      "description": "패턴별 상위 에러 메시지",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -529,9 +523,7 @@
         "footer": {
           "countRows": false,
           "fields": "",
-          "reducer": [
-            "sum"
-          ],
+          "reducer": ["sum"],
           "show": false
         },
         "showHeader": true,
@@ -550,13 +542,13 @@
             "uid": "loki"
           },
           "editorMode": "code",
-          "expr": "topk(20, sum by (app, message) (count_over_time({namespace=~\"$namespace\", service_name=~\"$service_name\"} | json | level=\"error\" | line_format \"{{.message}}\" [$__range])))",
+          "expr": "topk(20, sum by (service_name) (count_over_time({namespace=~\"$namespace\", service_name=~\"$service_name\"} |~ \"(?i)error:\" [$__range])))",
           "legendFormat": "",
           "queryType": "instant",
           "refId": "A"
         }
       ],
-      "title": "Top Error Messages",
+      "title": "주요 에러 메시지",
       "transformations": [
         {
           "id": "organize",
@@ -566,9 +558,9 @@
             },
             "indexByName": {},
             "renameByName": {
-              "Value": "Count",
-              "service_name": "Application",
-              "message": "Error Message"
+              "Value": "발생 횟수",
+              "service_name": "애플리케이션",
+              "message": "에러 메시지"
             }
           }
         }
@@ -585,7 +577,7 @@
       },
       "id": 102,
       "panels": [],
-      "title": "Live Logs",
+      "title": "실시간 로그",
       "type": "row"
     },
     {
@@ -593,7 +585,7 @@
         "type": "loki",
         "uid": "loki"
       },
-      "description": "Live log stream with TraceID links to Tempo",
+      "description": "TraceID 연결이 포함된 실시간 로그 스트림",
       "gridPos": {
         "h": 14,
         "w": 24,
@@ -619,34 +611,26 @@
             "uid": "loki"
           },
           "editorMode": "code",
-          "expr": "{namespace=~\"$namespace\", service_name=~\"$service_name\"} | json | level=~\"$level\" |= \"$search\"",
+          "expr": "{namespace=~\"$namespace\", service_name=~\"$service_name\"} |~ \"(?i)$level\" |~ \"$search\"",
           "legendFormat": "",
           "queryType": "range",
           "refId": "A"
         }
       ],
-      "title": "Application Logs",
+      "title": "애플리케이션 로그",
       "type": "logs"
     }
   ],
   "refresh": "30s",
   "schemaVersion": 39,
-  "tags": [
-    "logs",
-    "loki",
-    "application"
-  ],
+  "tags": ["logs", "loki", "application"],
   "templating": {
     "list": [
       {
         "current": {
           "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": ["All"],
+          "value": ["$__all"]
         },
         "datasource": {
           "type": "loki",
@@ -655,7 +639,7 @@
         "definition": "",
         "hide": 0,
         "includeAll": true,
-        "label": "Namespace",
+        "label": "네임스페이스",
         "multi": true,
         "name": "namespace",
         "options": [],
@@ -674,12 +658,8 @@
       {
         "current": {
           "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": ["All"],
+          "value": ["$__all"]
         },
         "datasource": {
           "type": "loki",
@@ -688,7 +668,7 @@
         "definition": "",
         "hide": 0,
         "includeAll": true,
-        "label": "Application",
+        "label": "애플리케이션",
         "multi": true,
         "name": "service_name",
         "options": [],
@@ -707,16 +687,12 @@
       {
         "current": {
           "selected": true,
-          "text": [
-            "All"
-          ],
-          "value": [
-            "$__all"
-          ]
+          "text": ["All"],
+          "value": ["$__all"]
         },
         "hide": 0,
         "includeAll": true,
-        "label": "Log Level",
+        "label": "로그 레벨",
         "multi": true,
         "name": "level",
         "options": [
@@ -758,7 +734,7 @@
           "value": ""
         },
         "hide": 0,
-        "label": "Search",
+        "label": "검색",
         "name": "search",
         "options": [
           {
@@ -779,8 +755,8 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Application Logs Enhanced",
-  "uid": "app-logs-enhanced",
+  "title": "애플리케이션 로그",
+  "uid": "app-logs",
   "version": 1,
   "weekStart": ""
 }

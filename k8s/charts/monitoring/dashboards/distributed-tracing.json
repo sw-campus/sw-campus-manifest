@@ -27,8 +27,8 @@
       "keepTime": true,
       "tags": [],
       "targetBlank": true,
-      "title": "Service APM",
-      "tooltip": "View APM metrics",
+      "title": "서비스 APM",
+      "tooltip": "APM 메트릭 보기",
       "type": "link",
       "url": "/d/service-apm-overview/service-apm-overview"
     },
@@ -39,8 +39,8 @@
       "keepTime": true,
       "tags": [],
       "targetBlank": true,
-      "title": "Application Logs",
-      "tooltip": "View logs in Loki",
+      "title": "애플리케이션 로그",
+      "tooltip": "Loki에서 로그 보기",
       "type": "link",
       "url": "/d/app-logs-enhanced/application-logs-enhanced"
     }
@@ -56,7 +56,7 @@
       },
       "id": 100,
       "panels": [],
-      "title": "Trace Search",
+      "title": "트레이스 검색",
       "type": "row"
     },
     {
@@ -64,7 +64,7 @@
         "type": "tempo",
         "uid": "tempo"
       },
-      "description": "Search traces using TraceQL query language",
+      "description": "TraceQL 쿼리 언어로 트레이스 검색",
       "gridPos": {
         "h": 12,
         "w": 24,
@@ -84,31 +84,10 @@
           "queryType": "traceqlSearch",
           "refId": "A",
           "tableType": "traces",
-          "filters": [
-            {
-              "id": "service-name",
-              "tag": "service.name",
-              "operator": "=~",
-              "scope": "resource",
-              "value": [
-                "$service"
-              ],
-              "valueType": "string"
-            },
-            {
-              "id": "min-duration",
-              "tag": "duration",
-              "operator": ">",
-              "scope": "span",
-              "value": [
-                "$min_duration"
-              ],
-              "valueType": "duration"
-            }
-          ]
+          "filters": []
         }
       ],
-      "title": "Trace Search",
+      "title": "트레이스 검색",
       "type": "traces"
     },
     {
@@ -121,7 +100,7 @@
       },
       "id": 101,
       "panels": [],
-      "title": "Service Map",
+      "title": "서비스 맵",
       "type": "row"
     },
     {
@@ -129,7 +108,7 @@
         "type": "tempo",
         "uid": "tempo"
       },
-      "description": "Service dependency map showing inter-service communication",
+      "description": "서비스 간 통신을 보여주는 의존성 맵",
       "gridPos": {
         "h": 12,
         "w": 24,
@@ -154,10 +133,10 @@
           },
           "queryType": "serviceMap",
           "refId": "A",
-          "serviceMapQuery": "{resource.service.name=~\"$service\"}"
+          "serviceMapQuery": ""
         }
       ],
-      "title": "Service Dependency Map",
+      "title": "서비스 의존성 맵",
       "type": "nodeGraph"
     },
     {
@@ -170,7 +149,7 @@
       },
       "id": 102,
       "panels": [],
-      "title": "Trace Statistics",
+      "title": "트레이스 통계",
       "type": "row"
     },
     {
@@ -178,7 +157,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Total traces received per service",
+      "description": "서비스별 총 트레이스 수신량",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -266,7 +245,7 @@
           "refId": "A"
         }
       ],
-      "title": "Trace Volume by Service",
+      "title": "서비스별 트레이스 볼륨",
       "type": "timeseries"
     },
     {
@@ -274,7 +253,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Span count per operation",
+      "description": "오퍼레이션별 Span 수",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -359,7 +338,7 @@
           "refId": "A"
         }
       ],
-      "title": "Top Operations by Volume",
+      "title": "볼륨 기준 상위 오퍼레이션",
       "type": "timeseries"
     },
     {
@@ -367,7 +346,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Error spans by service",
+      "description": "서비스별 에러 Span",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -454,7 +433,7 @@
           "refId": "A"
         }
       ],
-      "title": "Error Spans by Service",
+      "title": "서비스별 에러 Span",
       "type": "timeseries"
     },
     {
@@ -462,7 +441,7 @@
         "type": "prometheus",
         "uid": "prometheus"
       },
-      "description": "Latency percentiles over time",
+      "description": "시간대별 지연 시간 백분위수",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -620,7 +599,7 @@
           "refId": "C"
         }
       ],
-      "title": "Latency Percentiles",
+      "title": "지연 시간 백분위수",
       "type": "timeseries"
     }
   ],
@@ -650,7 +629,7 @@
         "definition": "label_values(traces_spanmetrics_calls_total, service)",
         "hide": 0,
         "includeAll": true,
-        "label": "Service",
+        "label": "서비스",
         "multi": true,
         "name": "service",
         "options": [],
@@ -667,18 +646,18 @@
       },
       {
         "current": {
-          "selected": false,
-          "text": "100ms",
-          "value": "100ms"
+          "selected": true,
+          "text": "0ms",
+          "value": "0ms"
         },
         "hide": 0,
         "includeAll": false,
-        "label": "Min Duration",
+        "label": "최소 지속시간",
         "multi": false,
         "name": "min_duration",
         "options": [
           {
-            "selected": false,
+            "selected": true,
             "text": "0ms",
             "value": "0ms"
           },
@@ -693,7 +672,7 @@
             "value": "50ms"
           },
           {
-            "selected": true,
+            "selected": false,
             "text": "100ms",
             "value": "100ms"
           },
@@ -726,7 +705,7 @@
   },
   "timepicker": {},
   "timezone": "browser",
-  "title": "Distributed Tracing",
+  "title": "분산 추적",
   "uid": "distributed-tracing",
   "version": 1,
   "weekStart": ""

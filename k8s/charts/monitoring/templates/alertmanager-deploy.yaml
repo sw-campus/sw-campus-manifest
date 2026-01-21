@@ -30,6 +30,13 @@ spec:
             - "--storage.path=/alertmanager"
           ports:
             - containerPort: 9093
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
           volumeMounts:
             # Writable storage for alertmanager data
             - name: storage
