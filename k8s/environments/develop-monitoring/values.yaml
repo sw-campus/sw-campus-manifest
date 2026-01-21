@@ -17,15 +17,28 @@ prometheus:
     enabled: false # 운영: true → 개발: false (emptyDir 사용)
 
 loki:
-  replicas: 1
-  config:
-    limits:
+  singleBinary:
+    replicas: 1
+    persistence:
+      enabled: false # 개발 환경은 emptyDir 사용
+    resources:
+      requests:
+        cpu: 100m # 운영: 200m → 개발: 100m
+        memory: 256Mi # 운영: 512Mi → 개발: 256Mi
+      limits:
+        cpu: 500m # 운영: 1000m → 개발: 500m
+        memory: 512Mi # 운영: 1Gi → 개발: 512Mi
+  loki:
+    limits_config:
       max_streams_per_user: 1000 # 운영: 5000 → 개발: 1000
       ingestion_rate_mb: 30 # 운영: 50 → 개발: 30
       ingestion_burst_size_mb: 60 # 운영: 100 → 개발: 60
       cardinality_limit: 50000 # 운영: 100000 → 개발: 50000
 
 tempo:
+  singleBinary:
+    persistence:
+      enabled: false # 운영: true → 개발: false (로컬 스토리지)
   tempo:
     resources:
       requests:
@@ -34,16 +47,10 @@ tempo:
       limits:
         cpu: 500m # 운영: 1000m → 개발: 500m
         memory: 1Gi # 운영: 2Gi → 개발: 1Gi
-
-  singleBinary:
-    persistence:
-      enabled: false # 운영: true → 개발: false (로컬 스토리지)
-
   global_overrides:
     max_bytes_per_trace: 5000000 # 운영: 10MB → 개발: 5MB
     ingestion_rate_limit_bytes: 15000000 # 운영: 30MB/s → 개발: 15MB/s
     ingestion_burst_size_bytes: 20000000 # 운영: 50MB → 개발: 20MB
-
   compactor:
     config:
       compaction:
