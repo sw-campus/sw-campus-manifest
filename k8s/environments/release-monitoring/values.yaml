@@ -17,7 +17,12 @@ grafana:
     targetType: ip
 
 loki:
-  replicas: 1
+  singleBinary:
+    replicas: 1
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClassName: gp2
 
 # Tempo - S3 백엔드로 전환 시 (선택사항)
 # tempo:
