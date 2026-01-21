@@ -73,11 +73,15 @@ grafana:
               datasourceUid: loki
               spanStartTimeShift: "-1h"
               spanEndTimeShift: "1h"
+              # trace ID 기반 로그 필터링 (Logback MDC의 traceId 사용)
               filterByTraceID: true
               filterBySpanID: false
               tags:
                 - key: service.name
                   value: service_name
+              # MDC traceId 필드 매핑
+              mapTagNamesEnabled: true
+              customQuery: false
             tracesToMetrics:
               datasourceUid: prometheus
               queries:
@@ -131,7 +135,16 @@ grafana:
 
 prometheus:
   enabled: true
-  # PVC 사용 시 replicas: 1 권장 (ReadWriteOnce 제한)
+  # TODO: High Availability 제한사항
+  # - ReadWriteOnce PVC 사용으로 단일 복제본만 지원
+  # - Pod 장애 시 메트릭 수집이 일시적으로 중단될 수 있음
+  # - 자동 재시작으로 복구되나, 장애 시간 동안의 메트릭은 손실 가능
+  #
+  # HA 개선 방안 (향후 고려사항):
+  #   1. ReadWriteMany PVC 사용 (NFS, Ceph 등 공유 스토리지)
+  #   2. Thanos 도입 (장기 보관 + 고가용성 + 글로벌 쿼리)
+  #   3. 외부 원격 스토리지 (S3, GCS 등)
+  #   4. Prometheus Federation (여러 Prometheus 인스턴스 통합)
   replicas: 1
   image:
     repository: prom/prometheus
@@ -149,9 +162,10 @@ prometheus:
     accessModes:
       - ReadWriteOnce
   # 데이터 보관 기간
+  # 10Gi PVC 대비 20% 여유 공간 확보 (9GB → 8GB)
   retention:
     time: 7d
-    size: 9GB
+    size: 8GB
   prometheusSpec:
     additionalScrapeConfigs:
       - job_name: otel-collector
