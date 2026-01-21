@@ -80,17 +80,15 @@ data:
       otlp_config:
         # resource attributes → Loki 레이블
         resource_attributes:
-          attributes_config:
-            - action: index_label
-              attributes:
-                - service.name
-                - namespace
-                - deployment.environment
+          - action: index_label
+            attributes:
+              - service.name
+              - namespace
+              - deployment.environment
         # log record attributes → Loki 레이블 (Tempo 연동용)
         log_attributes:
-          attributes_config:
-            - action: index_label
-              attributes:
-                - trace_id
-                - span_id      
+          - action: index_label
+            attributes:
+              - trace_id
+              - span_id      
 {{- end }}
