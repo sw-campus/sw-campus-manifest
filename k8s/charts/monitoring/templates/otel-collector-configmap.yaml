@@ -69,16 +69,19 @@ data:
         timeout: 10s
         send_batch_size: 1024
 
-      # 4. trace_id 레이블 변환 (Loki-Tempo 연동용)
-      transform/trace_id:
-        log_statements:
-          - context: log
-            statements:
-              # JSON 파싱된 traceId를 resource 속성으로 복사
-              - set(resource.attributes["trace_id"], attributes["traceId"]) where attributes["traceId"] != nil
-              - set(resource.attributes["span_id"], attributes["spanId"]) where attributes["spanId"] != nil
+      # 4. trace_id 속성 복사 (Loki-Tempo 연동용)
+      # LogstashEncoder의 traceId/spanId를 Loki가 인식하는 trace_id/span_id로 복사
+      attributes/trace:
+        actions:
+          - key: trace_id
+            from_attribute: traceId
+            action: upsert
+          - key: span_id
+            from_attribute: spanId
+            action: upsert
 
     exporters:
+      # Loki OTLP 수신기로 전송
       otlphttp/loki:
         endpoint: http://{{ .Values.global.namespace }}-loki:3100/otlp
         tls:
@@ -100,7 +103,7 @@ data:
       pipelines:
         logs:
           receivers: [filelog, otlp]
-          processors: [k8sattributes, resource, transform/trace_id, batch]
+          processors: [k8sattributes, resource, attributes/trace, batch]
           exporters: [otlphttp/loki]
 
         traces:
