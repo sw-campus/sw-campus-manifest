@@ -225,6 +225,20 @@ loki:
       max_chunks_per_query: 2000000
       cardinality_limit: 100000
 
+      # OTLP 설정 (Tempo 연동용 - trace_id 인덱싱)
+      otlp_config:
+        resource_attributes:
+          attributes_config:
+            - action: index_label
+              attributes:
+                - service.name
+        log_attributes:
+          attributes_config:
+            - action: index_label
+              attributes:
+                - trace_id
+                - span_id
+
     rulerConfig:
       alertmanager_url: http://monitoring-alertmanager:9093
 
