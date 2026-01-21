@@ -55,9 +55,12 @@ grafana:
           jsonData:
             derivedFields:
               - datasourceUid: tempo
-                matcherRegex: "\"traceId\"\\s*:\\s*\"([a-f0-9]+)\""
+                # OpenTelemetry trace_id 레이블에서 trace ID 추출
+                matcherRegex: "trace_id=([a-f0-9]+)"
                 name: TraceID
                 url: "$${__value.raw}"
+                # internal link로 Tempo에서 열기
+                urlDisplayLabel: "View Trace"
 
         - name: Tempo
           type: tempo
@@ -73,15 +76,16 @@ grafana:
               datasourceUid: loki
               spanStartTimeShift: "-1h"
               spanEndTimeShift: "1h"
-              # trace ID 기반 로그 필터링 (Logback MDC의 traceId 사용)
+              # OpenTelemetry trace_id 레이블로 필터링
               filterByTraceID: true
               filterBySpanID: false
               tags:
                 - key: service.name
                   value: service_name
-              # MDC traceId 필드 매핑
-              mapTagNamesEnabled: true
-              customQuery: false
+                - key: trace_id
+                  value: trace_id
+                - key: span_id
+                  value: span_id
             tracesToMetrics:
               datasourceUid: prometheus
               queries:
