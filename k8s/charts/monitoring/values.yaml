@@ -55,8 +55,8 @@ grafana:
           jsonData:
             derivedFields:
               - datasourceUid: tempo
-                # LogstashEncoder JSON 출력에서 traceId 추출
-                matcherRegex: '"traceId":"([a-f0-9]+)"'
+                # Spring Boot JSON 로그에서 trace_id 추출
+                matcherRegex: '"trace_id":"([a-f0-9]+)"'
                 name: TraceID
                 url: "$${__value.raw}"
                 # Grafana 내부 링크로 Tempo에서 열기
