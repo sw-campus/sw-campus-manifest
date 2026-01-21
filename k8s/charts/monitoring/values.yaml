@@ -225,20 +225,6 @@ loki:
       max_chunks_per_query: 2000000
       cardinality_limit: 100000
 
-      # OTLP 설정 (Tempo 연동용)
-      otlp_config:
-        resource_attributes:
-          - action: index_label
-            attributes:
-              - service.name
-              - namespace
-              - deployment.environment
-        log_attributes:
-          - action: index_label
-            attributes:
-              - trace_id
-              - span_id
-
     rulerConfig:
       alertmanager_url: http://monitoring-alertmanager:9093
 
@@ -278,6 +264,16 @@ loki:
       enabled: false
     lokiCanary:
       enabled: false
+
+  # 캐시 비활성화 (SingleBinary 모드에서 불필요)
+  chunksCache:
+    enabled: false
+  resultsCache:
+    enabled: false
+
+  # Canary 비활성화 (최상위 레벨)
+  lokiCanary:
+    enabled: false
 
 tempo:
   enabled: true
