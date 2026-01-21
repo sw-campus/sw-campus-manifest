@@ -158,9 +158,10 @@ prometheus:
     accessModes:
       - ReadWriteOnce
   # 데이터 보관 기간
+  # 10Gi PVC 대비 20% 여유 공간 확보 (9GB → 8GB)
   retention:
     time: 7d
-    size: 9GB
+    size: 8GB
   prometheusSpec:
     additionalScrapeConfigs:
       - job_name: otel-collector
