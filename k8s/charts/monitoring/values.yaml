@@ -59,7 +59,8 @@ grafana:
                 matcherRegex: '"traceId":"([a-f0-9]+)"'
                 name: TraceID
                 url: "$${__value.raw}"
-                # internal link로 Tempo에서 열기
+                # Grafana 내부 링크로 Tempo에서 열기
+                internalLink: true
                 urlDisplayLabel: "View Trace"
 
         - name: Tempo
@@ -76,16 +77,12 @@ grafana:
               datasourceUid: loki
               spanStartTimeShift: "-1h"
               spanEndTimeShift: "1h"
-              # OpenTelemetry trace_id 레이블로 필터링
+              # trace_id 레이블로 필터링 (loki exporter가 레이블 생성)
               filterByTraceID: true
               filterBySpanID: false
               tags:
                 - key: service.name
                   value: service_name
-                - key: trace_id
-                  value: trace_id
-                - key: span_id
-                  value: span_id
             tracesToMetrics:
               datasourceUid: prometheus
               queries:
