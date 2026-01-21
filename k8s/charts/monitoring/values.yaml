@@ -55,8 +55,8 @@ grafana:
           jsonData:
             derivedFields:
               - datasourceUid: tempo
-                # OpenTelemetry trace_id 레이블에서 trace ID 추출
-                matcherRegex: "trace_id=([a-f0-9]+)"
+                # LogstashEncoder JSON 출력에서 traceId 추출
+                matcherRegex: '"traceId":"([a-f0-9]+)"'
                 name: TraceID
                 url: "$${__value.raw}"
                 # internal link로 Tempo에서 열기
