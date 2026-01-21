@@ -73,11 +73,15 @@ grafana:
               datasourceUid: loki
               spanStartTimeShift: "-1h"
               spanEndTimeShift: "1h"
+              # trace ID 기반 로그 필터링 (Logback MDC의 traceId 사용)
               filterByTraceID: true
               filterBySpanID: false
               tags:
                 - key: service.name
                   value: service_name
+              # MDC traceId 필드 매핑
+              mapTagNamesEnabled: true
+              customQuery: false
             tracesToMetrics:
               datasourceUid: prometheus
               queries:
