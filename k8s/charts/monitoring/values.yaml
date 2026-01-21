@@ -77,9 +77,11 @@ grafana:
               datasourceUid: loki
               spanStartTimeShift: "-1h"
               spanEndTimeShift: "1h"
-              # trace_id 레이블로 필터링 (loki exporter가 레이블 생성)
-              filterByTraceID: true
+              # Loki 3.x: trace_id는 Structured Metadata로 저장됨
+              filterByTraceID: false
               filterBySpanID: false
+              customQuery: true
+              query: '{$${__tags}} | trace_id="$${__span.traceId}"'
               tags:
                 - key: service.name
                   value: service_name
@@ -224,18 +226,6 @@ loki:
       max_query_parallelism: 32
       max_chunks_per_query: 2000000
       cardinality_limit: 100000
-
-      # OTLP 설정 (Tempo 연동용 - trace_id 인덱싱)
-      otlp_config:
-        resource_attributes:
-          - action: index_label
-            attributes:
-              - service.name
-        log_attributes:
-          - action: index_label
-            attributes:
-              - trace_id
-              - span_id
 
     rulerConfig:
       alertmanager_url: http://monitoring-alertmanager:9093
