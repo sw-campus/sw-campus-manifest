@@ -74,6 +74,7 @@ grafana:
             streamingEnabled:
               search: false # gRPC 스트리밍 비활성화 (포트 이슈 회피)
             tracesToLogsV2:
+              enabled: true
               datasourceUid: loki
               spanStartTimeShift: "-1h"
               spanEndTimeShift: "1h"
@@ -81,7 +82,7 @@ grafana:
               filterByTraceID: false
               filterBySpanID: false
               customQuery: true
-              query: '{$${__tags}} | trace_id="$${__span.traceId}"'
+              query: '{$${__tags}} | trace_id = "$${__span.traceId}"'
               tags:
                 - key: service.name
                   value: service_name
